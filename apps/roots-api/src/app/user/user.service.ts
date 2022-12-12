@@ -8,7 +8,7 @@ export class UserService {
   constructor(@InjectModel(User.name) private userModel: Model<UserDocument>) {}
 
   async findByEmailAddress(emailAddress: string): Promise<User> {
-    return await this.userModel.findOne({ emailAddress });
+    return await (await this.userModel.findOne({ emailAddress })).toObject();
   }
 
   async getById(_id: string): Promise<User> {
