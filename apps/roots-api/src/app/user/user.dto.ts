@@ -1,5 +1,5 @@
 import { Optional } from '@nestjs/common';
-import { IsDefined, IsEmail, IsString, MinLength } from 'class-validator';
+import { IsDefined, IsEmail, IsString, Matches, MinLength } from 'class-validator';
 
 export class CreateUserDto {
   @IsString({ message: 'Firstname must be a string!' })
@@ -17,7 +17,7 @@ export class CreateUserDto {
 
   @IsString({ message: 'Password must be a string!' })
   @IsDefined({ message: 'Password is required!' })
-  @MinLength(8, { message: 'Password must be at least 8 characters long!' })
+  @Matches(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"),{ message: 'Password not strong enough! Must contain at least: 8 characters, 1 uppercase letter, 1 lowercase letter and 1 number!' })
   password: string;
 }
 

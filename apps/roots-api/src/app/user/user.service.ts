@@ -32,7 +32,7 @@ export class UserService {
     if((await this.userModel.find({emailAddress: user.emailAddress})).length > 0){
       throw new HttpException(`Email address is already in use!`, HttpStatus.BAD_REQUEST);
     }
-
+      
     // if() {
     //   throw new HttpException(`There's no company registered for the given email domain!`, HttpStatus.BAD_REQUEST);
     // }

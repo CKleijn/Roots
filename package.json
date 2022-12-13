@@ -5,6 +5,7 @@
   "scripts": {
     "start": "nx serve",
     "start:api": "nx run roots-api:serve",
+    "start:app": "nx run roots-app:serve",
     "build": "nx build",
     "test": "nx test"
   },
