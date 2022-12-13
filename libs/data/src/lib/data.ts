@@ -8,4 +8,12 @@ export interface IUser {
 export interface ICompany {
   name: string;
   emailDomain: string;
+  events:IEvent[];
+}
+
+export interface IEvent {
+  title: string;
+  description: string;
+  content: string;
+  eventDate: Date;
 }
