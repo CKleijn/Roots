@@ -16,11 +16,10 @@ export class CompanyController {
 
     return await this.companyService.getById(id);
   }
-
+  
     @Public()
     @Get('companies')
     async getAll(): Promise<Company[]> {
       return await this.companyService.getAll()
     }
- 
 }
