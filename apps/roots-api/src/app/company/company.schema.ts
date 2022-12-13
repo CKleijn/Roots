@@ -10,9 +10,14 @@ export type CompanyDocument = Company & Document;
 export class Company implements ICompany {
   @Prop()
   name: string;
+
   @Prop()
   emailDomain: string;
-  @Prop({default:[],type:[EventSchema]})
+
+  @Prop({
+    default:[],
+    type:[EventSchema]
+  })
   events: [Event];
 }
 

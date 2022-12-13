@@ -33,8 +33,6 @@ export class CompanyService {
     return await this.companyModel.create(newCompany);
   }
 
-
-  //validation
   async validate(company: any) : Promise<void> {
     if((await this.companyModel.find({name: company.name})).length > 0) {
       throw new HttpException(`Company with this name already exists!`, HttpStatus.BAD_REQUEST);

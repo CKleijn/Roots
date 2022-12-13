@@ -10,37 +10,32 @@ export class EventService {
   constructor(
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(Company.name) private companyModel: Model<CompanyDocument>
-  ) {}
+  ) { }
 
   async getAll(): Promise<Event[]> {
     return await this.eventModel.find({});
   }
 
-  async getById(_id: string): Promise<Event> {
-    const event = await this.eventModel.findOne({ _id });
+  async getById(id: string): Promise<Event> {
+    const event = await this.eventModel.findOne({ _id: id });
 
     if (!event)
-      throw new HttpException(
-        `This event doesn't exists!`,
-        HttpStatus.NOT_FOUND
-      );
+      throw new HttpException(`This event doesn't exists!`, HttpStatus.NOT_FOUND);
 
     return await event.toObject();
   }
 
-  async create(eventDto: EventDto, companyId: string): Promise<any> {
+  async create(companyId: string, eventDto: EventDto): Promise<any> {
     const event = new this.eventModel(eventDto);
-    const updatedCompanyEvents = await this.companyModel.findOneAndUpdate(
+    const updatedCompanyEvents = await this.companyModel.findOneAndUpdate
+    (
       { _id: companyId },
       { $push: { events: event } },
       { new: true }
     );
 
     if (!updatedCompanyEvents)
-      throw new HttpException(
-        `This company (${companyId}) doesn't exist`,
-        HttpStatus.NOT_FOUND
-      );
+      throw new HttpException(`This company doesn't exists!`, HttpStatus.NOT_FOUND);
 
     return updatedCompanyEvents;
   }
