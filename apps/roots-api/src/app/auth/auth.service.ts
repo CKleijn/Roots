@@ -23,7 +23,7 @@ export class AuthService {
   }
 
   async register(createUserDto: CreateUserDto) {
-    const user : User = await this.userService.create(createUserDto);
+    const user: User = await this.userService.create(createUserDto);
     return this.login(user);
   }
 
@@ -31,7 +31,7 @@ export class AuthService {
     const payload = { username: user.username || user.emailAddress };
 
     const loggedInUser = await this.userService.findByEmailAddress(
-      user.username
+      payload.username
     );
 
     return {

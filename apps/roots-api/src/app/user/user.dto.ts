@@ -6,8 +6,8 @@ export class CreateUserDto {
   @IsDefined({ message: 'Firstname is required!' })
   firstname: string;
 
-  @IsString({ message: 'Firstname must be a string!' })
-  @IsDefined({ message: 'Firstname is required!' })
+  @IsString({ message: 'Lastname must be a string!' })
+  @IsDefined({ message: 'Lastname is required!' })
   lastname: string;
 
   @IsEmail()
