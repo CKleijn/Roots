@@ -1,8 +1,7 @@
 import { Optional } from '@nestjs/common';
-import { IUser } from '@roots/data';
 import { IsDefined, IsEmail, IsString, MinLength } from 'class-validator';
 
-export class CreateUserDto implements IUser {
+export class CreateUserDto {
   @IsString({ message: 'Firstname must be a string!' })
   @IsDefined({ message: 'Firstname is required!' })
   firstname: string;
@@ -22,7 +21,7 @@ export class CreateUserDto implements IUser {
   password: string;
 }
 
-export class UpdateUserDto implements IUser {
+export class UpdateUserDto {
   @Optional()
   @IsString({ message: 'Firstname must be a string!' })
   @IsDefined({ message: 'Firstname is required!' })
