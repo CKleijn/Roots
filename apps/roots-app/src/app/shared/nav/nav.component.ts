@@ -1,4 +1,4 @@
-import { Component } from '@angular/core';
+import { Component, OnInit } from '@angular/core';
 
 @Component({
   selector: 'roots-nav',
@@ -8,4 +8,8 @@ import { Component } from '@angular/core';
 
 export class NavComponent {
   userAuthenticated!: boolean
+  
+  ngOnInit(): void{
+    
+  }
 }

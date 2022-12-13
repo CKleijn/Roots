@@ -1,7 +1,8 @@
 <nav class="stroke gradient-custom w-100">
   <ul>
     <li><a routerLink="">Timeline</a></li>
-    <li><a routerLink="/login">Log in</a></li>
-    <li><a routerLink="/register">Register</a></li>
+    <li><a routerLink="/login" *ngIf="!userAuthenticated">Log in</a></li>
+    <li><a routerLink="/register" *ngIf="!userAuthenticated">Register</a></li>
+    <li><a routerLink="/logout" *ngIf="userAuthenticated">Log out</a></li>
   </ul>
 </nav>
