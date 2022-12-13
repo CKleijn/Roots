@@ -37,5 +37,4 @@ export class UserService {
     //   throw new HttpException(`There's no company registered for the given email domain!`, HttpStatus.BAD_REQUEST);
     // }
   }
-
 }

@@ -15,5 +15,4 @@ export class CompanyController {
 
     return await this.companyService.getById(id);
   }
-
 }
