@@ -1,5 +1,6 @@
-import { Controller, Post, Request, UseGuards } from '@nestjs/common';
+import { Body, Controller, Post, Request, UseGuards } from '@nestjs/common';
 import { AuthGuard } from '@nestjs/passport';
+import { CreateUserDto } from '../user/user.dto';
 import { Public } from './auth.module';
 import { AuthService } from './auth.service';
 
@@ -14,9 +15,9 @@ export class AuthController {
     return this.authService.login(req.body);
   }
 
-  //   @Public()
-  //   @Post('auth/register')
-  //   async register(@Body() CreateUserDto: CreateUserDto) {
-  //     return this.authService.register(CreateUserDto);
-  //   }
+  @Public()
+  @Post('auth/register')
+  async register(@Body() createUserDto: CreateUserDto) {
+    return this.authService.register(createUserDto);
+  }
 }
