@@ -30,11 +30,11 @@ export class EventController {
     }
 
     @Public()
-    @Post()
-    async createEvent(@Body() eventDto: EventDto): Promise<Object> {
+    @Post(':companyId')
+    async createEvent(@Body() eventDto: EventDto, @Param('companyId') companyId:string): Promise<any> {
         Logger.log(`Create event (POST)`);
 
-        const event = await this.eventService.create(eventDto);
+        const event = await this.eventService.create(eventDto,companyId);
 
         return {
             status: 201,

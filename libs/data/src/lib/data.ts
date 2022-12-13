@@ -8,6 +8,7 @@ export interface IUser {
 export interface ICompany {
   name: string;
   emailDomain: string;
+  events:IEvent[];
 }
 
 export interface IEvent {
