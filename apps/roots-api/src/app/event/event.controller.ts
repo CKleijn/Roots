@@ -24,21 +24,24 @@ export class EventController {
 
             return await this.eventService.getById(eventId);
         } catch (error) {
-            if (error?.name === 'CastError')
-                throw new HttpException(`This event doesn't exists!`, HttpStatus.NOT_FOUND)
+            console.log(error)
         }
     }
 
     @Public()
     @Post(':companyId')
-    async createEvent(@Body() eventDto: EventDto, @Param('companyId') companyId:string): Promise<any> {
-        Logger.log(`Create event (POST)`);
+    async createEvent(@Param('companyId') companyId: string, @Body() eventDto: EventDto): Promise<Object> {
+        try {
+            Logger.log(`Create event (POST)`);
 
-        const event = await this.eventService.create(eventDto,companyId);
+            const event = await this.eventService.create(companyId, eventDto);
 
-        return {
-            status: 201,
-            message: 'Event has been succesfully created!'
+            return {
+                status: 201,
+                message: 'Event has been succesfully created!'
+            }
+        } catch (error) {
+            console.log(error)
         }
     }
 }

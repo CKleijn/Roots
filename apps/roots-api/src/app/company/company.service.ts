@@ -22,6 +22,4 @@ export class CompanyService {
   async getAll(): Promise<Company[]> {
     return await this.companyModel.find()
   }
-
- 
 }

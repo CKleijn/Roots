@@ -5,5 +5,4 @@ export class CompanyDTO implements ICompany {
     name: string;
     emailDomain: string;
     events: Event[];
-    
 }

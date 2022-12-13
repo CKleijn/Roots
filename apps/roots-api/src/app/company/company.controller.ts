@@ -7,7 +7,15 @@ import { CompanyService } from './company.service';
 
 @Controller()
 export class CompanyController {
-  constructor(private readonly companyService: CompanyService) {}
+  constructor(private readonly companyService: CompanyService) { }
+
+  @Public()
+  @Get('companies')
+  async getAll(): Promise<Company[]> {
+    Logger.log(`Retrieve companies (READ)`);
+
+    return await this.companyService.getAll();
+  }
 
   @Public()
   @Get('companies/:id')
@@ -16,10 +24,4 @@ export class CompanyController {
 
     return await this.companyService.getById(id);
   }
-  
-    @Public()
-    @Get('companies')
-    async getAll(): Promise<Company[]> {
-      return await this.companyService.getAll()
-    }
 }
