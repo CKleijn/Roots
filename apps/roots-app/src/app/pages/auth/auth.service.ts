@@ -54,6 +54,7 @@ export class AuthService {
         }),
         catchError((err: any) => {
           console.log('error.error.message:', err.error.message);
+          
           this.toastr.error(err.error.message, 'Log in failed');
 
           return of(undefined);
@@ -70,13 +71,11 @@ export class AuthService {
         map((user) => {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
-
-          //TODO: ALERT: success / "You have been registered"
+          this.toastr.success('You have been registered', 'Registered account successfully')
           return user;
         }),
         catchError((error: any) => {
-          console.log('error.error.message:', error.error.message);
-          //TODO: ALERT: error message / err.error.message || err.message
+          this.toastr.error(error.message, 'Something went wrong')
 
           return of(undefined);
         })
@@ -108,7 +107,7 @@ export class AuthService {
     localStorage.removeItem(this.CURRENT_USER);
     this.currentUser$.next(undefined);
 
-    //TODO: ALERT: "You have been logged out"
+    this.toastr.success('You have been logged out', 'Log out successful');
   }
 
   getUserFromLocalStorage(): Observable<User> {
