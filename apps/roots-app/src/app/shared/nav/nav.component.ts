@@ -1,5 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { ToastrService } from 'ngx-toastr';
+import { AuthService } from '../../pages/auth/auth.service';
 
 @Component({
   selector: 'roots-nav',
@@ -9,26 +10,19 @@ import { ToastrService } from 'ngx-toastr';
 export class NavComponent {
   userAuthenticated!: boolean;
 
-  constructor(private toastr: ToastrService) {}
+  constructor(private authService: AuthService) {}
 
   logout() {
-    localStorage.clear()
-    this.toastr.success('You are succesfully logged out', 'Log out successful');
-    this.userAuthenticated = false;
-  }
-
-  login(){
-    this.toastr.success('You are succesfully logged in', 'Log in successful');
-    this.userAuthenticated = true;
+    this.authService.logout()
   }
 
   ngOnInit(): void {
-    // this.authService.getUserFromLocalStorage().subscribe((user) => {
-    //   if (user == undefined) {
-    //     this.userAuthenticated = false;
-    //   } else {
-    //     this.userAuthenticated = true;
-    //   }
-    // });
+    this.authService.getUserFromLocalStorage().subscribe((user) => {
+      if (user == undefined) {
+        this.userAuthenticated = false;
+      } else {
+        this.userAuthenticated = true;
+      }
+    });
   }
 }

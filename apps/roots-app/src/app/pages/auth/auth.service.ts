@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '@roots/data';
 import { environment } from 'apps/roots-app/src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
@@ -19,6 +20,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private toastr: ToastrService
   ) {
     this.getUserFromLocalStorage()
       .pipe(
@@ -46,14 +48,13 @@ export class AuthService {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
 
-          //TODO: ALERT: success / "You have been logged in"
-
+          this.toastr.success('You have been logged in', 'Logged in')
           return user;
         }),
         catchError((err: any) => {
           console.log('error.error.message:', err.error.message);
-          //TODO: ALERT: error message / err.error.message || err.message
 
+          this.toastr.error(err.error.message, 'Something went wrong')
           return of(undefined);
         })
       );
@@ -68,13 +69,11 @@ export class AuthService {
         map((user) => {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
-
-          //TODO: ALERT: success / "You have been registered"
+          this.toastr.success('You have been registered', 'Registered account successfully')
           return user;
         }),
         catchError((error: any) => {
-          console.log('error.error.message:', error.error.message);
-          //TODO: ALERT: error message / err.error.message || err.message
+          this.toastr.error(error.message, 'Something went wrong')
 
           return of(undefined);
         })
@@ -106,7 +105,7 @@ export class AuthService {
     localStorage.removeItem(this.CURRENT_USER);
     this.currentUser$.next(undefined);
 
-    //TODO: ALERT: "You have been logged out"
+    this.toastr.success('You have been logged out', 'Log out successful');
   }
 
   getUserFromLocalStorage(): Observable<User> {
