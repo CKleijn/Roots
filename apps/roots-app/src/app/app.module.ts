@@ -10,18 +10,29 @@ import { appRoutes } from './app.routes';
 import { AuthModule } from './pages/auth/auth.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
+import { QuillModule } from 'ngx-quill';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { EventComponent } from './pages/event/event.component';
+import { EventFormComponent } from './pages/event/form/form.component';
+import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     TimelineComponent,
+    EventComponent,
+    EventFormComponent
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
     NgbModule,
     HttpClientModule,
+    FormsModule,
     BrowserAnimationsModule,
     HttpClientModule,
     ToastrModule.forRoot({
@@ -29,7 +40,12 @@ import { NavComponent } from './shared/nav/nav.component';
       preventDuplicates: true,
     }),
     AuthModule,
-    HttpClientModule
+    ReactiveFormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+    QuillModule.forRoot()
   ],
   providers: [],
   bootstrap: [AppComponent],
