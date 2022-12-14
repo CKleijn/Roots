@@ -26,14 +26,8 @@ export class CompanyController {
   }
 
   @Public()
-  @Get('companies')
-  async getAll(): Promise<Company[]> {
-    return await this.companyService.getAll();
-  }
-
-  @Public()
   @Post('companies')     
-  async create(@Body() createCompanyDto: CreateCompanyDTO): Promise<Company> {
+  async createCommunity(@Body() createCompanyDto: CreateCompanyDTO): Promise<Company> {
     return await this.companyService.create(createCompanyDto);
   }
 }    

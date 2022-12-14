@@ -25,6 +25,7 @@ export class UserService {
     const newUser = new this.userModel({
       ...createUserDto,
       password: await bcrypt.hashSync(createUserDto.password, 10),
+      company: await this.companyService.getByEmailDomain(createUserDto.emailAddress.split("@").at(1))
     });
 
     return await this.userModel.create(newUser);
@@ -35,8 +36,6 @@ export class UserService {
       throw new HttpException(`Email address is already in use!`, HttpStatus.BAD_REQUEST);
     }
       
-    console.log(user.emailAddress.split("@").at(1))
-
     if((await this.companyService.getByEmailDomain(user.emailAddress.split("@").at(1))) === null) {
       throw new HttpException(`There's no company registered for the given email domain!`, HttpStatus.BAD_REQUEST);
     }
