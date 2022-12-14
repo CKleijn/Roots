@@ -13,9 +13,9 @@ export const appRoutes: Route[] = [
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent, pathMatch: 'full' },
   // EVENTS
-  { path: 'events', pathMatch: 'full', component: EventComponent },
-  { path: 'events/new', pathMatch: 'full', component: EventFormComponent },
-  { path: 'events/:eventId/edit', pathMatch: 'full', component: EventFormComponent },
+  { path: 'events', pathMatch: 'full', component: EventComponent, canActivate: [LoggedInAuthGuard] },
+  { path: 'events/new', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
+  { path: 'events/:eventId/edit', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
   //FALLBACK
   { path: '**', redirectTo: 'login' },
 ];
