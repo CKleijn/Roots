@@ -11,5 +11,5 @@ export const appRoutes: Route[] = [
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent, pathMatch: 'full' },
   //FALLBACK
-  { path: '**', component: LoginComponent },
+  { path: '**', redirectTo: 'login' },
 ];
