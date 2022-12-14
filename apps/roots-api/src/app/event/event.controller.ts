@@ -1,6 +1,7 @@
 import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post } from '@nestjs/common';
 import { Public } from '../auth/auth.module';
 import { EventDto } from './event.dto';
+import { Event } from './event.schema';
 import { EventService } from './event.service';
 
 
@@ -24,7 +25,7 @@ export class EventController {
 
             return await this.eventService.getById(eventId);
         } catch (error) {
-            console.log(error)
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -41,7 +42,7 @@ export class EventController {
                 message: 'Event has been succesfully created!'
             }
         } catch (error) {
-            console.log(error)
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
         }
     }
 }
