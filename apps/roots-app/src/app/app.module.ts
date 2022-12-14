@@ -9,9 +9,17 @@ import { appRoutes } from './app.routes';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NavComponent } from './shared/nav/nav.component';
 import { TimelineComponent } from './pages/timeline/timeline.component';
+import { LoginComponent } from './pages/auth/login/login.component';
+import { RegisterComponent } from './pages/auth/register/register.component';
 
 @NgModule({
-  declarations: [AppComponent, NavComponent, TimelineComponent],
+  declarations: [
+    AppComponent,
+    NavComponent,
+    TimelineComponent,
+    LoginComponent,
+    RegisterComponent,
+  ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
@@ -19,8 +27,8 @@ import { TimelineComponent } from './pages/timeline/timeline.component';
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       progressBar: true,
-      preventDuplicates: true
-    })
+      preventDuplicates: true,
+    }),
   ],
   providers: [],
   bootstrap: [AppComponent],
