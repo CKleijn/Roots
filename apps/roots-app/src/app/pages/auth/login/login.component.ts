@@ -31,7 +31,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .getUserFromLocalStorage()
       .subscribe((user: User) => {
         if (user) {
-          this.router.navigate(['/']);
+          this.router.navigate(['/timeline']);
         }
       });
   }
@@ -52,7 +52,7 @@ export class LoginComponent implements OnInit, OnDestroy {
         .login(emailAddress, password)
         .subscribe((user) => {
           if (user) {
-            this.router.navigate(['/']);
+            this.router.navigate(['/timeline']);
           }
           this.submitted = false;
         });
