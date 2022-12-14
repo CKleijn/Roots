@@ -8,6 +8,7 @@ import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { QuillModule } from 'ngx-quill';
 
 @NgModule({
   declarations: [
@@ -21,7 +22,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     FormsModule,
     BrowserModule,
     NgbModule,
-    ReactiveFormsModule
+    ReactiveFormsModule,
+    QuillModule.forRoot()
   ],
   bootstrap: [AppComponent],
 })

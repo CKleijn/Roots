@@ -18,6 +18,19 @@ export class EventFormComponent implements OnInit, OnDestroy {
   error: string | null = null;
   event: Event = new Event();
   eventForm: FormGroup = new FormGroup({});
+  editorStyle = {
+    height: '300px',
+    width: '100%'
+  }
+  config = {
+    toolbar: [
+      ['bold', 'italic', 'underline'],
+      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
+      [{ 'font': [] }],
+      [{ 'align': [] }],
+    ]
+  }
 
   constructor(
     private route: ActivatedRoute,
@@ -39,17 +52,20 @@ export class EventFormComponent implements OnInit, OnDestroy {
       this.editMode = true;
 
     if (this.editMode) {
-      this.eventSubscription = this.eventService.getEventById(this.eventId!).subscribe((event) => {
-        this.event = {
-          ...event
-        }
-
-        this.eventForm.patchValue({
-          title: this.event.title,
-          description: this.event.description,
-          content: this.event.content,
-          eventDate: this.event.eventDate,
-        });
+      this.eventSubscription = this.eventService.getEventById(this.eventId!).subscribe({
+        next: (event) => {
+          this.event = {
+            ...event
+          }
+  
+          this.eventForm.patchValue({
+            title: this.event.title,
+            description: this.event.description,
+            content: this.event.content,
+            eventDate: new Date(this.event.eventDate).toISOString().slice(0, 10),
+          });
+        },
+        error: (err) => this.error = err,
       })
     }
   }

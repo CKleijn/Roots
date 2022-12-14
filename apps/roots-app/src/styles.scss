@@ -7,3 +7,11 @@ body {
     background-color: #FFF;
 }
 
+.invalid-feeback {
+    color: red;
+}
+
+.form-control:focus {
+    outline: none !important;
+    box-shadow: none !important;
+}
