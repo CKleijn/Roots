@@ -1,0 +1,93 @@
+<div class="mask d-flex align-items-center gradient-custom-3 p-2">
+    <div class="container my-4">
+        <div class="row d-flex justify-content-center align-items-center">
+            <div class="col-12 col-md-10 col-lg-10 col-xl-8">
+                <div class="card shadow-lg" style="border-radius: 15px">
+                    <div class="card-body p-5">
+                        <div class="d-flex justify-content-center">
+                            <h3 *ngIf="!editMode">Event toevoegen</h3>
+                            <h3 *ngIf="editMode">Event bewerken</h3>
+                        </div>
+                        <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
+                            <div class="row d-flex justify-content-center align-items-center">
+                                <div class="form-outline mt-4">
+                                    <label for="title" class="form-label">Titel</label>
+                                    <input type="text" class="form-control form-control-lg" formControlName="title"
+                                        id="title" required maxlength="75" [ngClass]="{
+                                        'is-invalid':
+                                        eventForm.get('title')?.invalid && eventForm.get('title')?.touched
+                                    }">
+                                    <small class="charCount">{{eventForm.value?.title?.length || 0}}/75</small>
+                                </div>
+                                <div *ngIf="eventForm.get('title')?.invalid && eventForm.get('title')?.touched"
+                                    class="invalid-feeback">
+                                    <div *ngIf="eventForm.get('title')?.errors?.['required']">
+                                        Titel is verplicht!
+                                    </div>
+                                    <div *ngIf="eventForm.get('title')?.errors?.['maxlength']">
+                                        Titel mag niet meer dan 75 karakters bevatten!
+                                    </div>
+                                </div>
+                                <div class="form-outline mt-4">
+                                    <label for="description" class="form-label">Beschrijving</label>
+                                    <input type="text" class="form-control form-control-lg" required maxlength="150"
+                                        formControlName="description" id="description" [ngClass]="{
+                                            'is-invalid':
+                                            eventForm.get('description')?.invalid && eventForm.get('description')?.touched
+                                        }">
+                                    <small class="charCount">{{eventForm.value?.description?.length || 0}}/150</small>
+                                </div>
+                                <div *ngIf="eventForm.get('description')?.invalid && eventForm.get('description')?.touched"
+                                    class="invalid-feeback">
+                                    <div *ngIf="eventForm.get('description')?.errors?.['required']">
+                                        Beschrijving is verplicht!
+                                    </div>
+                                    <div *ngIf="eventForm.get('description')?.errors?.['maxlength']">
+                                        Beschrijving mag niet meer dan 150 karakters bevatten!
+                                    </div>
+                                </div>
+                                <div class="form-outline mt-4">
+                                    <label for="content" class="form-label">Content</label>
+                                    <quill-editor [style]="editorStyle" [modules]="config" formControlName="content"
+                                        id="content" [required]="true" placeholder="&nbsp;" [ngClass]="{
+                                            'is-invalid':
+                                            eventForm.get('content')?.invalid && eventForm.get('content')?.touched
+                                        }"></quill-editor>
+                                </div>
+                                <div *ngIf="eventForm.get('content')?.invalid && eventForm.get('content')?.touched"
+                                    class="invalid-feeback">
+                                    <div *ngIf="eventForm.get('content')?.errors?.['required']">
+                                        Content is verplicht!
+                                    </div>
+                                </div>
+                                <div class="form-outline mt-4">
+                                    <label for="eventDate" class="form-label">Datum</label>
+                                    <mat-form-field appearance="fill" class="datePicker">
+                                        <mat-label>Kies een datum</mat-label>
+                                        <input matInput [matDatepicker]="picker" required formControlName="eventDate"
+                                            id="eventDate" [ngClass]="{
+                                                'is-invalid':
+                                                eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched
+                                            }">
+                                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </mat-form-field>
+                                </div>
+                                <div *ngIf="eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched"
+                                    class="invalid-feeback">
+                                    <div *ngIf="eventForm.get('eventDate')?.errors?.['required']">
+                                        Datum van de gebeurtenis is verplicht!
+                                    </div>
+                                </div>
+                                <div class="d-flex justify-content-center mt-5">
+                                    <button type="submit" [disabled]="!eventForm.valid"
+                                        class="btn input-block-level form-control btn-success">Opslaan</button>
+                                </div>
+                            </div>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </div>
+</div>

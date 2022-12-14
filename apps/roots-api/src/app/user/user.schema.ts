@@ -1,7 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IUser } from '@roots/data';
 import { IsDefined, IsEmail, IsString, Matches } from 'class-validator';
-import { Types } from 'mongoose';
+import { ObjectId, Types } from 'mongoose';
 
 export type UserDocument = User & Document;
 
@@ -30,6 +30,9 @@ export class User implements IUser {
   @IsDefined({ message: 'Password is required!' })
   @Matches(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"),{ message: 'Password not strong enough! Must contain at least: 8 characters, 1 uppercase letter, 1 lowercase letter and 1 number!' })
   password: string;
+
+  @Prop({ref: 'Company'})
+  company: ObjectId
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);

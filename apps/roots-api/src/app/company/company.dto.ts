@@ -1,9 +1,24 @@
-import { ICompany } from "@roots/data";
-import { Event } from '../event/event.schema'
+import { Optional } from '@nestjs/common';
+import { IsDefined, IsString } from 'class-validator';
 
-export class CompanyDTO implements ICompany {
+export class CreateCompanyDTO {
+    @IsString({ message: 'Name must be a string!' })
+    @IsDefined({ message: 'Name is required!' })
     name: string;
+
+    @IsString({ message: 'Email domain must be a string!' })
+    @IsDefined({ message: 'Email domain is required!' })
     emailDomain: string;
-    events: Event[];
-    
+}
+
+export class UpdateCompanyDTO {
+    @Optional()
+    @IsString({ message: 'Name must be a string!' })
+    @IsDefined({ message: 'Name is required!' })
+    name: string;
+
+    @Optional()
+    @IsString({ message: 'Email domain must be a string!' })
+    @IsDefined({ message: 'Email domain is required!' })
+    emailDomain: string;
 }

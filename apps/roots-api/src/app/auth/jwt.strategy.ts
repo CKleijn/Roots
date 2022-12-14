@@ -18,12 +18,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     const user = await this.userService.findByEmailAddress(payload.username);
 
     if (user) {
-      return {
-        _id: user._id,
-        emailAddress: user.emailAddress,
-        firstname: user.firstname,
-        lastname: user.lastname,
-      };
+      return user;
     } else {
       throw new HttpException('Login has expired!', HttpStatus.UNAUTHORIZED);
     }
