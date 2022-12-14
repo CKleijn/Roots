@@ -11,6 +11,7 @@ import { NavComponent } from './shared/nav/nav.component';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
+import { HttpClientModule } from '@angular/common/http';
 
 @NgModule({
   declarations: [
@@ -25,6 +26,7 @@ import { RegisterComponent } from './pages/auth/register/register.component';
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
     NgbModule,
     BrowserAnimationsModule,
+    HttpClientModule,
     ToastrModule.forRoot({
       progressBar: true,
       preventDuplicates: true,
