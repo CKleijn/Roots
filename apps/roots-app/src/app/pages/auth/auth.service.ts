@@ -48,13 +48,15 @@ export class AuthService {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
 
-          this.toastr.success('You have been logged in', 'Logged in')
+          this.toastr.success('You are succesfully logged in!', 'Log in successful');
+
           return user;
         }),
         catchError((err: any) => {
           console.log('error.error.message:', err.error.message);
+          
+          this.toastr.error(err.error.message, 'Log in failed');
 
-          this.toastr.error(err.error.message, 'Something went wrong')
           return of(undefined);
         })
       );

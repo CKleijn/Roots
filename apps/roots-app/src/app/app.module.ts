@@ -28,8 +28,8 @@ import { NavComponent } from './shared/nav/nav.component';
       progressBar: true,
       preventDuplicates: true,
     }),
-    AuthModule
-    
+    AuthModule,
+    HttpClientModule
   ],
   providers: [],
   bootstrap: [AppComponent],
