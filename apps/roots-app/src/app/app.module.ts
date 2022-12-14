@@ -1,5 +1,7 @@
 import { NgModule } from '@angular/core';
 import { BrowserModule } from '@angular/platform-browser';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
+import { ToastrModule } from 'ngx-toastr';
 
 import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
@@ -14,6 +16,11 @@ import { TimelineComponent } from './pages/timeline/timeline.component';
     BrowserModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
     NgbModule,
+    BrowserAnimationsModule,
+    ToastrModule.forRoot({
+      progressBar: true,
+      preventDuplicates: true
+    })
   ],
   providers: [],
   bootstrap: [AppComponent],
