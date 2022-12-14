@@ -19,7 +19,10 @@
           "apps/roots-app/src/favicon.ico",
           "apps/roots-app/src/assets"
         ],
-        "styles": ["apps/roots-app/src/styles.scss"],
+        "styles": [
+          "apps/roots-app/src/styles.scss",
+          "node_modules/ngx-toastr/toastr.css"
+        ],
         "scripts": []
       },
       "configurations": {
