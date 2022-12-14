@@ -3,6 +3,7 @@ import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '@roots/data';
 import { environment } from 'apps/roots-app/src/environments/environment';
+import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
 
@@ -19,6 +20,7 @@ export class AuthService {
   constructor(
     private http: HttpClient,
     private router: Router,
+    private toastr: ToastrService
   ) {
     this.getUserFromLocalStorage()
       .pipe(
@@ -46,13 +48,13 @@ export class AuthService {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
 
-          //TODO: ALERT: success / "You have been logged in"
+          this.toastr.success('You are succesfully logged in!', 'Log in successful');
 
           return user;
         }),
         catchError((err: any) => {
           console.log('error.error.message:', err.error.message);
-          //TODO: ALERT: error message / err.error.message || err.message
+          this.toastr.error(err.error.message, 'Log in failed');
 
           return of(undefined);
         })
