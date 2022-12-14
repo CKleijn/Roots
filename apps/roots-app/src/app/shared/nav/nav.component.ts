@@ -1,5 +1,7 @@
 import { Component, OnInit } from '@angular/core';
+import { User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
+import { Observable } from 'rxjs';
 import { AuthService } from '../../pages/auth/auth.service';
 
 @Component({
@@ -9,6 +11,7 @@ import { AuthService } from '../../pages/auth/auth.service';
 })
 export class NavComponent {
   userAuthenticated!: boolean;
+  loggedInUser$!: Observable<User | undefined> 
 
   constructor(private authService: AuthService) {}
 
@@ -17,12 +20,6 @@ export class NavComponent {
   }
 
   ngOnInit(): void {
-    this.authService.getUserFromLocalStorage().subscribe((user) => {
-      if (user == undefined) {
-        this.userAuthenticated = false;
-      } else {
-        this.userAuthenticated = true;
-      }
-    });
+    this.loggedInUser$ = this.authService.currentUser$
   }
 }
