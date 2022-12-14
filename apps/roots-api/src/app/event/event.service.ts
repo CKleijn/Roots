@@ -15,7 +15,7 @@ export class EventService {
   async getAll(): Promise<Event[]> {
     const events = await this.companyModel.find({}, { events: 1 });
 
-    return events[0].events;
+    return events[0]?.events;
   }
 
   async getById(id: string): Promise<Event> {
@@ -36,10 +36,10 @@ export class EventService {
       }
     ]);
 
-    if (!event)
+    if (event.length === 0)
       throw new HttpException(`This event doesn't exists!`, HttpStatus.NOT_FOUND);
 
-    return event[0].events;
+    return event[0]?.events;
   }
 
   async create(companyId: string, eventDto: EventDto): Promise<any> {
@@ -48,7 +48,10 @@ export class EventService {
       (
         { _id: companyId },
         { $push: { events: event } },
-        { new: true }
+        { 
+          new: true, 
+          runValidators: true 
+        }
       );
 
     if (!updatedCompanyEvents)

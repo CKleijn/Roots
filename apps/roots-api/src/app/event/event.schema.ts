@@ -6,12 +6,14 @@ export type EventDocument = Event & Document;
 @Schema()
 export class Event implements IEvent {
   @Prop({
-    required: [true, 'Title is required!']
+    required: [true, 'Title is required!'],
+    maxLength: [30, 'Title can be maximal 30 characters!']
   })
   title: string;
 
   @Prop({
-    required: [true, 'Description is required!']
+    required: [true, 'Description is required!'],
+    maxLength: [100, 'Description can be maximal 100 characters!']
   })
   description: string;
 

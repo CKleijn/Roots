@@ -38,19 +38,19 @@ export class EventFormComponent implements OnInit, OnDestroy {
     if (this.eventId)
       this.editMode = true;
 
-    if (this.editMode){
+    if (this.editMode) {
       this.eventSubscription = this.eventService.getEventById(this.eventId!).subscribe((event) => {
         this.event = {
           ...event
         }
-      })
 
-      this.eventForm.patchValue({
-        title: this.event.title,
-        description: this.event.description,
-        content: this.event.content,
-        eventDate: this.event.eventDate,
-      });
+        this.eventForm.patchValue({
+          title: this.event.title,
+          description: this.event.description,
+          content: this.event.content,
+          eventDate: this.event.eventDate,
+        });
+      })
     }
   }
 

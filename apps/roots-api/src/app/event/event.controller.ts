@@ -25,7 +25,7 @@ export class EventController {
 
             return await this.eventService.getById(eventId);
         } catch (error) {
-            console.log(error)
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
         }
     }
 
@@ -42,7 +42,7 @@ export class EventController {
                 message: 'Event has been succesfully created!'
             }
         } catch (error) {
-            console.log(error)
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
         }
     }
 }
