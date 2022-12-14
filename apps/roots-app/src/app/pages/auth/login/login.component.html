@@ -6,8 +6,8 @@
                 <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
                     <div class="form-group">
                         <label for="inputEmailAddress">Email address</label>
-                        <input type="text" class="form-control" formControlName="emailAddress"
-                            id="inputEmailAddress" aria-describedby="emailAddressHelp" [ngClass]="{
+                        <input type="text" class="form-control" formControlName="emailAddress" id="inputEmailAddress"
+                            aria-describedby="emailAddressHelp" [ngClass]="{
                   'is-invalid':
                     loginForm.get('emailAddress')?.invalid &&
                     loginForm.get('emailAddress')?.touched
@@ -35,13 +35,16 @@
                     </div>
 
                     <div class="form-group">
-                        <button id="submitbutton" class="btn submit-btn btn-block" type="submit"
+                        <button id="submitbutton" class="btn submit-btn btn-block" type="submit" style="margin-top: 15px"
                             [disabled]="!loginForm.valid && !submitted">
                             Login
                         </button>
                     </div>
 
-                    <a routerLink="/register">Register</a>
+                    <p class="mt-2">
+                        Don't have an account?
+                        <a style="text-decoration: underline; color: #0d6efd" routerLink="/register">Register</a>
+                    </p>
                 </form>
             </div>
         </div>

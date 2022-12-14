@@ -48,13 +48,11 @@ export class AuthService {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
 
-          this.toastr.success('You are succesfully logged in!', 'Log in successful');
+          this.toastr.success('You are succesfully logged in', 'Log in successful');
 
           return user;
         }),
-        catchError((err: any) => {
-          console.log('error.error.message:', err.error.message);
-          
+        catchError((err: any) => {          
           this.toastr.error(err.error.message, 'Log in failed');
 
           return of(undefined);
@@ -71,11 +69,11 @@ export class AuthService {
         map((user) => {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
-          this.toastr.success('You have been registered', 'Registered account successfully')
+          this.toastr.success('You have successfully registered', 'Registration successful')
           return user;
         }),
-        catchError((error: any) => {
-          this.toastr.error(error.message, 'Something went wrong')
+        catchError((err: any) => {
+          this.toastr.error(err.error.message, 'Registration failed');
 
           return of(undefined);
         })
