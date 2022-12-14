@@ -1,2 +1,141 @@
-<roots-nav></roots-nav>
-<p>register works!</p>
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-10 col-md-8 col-lg-6 my-5">
+      <div class="card card-auth shadow-lg p-3 px-md-5 py-md-4">
+        <h2>Register</h2>
+        <form
+          class="form-signin"
+          [formGroup]="registerForm"
+          (ngSubmit)="onSubmit()"
+        >
+          <!--
+            firstName
+           -->
+          <div class="form-group">
+            <label for="inputFirstName">Firstname</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="firstname"
+              id="inputFirstName"
+              [ngClass]="{
+                'is-invalid':
+                  registerForm.get('firstname')?.invalid &&
+                  registerForm.get('firstname')?.touched
+              }"
+            />
+            <span
+              *ngIf="
+                !registerForm.get('firstname')?.valid &&
+                registerForm.get('firstname')?.touched
+              "
+              class="invalid-feedback"
+            >
+              <p id="firstName-invalid">Firstname is required.</p>
+            </span>
+          </div>
+          <!--
+            lastName
+           -->
+          <div class="form-group">
+            <label for="inputLastName">Lastname</label>
+            <input
+              type="text"
+              class="form-control"
+              formControlName="lastname"
+              id="inputLastName"
+              [ngClass]="{
+                'is-invalid':
+                  registerForm.get('lastname')?.invalid &&
+                  registerForm.get('lastname')?.touched
+              }"
+            />
+            <span
+              *ngIf="
+                !registerForm.get('lastname')?.valid &&
+                registerForm.get('lastname')?.touched
+              "
+              class="invalid-feedback"
+            >
+              <p id="lastName-invalid">Lastname is required.</p>
+            </span>
+          </div>
+          <!--
+            email
+           -->
+          <div class="form-group">
+            <label for="inputEmailAddress">Email address</label>
+            <input
+              type="email"
+              class="form-control"
+              formControlName="emailAddress"
+              id="inputEmailAddress"
+              aria-describedby="emailAddressHelp"
+              [ngClass]="{
+                'is-invalid':
+                  registerForm.get('emailAddress')?.invalid &&
+                  registerForm.get('emailAddress')?.touched
+              }"
+            />
+            <span
+              *ngIf="
+                !registerForm.get('emailAddress')?.valid &&
+                registerForm.get('emailAddress')?.touched
+              "
+              class="invalid-feedback"
+            >
+              <p id="email-invalid">Email address is invalid.</p>
+            </span>
+          </div>
+
+          <!--
+            password
+           -->
+          <div class="form-group">
+            <label for="inputPassword">Password</label>
+            <input
+              type="password"
+              class="form-control"
+              formControlName="password"
+              id="inputPassword"
+              [ngClass]="{
+                'is-invalid':
+                  registerForm.get('password')?.invalid &&
+                  registerForm.get('password')?.touched
+              }"
+            />
+            <span
+              *ngIf="
+                !registerForm.get('password')?.valid &&
+                registerForm.get('password')?.touched
+              "
+              class="invalid-feedback"
+            >
+              <p id="password-invalid">Enter a valid password</p>
+            </span>
+          </div>
+
+          <div class="form-group">
+            <button
+              id="submitbutton"
+              class="btn btn-primary submit-btn"
+              type="submit"
+              style="margin-top: 15px"
+              [disabled]="!registerForm.valid"
+            >
+              Register
+            </button>
+          </div>
+          <p class="mt-2">
+            Already have an account?
+            <a
+              style="text-decoration: underline; color: #0d6efd"
+              routerLink="/login"
+              >Login</a
+            >
+          </p>
+        </form>
+      </div>
+    </div>
+  </div>
+</div>
