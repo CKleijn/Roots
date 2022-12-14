@@ -1,34 +1,35 @@
 import { NgModule } from '@angular/core';
+import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
-import { ToastrModule } from 'ngx-toastr';
-
-import { AppComponent } from './app.component';
 import { RouterModule } from '@angular/router';
-import { appRoutes } from './app.routes';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
-import { NavComponent } from './shared/nav/nav.component';
+import { ToastrModule } from 'ngx-toastr';
+import { AppComponent } from './app.component';
+import { appRoutes } from './app.routes';
+import { AuthModule } from './pages/auth/auth.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
-import { LoginComponent } from './pages/auth/login/login.component';
-import { RegisterComponent } from './pages/auth/register/register.component';
+import { NavComponent } from './shared/nav/nav.component';
 
 @NgModule({
   declarations: [
     AppComponent,
     NavComponent,
     TimelineComponent,
-    LoginComponent,
-    RegisterComponent,
   ],
   imports: [
     BrowserModule,
     RouterModule.forRoot(appRoutes, { initialNavigation: 'enabledBlocking' }),
     NgbModule,
+    FormsModule,
+    ReactiveFormsModule,
     BrowserAnimationsModule,
     ToastrModule.forRoot({
       progressBar: true,
       preventDuplicates: true,
     }),
+    AuthModule
+    
   ],
   providers: [],
   bootstrap: [AppComponent],
