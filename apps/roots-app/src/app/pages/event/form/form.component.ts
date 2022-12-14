@@ -4,6 +4,7 @@ import { of, Subscription, switchMap } from 'rxjs';
 import { EventService } from '../event.service';
 import { Event } from '../event.model'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { DateAdapter } from '@angular/material/core';
 
 @Component({
   selector: 'roots-event-form',
@@ -25,7 +26,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
   config = {
     toolbar: [
       ['bold', 'italic', 'underline'],
-      [{ 'list': 'ordered'}, { 'list': 'bullet' }],
+      [{ 'list': 'ordered' }, { 'list': 'bullet' }],
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
@@ -35,8 +36,11 @@ export class EventFormComponent implements OnInit, OnDestroy {
   constructor(
     private route: ActivatedRoute,
     private router: Router,
-    private eventService: EventService
-  ) { }
+    private eventService: EventService,
+    private dateAdapter: DateAdapter<Date>
+  ) {
+    this.dateAdapter.setLocale('nl-NL')
+  }
 
   ngOnInit(): void {
     this.paramSubscription = this.route.paramMap.subscribe((params: ParamMap) => this.eventId = params.get('eventId'));
@@ -57,12 +61,12 @@ export class EventFormComponent implements OnInit, OnDestroy {
           this.event = {
             ...event
           }
-  
+
           this.eventForm.patchValue({
             title: this.event.title,
             description: this.event.description,
             content: this.event.content,
-            eventDate: new Date(this.event.eventDate).toISOString().slice(0, 10),
+            eventDate: new Date(this.event.eventDate).toISOString().slice(0, 10)
           });
         },
         error: (err) => this.error = err,

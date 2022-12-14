@@ -9,6 +9,11 @@ import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
 import { QuillModule } from 'ngx-quill';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatNativeDateModule } from '@angular/material/core';
+import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 
 @NgModule({
   declarations: [
@@ -23,6 +28,11 @@ import { QuillModule } from 'ngx-quill';
     BrowserModule,
     NgbModule,
     ReactiveFormsModule,
+    MatDatepickerModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatNativeDateModule,
+    BrowserAnimationsModule,
     QuillModule.forRoot()
   ],
   bootstrap: [AppComponent],

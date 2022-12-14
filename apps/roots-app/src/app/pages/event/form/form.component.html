@@ -17,7 +17,7 @@
                                         'is-invalid':
                                         eventForm.get('title')?.invalid && eventForm.get('title')?.touched
                                     }">
-                                    <small>{{eventForm.value?.title?.length}}/75</small>
+                                    <small class="charCount">{{eventForm.value?.title?.length || 0}}/75</small>
                                 </div>
                                 <div *ngIf="eventForm.get('title')?.invalid && eventForm.get('title')?.touched"
                                     class="invalid-feeback">
@@ -31,8 +31,11 @@
                                 <div class="form-outline mt-4">
                                     <label for="description" class="form-label">Beschrijving</label>
                                     <input type="text" class="form-control form-control-lg" required maxlength="150"
-                                        formControlName="description" id="description">
-                                    <small>{{eventForm.value?.description?.length}}/150</small>
+                                        formControlName="description" id="description" [ngClass]="{
+                                            'is-invalid':
+                                            eventForm.get('description')?.invalid && eventForm.get('description')?.touched
+                                        }">
+                                    <small class="charCount">{{eventForm.value?.description?.length || 0}}/150</small>
                                 </div>
                                 <div *ngIf="eventForm.get('description')?.invalid && eventForm.get('description')?.touched"
                                     class="invalid-feeback">
@@ -45,13 +48,31 @@
                                 </div>
                                 <div class="form-outline mt-4">
                                     <label for="content" class="form-label">Content</label>
-                                    <quill-editor [style]="editorStyle" [modules]="config"
-                                        formControlName="content" id="content"></quill-editor>
+                                    <quill-editor [style]="editorStyle" [modules]="config" formControlName="content"
+                                        id="content" [required]="true" placeholder="&nbsp;" [ngClass]="{
+                                            'is-invalid':
+                                            eventForm.get('content')?.invalid && eventForm.get('content')?.touched
+                                        }"></quill-editor>
+                                    <small class="charCount">{{eventForm.value?.content?.length || 0}}</small>
+                                </div>
+                                <div *ngIf="eventForm.get('content')?.invalid && eventForm.get('content')?.touched"
+                                    class="invalid-feeback">
+                                    <div *ngIf="eventForm.get('content')?.errors?.['required']">
+                                        Content is verplicht!
+                                    </div>
                                 </div>
                                 <div class="form-outline mt-4">
                                     <label for="eventDate" class="form-label">Datum</label>
-                                    <input type="date" class="form-control form-control-lg" required formControlName="eventDate"
-                                        id="eventDate">
+                                    <mat-form-field appearance="fill" class="datePicker">
+                                        <mat-label>Kies een datum</mat-label>
+                                        <input matInput [matDatepicker]="picker" required formControlName="eventDate"
+                                            id="eventDate" [ngClass]="{
+                                                'is-invalid':
+                                                eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched
+                                            }">
+                                        <mat-datepicker-toggle matIconSuffix [for]="picker"></mat-datepicker-toggle>
+                                        <mat-datepicker #picker></mat-datepicker>
+                                    </mat-form-field>
                                 </div>
                                 <div *ngIf="eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched"
                                     class="invalid-feeback">

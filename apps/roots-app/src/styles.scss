@@ -1,5 +1,5 @@
 /* You can add global styles to this file, and also import other style files */
-
+@import "~@angular/material/prebuilt-themes/indigo-pink.css";
 /* Importing Bootstrap SCSS file. */
 @import "~bootstrap/dist/css/bootstrap.css";
 
@@ -8,10 +8,23 @@ body {
 }
 
 .invalid-feeback {
-    color: red;
+    color: red !important;
+}
+
+.form-control {
+    border-radius: 0px !important;
 }
 
 .form-control:focus {
     outline: none !important;
     box-shadow: none !important;
+}
+
+.charCount {
+    float: right;
+    font-size: 12px;
+}
+
+.mdc-floating-label--required {
+    display: none !important;
 }
