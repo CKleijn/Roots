@@ -15,7 +15,7 @@ export class EventDto implements IEvent {
     @IsString({ message: 'Content must be a string!' })
     @IsDefined({ message: 'Content is required!' })
     content: string;
-    
+  
     @IsDefined({ message: 'Date is required!' })
     eventDate: Date;
 }

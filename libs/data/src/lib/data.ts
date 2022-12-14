@@ -14,15 +14,6 @@ export interface ICompany {
   events:IEvent[];
 }
 
-export interface IEvent {
-  title: string;
-  description: string;
-  content: string;
-  eventDate: Date;
-}
-
-/////////////////////////////////////////////////////////////////////////////////////////////////////////////////////
-
 // CLASSES
 export class User implements IUser {
   _id = new Types.ObjectId();

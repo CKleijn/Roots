@@ -25,6 +25,7 @@ export class EventController {
 
             return await this.eventService.getById(eventId);
         } catch (error) {
+
             throw new HttpException(error.message, HttpStatus.NOT_FOUND);
         }
     }
