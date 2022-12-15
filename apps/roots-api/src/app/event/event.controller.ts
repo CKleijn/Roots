@@ -39,7 +39,7 @@ export class EventController {
 
             return {
                 status: 201,
-                message: 'Event has been succesfully created!'
+                message: 'Event has been successfully created!'
             }
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.NOT_FOUND);
