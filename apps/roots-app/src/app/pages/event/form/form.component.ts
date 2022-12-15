@@ -1,10 +1,11 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { of, Subscription, switchMap } from 'rxjs';
+import { catchError, of, Subscription, switchMap } from 'rxjs';
 import { EventService } from '../event.service';
 import { Event } from '../event.model'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
+import { AuthService } from '../../auth/auth.service';
 
 @Component({
   selector: 'roots-event-form',
@@ -14,7 +15,11 @@ import { DateAdapter } from '@angular/material/core';
 export class EventFormComponent implements OnInit, OnDestroy {
   paramSubscription: Subscription | undefined;
   eventSubscription: Subscription | undefined;
+  authSubscription: Subscription | undefined;
+  createSubscription: Subscription | undefined;
+  updateSubscription: Subscription | undefined;
   eventId: string | null = null;
+  companyId: string | null = null;
   editMode: boolean = false;
   error: string | null = null;
   event: Event = new Event();
@@ -37,6 +42,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private route: ActivatedRoute,
     private router: Router,
     private eventService: EventService,
+    private authService: AuthService,
     private dateAdapter: DateAdapter<Date>
   ) {
     this.dateAdapter.setLocale('nl-NL')
@@ -61,7 +67,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
           this.event = {
             ...event
           }
-          
+
           this.eventForm.patchValue({
             title: this.event.title,
             description: this.event.description,
@@ -69,19 +75,37 @@ export class EventFormComponent implements OnInit, OnDestroy {
             eventDate: new Date(this.event.eventDate).toISOString().slice(0, 10)
           });
         },
-        error: (err) => this.error = err,
+        error: () => this.router.navigate(['timeline']),
       })
     }
   }
 
   onSubmit() {
-    console.log('OnSubmit', this.event);
-    // TO-DO : IMPLEMENT
-    this.eventService
+    this.eventForm.value.eventDate.setHours(this.eventForm.value.eventDate.getHours() + 1);
+    this.authSubscription = this.authService.currentUser$.subscribe({
+      next: (user: any) => this.companyId = user.company,
+      error: (error) => this.error = error.message
+    });
+
+    if (!this.editMode) {
+      this.createSubscription = this.eventService.postEvent(this.eventForm.value, this.companyId!).subscribe({
+        next: () => this.router.navigate(['timeline']),
+        error: (error) => this.error = error.message
+      })
+    }
+    else {
+      this.updateSubscription = this.eventService.putEvent(this.eventForm.value, this.eventId!, this.companyId!).subscribe({
+        next: () => this.router.navigate(['..'], { relativeTo: this.route }),
+        error: (error) => this.error = error.message
+      })
+    }
   }
 
   ngOnDestroy(): void {
     this.paramSubscription?.unsubscribe;
     this.eventSubscription?.unsubscribe;
+    this.authSubscription?.unsubscribe;
+    this.createSubscription?.unsubscribe;
+    this.updateSubscription?.unsubscribe;
   }
 }
