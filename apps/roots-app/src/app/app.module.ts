@@ -18,6 +18,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
 import { ReactiveFormsModule, FormsModule } from '@angular/forms';
+import { EventDetailComponent } from './pages/event/event-detail/event-detail.component';
 
 @NgModule({
   declarations: [
@@ -25,7 +26,8 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     NavComponent,
     TimelineComponent,
     EventComponent,
-    EventFormComponent
+    EventFormComponent,
+    EventDetailComponent,
   ],
   imports: [
     BrowserModule,
@@ -45,10 +47,10 @@ import { ReactiveFormsModule, FormsModule } from '@angular/forms';
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
-    QuillModule.forRoot()
+    QuillModule.forRoot(),
   ],
   providers: [],
   bootstrap: [AppComponent],
-  exports: [NavComponent]
+  exports: [NavComponent],
 })
 export class AppModule {}
