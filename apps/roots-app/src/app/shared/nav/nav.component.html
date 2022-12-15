@@ -4,7 +4,20 @@
     <li><a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"> Log in </a></li>
     <li><a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined">Register</a></li>
     <li>
-      <a class="logout-button" *ngIf="(loggedInUser$ | async) !== undefined" (click)="logout()">Log out</a>
+      <a class="logout-button" *ngIf="(loggedInUser$ | async) !== undefined" (click)="open(content)">Log out</a>
     </li>
   </ul>
 </nav>
+
+<ng-template #content let-modal>
+	<div class="modal-header">
+		<h4 class="modal-title" id="modal-basic-title">Are you sure?</h4>
+		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+	</div>
+	<div class="modal-body">
+    <span>Log out by clicking on the button below.</span>
+	</div>
+	<div class="modal-footer">
+		<button type="button" class="btn btn-danger" (click)="logout()">Log out</button>
+	</div>
+</ng-template>
