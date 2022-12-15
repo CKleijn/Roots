@@ -13,7 +13,21 @@ export class EventService {
   ) { }
 
   async getAll(): Promise<Event[]> {
-    const events = await this.companyModel.find({}, { events: 1 });
+    const events = await this.companyModel.aggregate([
+      {
+        '$project': {
+          '_id': 0,
+          'events': {
+            '$sortArray': {
+              'input': '$events',
+              'sortBy': {
+                'eventDate': -1
+              }
+            }
+          }
+        }
+      }
+    ]);
 
     return events[0]?.events;
   }
@@ -48,9 +62,9 @@ export class EventService {
       (
         { _id: companyId },
         { $push: { events: event } },
-        { 
-          new: true, 
-          runValidators: true 
+        {
+          new: true,
+          runValidators: true
         }
       );
 
@@ -58,5 +72,29 @@ export class EventService {
       throw new HttpException(`This company doesn't exists!`, HttpStatus.NOT_FOUND);
 
     return updatedCompanyEvents;
+  }
+
+  async update(eventId: string, eventDto: EventDto) {
+    console.log(eventDto)
+    const updatedEventFromCompany = await this.companyModel.findOneAndUpdate(
+      { "events._id": eventId },
+      {
+        $set: {
+          "events.$.title": eventDto?.title,
+          "events.$.description": eventDto?.description,
+          "events.$.content": eventDto?.content,
+          "events.$.eventDate": eventDto?.eventDate,
+        },
+      },
+      {
+        new: true,
+        runValidators: true
+      }
+    );
+
+    if (!updatedEventFromCompany)
+      throw new HttpException(`This event doesn't exists!`, HttpStatus.NOT_FOUND);
+
+    return updatedEventFromCompany;
   }
 }
