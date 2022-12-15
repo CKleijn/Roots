@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
 import { Public } from '../auth/auth.module';
 import { EventDto } from './event.dto';
 import { Event } from './event.schema';
@@ -30,7 +30,7 @@ export class EventController {
     }
 
     @Public()
-    @Post(':companyId')
+    @Post('new/:companyId')
     async createEvent(@Param('companyId') companyId: string, @Body() eventDto: EventDto): Promise<Object> {
         try {
             Logger.log(`Create event (POST)`);
@@ -43,6 +43,24 @@ export class EventController {
             }
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    
+    @Public()
+    @Put(':eventId/:companyId')
+    async updateEvent(@Param('eventId') eventId:string, @Param('companyId') companyId:string, @Body() eventDto:EventDto) :Promise<Object> {
+        try {
+            Logger.log(`Update event ${eventId} from company ${companyId} (PUT)`);
+            console.log('eventDto', eventDto)
+            const event = await this.eventService.update(eventId,companyId,eventDto);
+            
+            return { 
+                status: 201,
+                message: 'Event has been successfully updated!'
+            }
+        } catch(error) {
+            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED)
         }
     }
 }

@@ -59,4 +59,23 @@ export class EventService {
 
     return updatedCompanyEvents;
   }
+
+  async update(eventId: string, companyId: string, eventDto: EventDto) {
+    const event = new this.eventModel(eventDto);
+    const UpdatedEventFromCompany = await this.companyModel.findOneAndUpdate(
+      { events: eventId},
+      { $set:{"events.$":event},
+      },
+      {
+        new:true,
+        runValidators:true
+      }
+    );
+
+      if (!UpdatedEventFromCompany) 
+        throw new HttpException(`This event doesn't exist`, HttpStatus.NOT_FOUND);
+
+      return UpdatedEventFromCompany;
+
+  }
 }

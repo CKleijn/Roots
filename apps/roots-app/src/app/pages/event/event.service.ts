@@ -17,4 +17,14 @@ export class EventService {
     getEventById(eventId: string): Observable<Event> {
         return this.httpClient.get(environment.SERVER_API_URL + '/events/' + eventId) as Observable<Event>;
     }
+
+    postEvent(event: Event,companyId:string) {
+        console.log('(POST)',event)
+        return this.httpClient.post<Event>(environment.SERVER_API_URL + '/events/new/' + companyId, event) as Observable<any>
+    }
+
+    putEvent(event: Event, eventId:string | null, companyId:string): Observable<any> {
+        console.log('(PUT)',event)
+        return this.httpClient.put<Event>(environment.SERVER_API_URL + '/events/' + eventId +'/' + companyId, event) as Observable<any>
+    }
 }

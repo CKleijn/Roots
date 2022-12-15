@@ -1,6 +1,6 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { of, Subscription, switchMap } from 'rxjs';
+import { catchError, of, Subscription, switchMap } from 'rxjs';
 import { EventService } from '../event.service';
 import { Event } from '../event.model'
 import { FormControl, FormGroup, Validators } from '@angular/forms';
@@ -15,6 +15,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
   paramSubscription: Subscription | undefined;
   eventSubscription: Subscription | undefined;
   eventId: string | null = null;
+  // TO-DO: Get companyId from currentUser
+  companyId:string = '63986755ed0fb4145e393578';
   editMode: boolean = false;
   error: string | null = null;
   event: Event = new Event();
@@ -76,8 +78,30 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   onSubmit() {
     console.log('OnSubmit', this.event);
-    // TO-DO : IMPLEMENT
-    this.eventService
+    console.log('eventForm', this.eventForm.value)
+    // create
+    if (typeof this.eventId === 'object') {
+      this.eventService.postEvent(this.eventForm.value, this.companyId).pipe(catchError((error:any) => {
+        console.log(error);
+        throw 'error in source. Details:' + error;
+      }))
+      .subscribe((success:any) => {
+        console.log(success);
+        if(success) this.router.navigate(['timeline']);
+      })
+    } 
+    // update
+    else {
+      this.eventService.putEvent(this.eventForm.value,this.eventId,this.companyId).pipe(catchError((error:any)=> {
+        console.log(error);
+        throw 'error in source.Details ' + error;
+      }))
+      .subscribe((success:any) => {
+        console.log(success);
+        if (success) this.router.navigate(['..'], {relativeTo:this.route});
+      })
+
+    }
   }
 
   ngOnDestroy(): void {
