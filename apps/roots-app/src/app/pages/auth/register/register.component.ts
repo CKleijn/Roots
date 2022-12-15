@@ -1,5 +1,5 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { FormControl, FormGroup, Validators } from '@angular/forms';
+import { AbstractControl, FormControl, FormGroup, ValidatorFn, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth.service';
@@ -12,8 +12,10 @@ import { AuthService } from '../auth.service';
 export class RegisterComponent implements OnInit, OnDestroy {
   registerForm: FormGroup = new FormGroup({});
   subs: Subscription = new Subscription();
+  showPassword = false;
+  showConfirmPassword = false;
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(private authService: AuthService, private router: Router) { }
 
   ngOnInit(): void {
     this.registerForm = new FormGroup({
@@ -21,7 +23,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       lastname: new FormControl(null, [Validators.required]),
       emailAddress: new FormControl(null, [Validators.required, this.validEmail.bind(this)]),
       password: new FormControl(null, [Validators.required, this.validPassword.bind(this)]),
-    });
+      confirmPassword: new FormControl(null, [Validators.required]),
+    }, { validators: this.passwordMatchingValidatior });
   }
 
   ngOnDestroy(): void {
@@ -53,6 +56,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
 
   validPassword(control: FormControl): { [s: string]: boolean } {
     const password = control.value;
+
     const regexp = new RegExp(
       '^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$'
     );
@@ -63,5 +67,25 @@ export class RegisterComponent implements OnInit, OnDestroy {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return null!;
     }
+  }
+
+  passwordMatchingValidatior: ValidatorFn = (control: AbstractControl) => {
+    const password = control.get('password');
+    const confirmPassword = control.get('confirmPassword');
+
+    if(password?.value !== confirmPassword?.value || (password?.value === null && confirmPassword?.value === null)) {
+      confirmPassword?.setErrors({notMatched : false})
+    } else {
+      confirmPassword?.setErrors(null)
+    }
+    return null
+  };
+
+  showPasswordToggle() {
+    return this.showPassword = !this.showPassword;
+  }
+
+  showConfirmPasswordToggle() {
+    return this.showConfirmPassword = !this.showConfirmPassword;
   }
 }

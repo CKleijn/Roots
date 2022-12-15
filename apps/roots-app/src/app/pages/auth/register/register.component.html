@@ -2,7 +2,7 @@
   <div class="row justify-content-center">
     <div class="col-sm-10 col-md-8 col-lg-6 my-5">
       <div class="card card-auth shadow-lg p-3 px-md-5 py-md-4">
-        <h2>Register</h2>
+        <h2>Registreren</h2>
         <form
           class="form-signin"
           [formGroup]="registerForm"
@@ -12,7 +12,7 @@
             firstName
            -->
           <div class="form-group">
-            <label for="inputFirstName">Firstname</label>
+            <label for="inputFirstName">Voornaam</label>
             <input
               type="text"
               class="form-control"
@@ -31,14 +31,14 @@
               "
               class="invalid-feedback"
             >
-              <p id="firstName-invalid">Firstname is required.</p>
+              <p id="firstName-invalid">Voornaam is verplicht!</p>
             </span>
           </div>
           <!--
             lastName
            -->
           <div class="form-group">
-            <label for="inputLastName">Lastname</label>
+            <label for="inputLastName">Achternaam</label>
             <input
               type="text"
               class="form-control"
@@ -57,14 +57,14 @@
               "
               class="invalid-feedback"
             >
-              <p id="lastName-invalid">Lastname is required.</p>
+              <p id="lastName-invalid">Achternaam is verplicht!</p>
             </span>
           </div>
           <!--
             email
            -->
           <div class="form-group">
-            <label for="inputEmailAddress">Email address</label>
+            <label for="inputEmailAddress">E-mailadres</label>
             <input
               type="email"
               class="form-control"
@@ -84,7 +84,7 @@
               "
               class="invalid-feedback"
             >
-              <p id="email-invalid">Email address is invalid.</p>
+              <p id="email-invalid">Vul een geldig e-mailadres in!</p>
             </span>
           </div>
 
@@ -92,27 +92,99 @@
             password
            -->
           <div class="form-group">
-            <label for="inputPassword">Password</label>
-            <input
-              type="password"
-              class="form-control"
-              formControlName="password"
-              id="inputPassword"
-              [ngClass]="{
-                'is-invalid':
-                  registerForm.get('password')?.invalid &&
+            <label for="inputPassword">Wachtwoord</label>
+            <div class="input-group">
+              <input
+                type="{{ showPassword ? 'text' : 'password' }}"
+                class="form-control"
+                formControlName="password"
+                id="inputPassword"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('password')?.invalid &&
+                    registerForm.get('password')?.touched
+                }"
+              />
+
+              <div class="input-group-prepend">
+                <span
+                  class="input-group-text"
+                  style="border-radius: 0px; cursor: pointer"
+                >
+                  <i
+                    *ngIf="showPassword"
+                    (click)="showPasswordToggle()"
+                    class="bi bi-eye-slash"
+                  ></i>
+                  <i
+                    *ngIf="!showPassword"
+                    (click)="showPasswordToggle()"
+                    class="bi bi-eye"
+                  ></i>
+                </span>
+              </div>
+
+              <span
+                *ngIf="
+                  !registerForm.get('password')?.valid &&
                   registerForm.get('password')?.touched
-              }"
-            />
-            <span
-              *ngIf="
-                !registerForm.get('password')?.valid &&
-                registerForm.get('password')?.touched
-              "
-              class="invalid-feedback"
-            >
-              <p id="password-invalid">Enter a valid password</p>
-            </span>
+                "
+                class="invalid-feedback"
+              >
+                <p id="password-invalid">
+                  Wachtwoord moet bestaan uit minimaal 1 hoofdletter, 1 kleine
+                  letter, 1 cijfer en minimaal 8 karakters!
+                </p>
+              </span>
+            </div>
+          </div>
+
+          <!--
+            confirm password
+           -->
+          <div class="form-group">
+            <label for="inputConfirmPassword">Bevestig wachtwoord</label>
+            <div class="input-group">
+              <input
+                type="{{ showConfirmPassword ? 'text' : 'password' }}"
+                class="form-control"
+                formControlName="confirmPassword"
+                id="inputConfirmPassword"
+                [ngClass]="{
+                  'is-invalid':
+                    registerForm.get('confirmPassword')?.invalid &&
+                    registerForm.get('confirmPassword')?.touched
+                }"
+              />
+              <div class="input-group-append">
+                <span
+                  class="input-group-text"
+                  style="border-radius: 0px; cursor: pointer"
+                >
+                  <i
+                    *ngIf="showConfirmPassword"
+                    (click)="showConfirmPasswordToggle()"
+                    class="bi bi-eye-slash"
+                  ></i>
+                  <i
+                    *ngIf="!showConfirmPassword"
+                    (click)="showConfirmPasswordToggle()"
+                    class="bi bi-eye"
+                  ></i>
+                </span>
+              </div>
+              <span
+                *ngIf="
+                  !registerForm.get('confirmPassword')?.valid &&
+                  registerForm.get('confirmPassword')?.touched
+                "
+                class="invalid-feedback"
+              >
+                <p id="confirmPassword-invalid">
+                  Wachtwoorden komen niet overeen!
+                </p>
+              </span>
+            </div>
           </div>
 
           <div class="form-group">
@@ -123,16 +195,17 @@
               style="margin-top: 15px"
               [disabled]="!registerForm.valid"
             >
-              Register
+              Registreer
             </button>
           </div>
           <p class="mt-2">
-            Already have an account?
+            Heb je al een account? Log
             <a
               style="text-decoration: underline; color: #0d6efd"
               routerLink="/login"
-              >Login</a
+              >hier</a
             >
+            in!
           </p>
         </form>
       </div>
