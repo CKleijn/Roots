@@ -1,5 +1,5 @@
-import { IEvent } from '@roots/data';
 import { IsDefined, IsString, MaxLength } from 'class-validator';
+import { IEvent } from 'libs/data/src/lib/data';
 
 export class EventDto implements IEvent {
     @IsString({ message: 'Title must be a string!' })

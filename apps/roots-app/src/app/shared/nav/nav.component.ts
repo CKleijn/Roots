@@ -15,11 +15,11 @@ export class NavComponent {
 
   constructor(private authService: AuthService) {}
 
-  logout() {
-    this.authService.logout()
+  ngOnInit(): void {
+    this.loggedInUser$ = this.authService.currentUser$;
   }
 
-  ngOnInit(): void {
-    this.loggedInUser$ = this.authService.currentUser$
+  logout() {
+    this.authService.logout();
   }
 }

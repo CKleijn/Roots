@@ -1,5 +1,3 @@
-<roots-nav></roots-nav>
-
 <div class="search">
   <form class="search-form">
     <div class="search-form-container">
@@ -20,7 +18,8 @@
     <span class="timeline-year-content">2018</span>
   </div>
 
-  <div *ngFor="let event of events let left = even; let right = odd" class="timeline-container" [ngClass]="{ right: right, left: left }">
+  <div *ngFor="let event of events let left = even; let right = odd" class="timeline-container"
+    [ngClass]="{ right: right, left: left }">
     <div class="timeline-icon">
       <div class="timeline-icon-content">
         <span class="timeline-icon-content-day">

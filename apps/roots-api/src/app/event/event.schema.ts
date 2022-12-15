@@ -1,5 +1,5 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IEvent } from '@roots/data';
+import { IEvent } from 'libs/data/src/lib/data';
 
 export type EventDocument = Event & Document;
 
