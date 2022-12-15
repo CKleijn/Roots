@@ -190,6 +190,10 @@
       border-right: 15px solid white;
     }
   }
+
+  >.timeline-textbox >.detail-button-container {
+    text-align: end;
+  }
 }
 
 //container for timeline item text

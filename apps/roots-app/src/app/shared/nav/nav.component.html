@@ -1,10 +1,10 @@
 <nav class="stroke gradient-custom w-100">
   <ul style="margin-bottom: 0">
-    <li><a routerLink="/" *ngIf="(loggedInUser$ | async) != undefined">Timeline</a></li>
+    <li><a routerLink="/" *ngIf="(loggedInUser$ | async) !== undefined">Timeline</a></li>
     <li><a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"> Log in </a></li>
     <li><a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined">Register</a></li>
     <li>
-      <a *ngIf="(loggedInUser$ | async) != undefined" (click)="open(content)">Log out</a>
+      <a class="logout-button" *ngIf="(loggedInUser$ | async) !== undefined" (click)="open(content)">Log out</a>
     </li>
   </ul>
 </nav>
