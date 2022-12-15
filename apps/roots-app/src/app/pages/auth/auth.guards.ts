@@ -1,7 +1,10 @@
 import { Injectable } from '@angular/core';
 import {
-    ActivatedRouteSnapshot, CanActivate,
-    CanActivateChild, Router, RouterStateSnapshot
+  ActivatedRouteSnapshot,
+  CanActivate,
+  CanActivateChild,
+  Router,
+  RouterStateSnapshot,
 } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '@roots/data';
@@ -15,7 +18,6 @@ export class LoggedInAuthGuard implements CanActivate, CanActivateChild {
   constructor(private authService: AuthService, private router: Router) {}
 
   canActivate(): Observable<boolean> {
-    console.log('canActivate LoggedIn');
     return this.authService.currentUser$.pipe(
       map((user: User | undefined) => {
         if (user) {
@@ -33,7 +35,6 @@ export class LoggedInAuthGuard implements CanActivate, CanActivateChild {
     route: ActivatedRouteSnapshot,
     state: RouterStateSnapshot
   ): Observable<boolean> | Promise<boolean> | boolean {
-    console.log('canActivateChild LoggedIn');
     return this.canActivate();
   }
 }
@@ -41,5 +42,4 @@ export class LoggedInAuthGuard implements CanActivate, CanActivateChild {
 @Injectable()
 export class SaveEditedWorkGuard {
   constructor(private modalService: NgbModal) {}
-
 }

@@ -1,23 +1,50 @@
 <nav class="stroke gradient-custom w-100">
   <ul style="margin-bottom: 0">
-    <li><a routerLink="/" *ngIf="(loggedInUser$ | async) !== undefined">Timeline</a></li>
-    <li><a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"> Log in </a></li>
-    <li><a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined">Register</a></li>
     <li>
-      <a class="logout-button" *ngIf="(loggedInUser$ | async) !== undefined" (click)="open(content)">Log out</a>
+      <a routerLink="/" *ngIf="(loggedInUser$ | async) !== undefined"
+        >Tijdlijn</a
+      >
+    </li>
+    <li>
+      <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"
+        >Inloggen</a
+      >
+    </li>
+    <li>
+      <a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined"
+        >Registeren</a
+      >
+    </li>
+    <li>
+      <a
+        class="logout-button"
+        *ngIf="(loggedInUser$ | async) !== undefined"
+        (click)="open(content)"
+        >Uitloggen</a
+      >
     </li>
   </ul>
 </nav>
 
 <ng-template #content let-modal>
-	<div class="modal-header">
-		<h4 class="modal-title" id="modal-basic-title">Are you sure?</h4>
-		<button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-	</div>
-	<div class="modal-body">
-    <span>Log out by clicking on the button below.</span>
-	</div>
-	<div class="modal-footer">
-		<button type="button" class="btn btn-danger" (click)="logout()">Log out</button>
-	</div>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Uitloggen</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <span>Weet je zeker dat je uit wil loggen?</span>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn btn-danger" (click)="logout()">
+      Uitloggen
+    </button>
+    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+      Annuleren
+    </button>
+  </div>
 </ng-template>
