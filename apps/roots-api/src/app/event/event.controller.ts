@@ -46,20 +46,20 @@ export class EventController {
         }
     }
 
-    
+
     @Public()
-    @Put(':eventId/:companyId')
-    async updateEvent(@Param('eventId') eventId:string, @Param('companyId') companyId:string, @Body() eventDto:EventDto) :Promise<Object> {
+    @Put(':companyId/:eventId/edit')
+    async updateEvent(@Param('companyId') companyId: string, @Param('eventId') eventId: string, @Body() eventDto: EventDto): Promise<Object> {
         try {
             Logger.log(`Update event ${eventId} from company ${companyId} (PUT)`);
-            console.log('eventDto', eventDto)
-            const event = await this.eventService.update(eventId,companyId,eventDto);
-            
-            return { 
-                status: 201,
+
+            const event = await this.eventService.update(eventId, eventDto);
+
+            return {
+                status: 200,
                 message: 'Event has been successfully updated!'
             }
-        } catch(error) {
+        } catch (error) {
             throw new HttpException(error.message, HttpStatus.NOT_MODIFIED)
         }
     }
