@@ -52,6 +52,11 @@
                 <span
                   class="input-group-text"
                   style="border-radius: 0px; cursor: pointer"
+                  [ngClass]="{
+                    'is-invalid-eye':
+                      loginForm.get('password')?.invalid &&
+                      loginForm.get('password')?.touched
+                  }"
                 >
                   <i
                     *ngIf="showPassword"
@@ -92,8 +97,8 @@
           <p class="mt-2">
             Heb je nog geen account? Registreer
             <a
-              style="text-decoration: underline; color: #0d6efd"
               routerLink="/register"
+              class="text-link"
               >hier</a
             >!
           </p>
