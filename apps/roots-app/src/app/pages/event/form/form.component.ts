@@ -81,7 +81,10 @@ export class EventFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.eventForm.value.eventDate.setHours(this.eventForm.value.eventDate.getHours() + 2);
+    const date = new Date(this.eventForm.value.eventDate);
+    date.setHours(date.getHours() + 2);
+    this.eventForm.value.eventDate = date;
+    
     this.authSubscription = this.authService.currentUser$.subscribe({
       next: (user: any) => this.companyId = user.company,
       error: (error) => this.error = error.message
