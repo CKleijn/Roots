@@ -1,10 +1,12 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
+
 import { environment } from "apps/roots-app/src/environments/environment.prod";
 import { Observable, catchError, map } from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { Event } from '../event/event.model'
 import { ToastrService } from 'ngx-toastr';
+
 
 
 @Injectable({
@@ -35,6 +37,7 @@ export class EventService {
                 this.toastr.error('Something went wrong', 'Event not created');
                 throw new Error(err.error.message);
             })
+        // eslint-disable-next-line @typescript-eslint/ban-types
         ) as Observable<Object>
     }
 
@@ -52,6 +55,7 @@ export class EventService {
                 this.toastr.error('Something went wrong', 'Event not updated');
                 throw new Error(err.error.message);
             })
+        // eslint-disable-next-line @typescript-eslint/ban-types
         ) as Observable<Object>
     }
 }

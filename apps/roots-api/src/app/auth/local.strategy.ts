@@ -14,7 +14,7 @@ export class LocalStrategy extends PassportStrategy(Strategy) {
 
     if (!user) {
       throw new HttpException(
-        `No user found for the given email address!`,
+        `Er is geen gebruiker gevonden met het opgegeven e-mailadres!`,
         HttpStatus.NOT_FOUND
       );
     }

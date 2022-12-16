@@ -10,25 +10,25 @@ export class User implements IUser {
   _id: Types.ObjectId;
 
   @Prop()
-  @IsString({ message: 'Firstname must be a string!' })
-  @IsDefined({ message: 'Firstname is required!' })
+  @IsString({ message: 'Voornaam moet van het type string zijn!' })
+  @IsDefined({ message: 'Voornaam is verplicht!' })
   firstname: string;
 
   @Prop()
-  @IsString({ message: 'Lastname must be a string!' })
-  @IsDefined({ message: 'Lastname is required!' })
+  @IsString({ message: 'Achternaam moet van het type string zijn!' })
+  @IsDefined({ message: 'Achternaam is verplicht!' })
   lastname: string;
 
   @Prop()
   @IsEmail()
-  @IsString({ message: 'Email must be a string!' })
-  @IsDefined({ message: 'Email is required!' })
+  @IsString({ message: 'E-mailadres moet van het type string zijn!!' })
+  @IsDefined({ message: 'E-mailadres is verplicht!' })
   emailAddress: string;
 
   @Prop()
-  @IsString({ message: 'Password must be a string!' })
-  @IsDefined({ message: 'Password is required!' })
-  @Matches(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"),{ message: 'Password not strong enough! Must contain at least: 8 characters, 1 uppercase letter, 1 lowercase letter and 1 number!' })
+  @IsString({ message: 'Wachtwoord moet van het type string zijn!!' })
+  @IsDefined({ message: 'Wachtwoord is verplicht!' })
+  @Matches(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"),{ message: 'Het wachtwoord is niet sterk genoeg! Het moet op zijn minst bestaan uit: 8 karakters, 1 hoofdletter, 1 kleine letter and 1 getal!' })
   password: string;
 
   @Prop({ref: 'Company'})

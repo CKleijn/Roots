@@ -1,6 +1,6 @@
 export class Event {
-    title: string = "";
-    description: string = "";
-    content: string = "";
+    title = "";
+    description = "";
+    content = "";
     eventDate: Date = <Date>{};
 }

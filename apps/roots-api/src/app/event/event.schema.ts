@@ -1,29 +1,29 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { IEvent } from 'libs/data/src/lib/data';
+import { IEvent } from '@roots/data';
 
 export type EventDocument = Event & Document;
 
 @Schema()
 export class Event implements IEvent {
   @Prop({
-    required: [true, 'Title is required!'],
-    maxLength: [75, 'Title can be maximal 75 characters!']
+    required: [true, 'Titel is verplicht!'],
+    maxLength: [75, 'Titel mag maximaal 75 karakters bevatten!']
   })
   title: string;
 
   @Prop({
-    required: [true, 'Description is required!'],
-    maxLength: [150, 'Description can be maximal 150 characters!']
+    required: [true, 'Beschrijving is verplicht!'],
+    maxLength: [150, 'Beschrijving mag maximaal 150 karakters bevatten!']
   })
   description: string;
 
   @Prop({
-    required: [true, 'Content is required!']
+    required: [true, 'Inhoud is verplicht!']
   })
   content: string;
 
   @Prop({
-    required: [true, 'Date is required!']
+    required: [true, 'Gebeurtenisdatum is verplicht!']
   })
   eventDate: Date;
 }
