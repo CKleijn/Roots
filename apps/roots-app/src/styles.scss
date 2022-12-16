@@ -1,10 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+//imports
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
-/* Importing Bootstrap SCSS file. */
 @import '~bootstrap/dist/css/bootstrap.css';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+//variables
+$black: #212121;
+$dark-blue: #0083b7;
+$light-blue: #03b0eb;
+$white: #ffffff;
+$error: #dc3545;
+$box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 
 body {
-  background-color: cadetblue !important;
+  // background-color: cadetblue !important;
+  font-family: 'Montserrat', sans-serif !important;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold;
+    color: $black;
+  }
+
+  .text-link {
+    color: $dark-blue;
+    text-decoration: none;
+
+    &:hover {
+      color: $light-blue;
+    }
+  }
+
+  .is-invalid-eye {
+    background-color: $error !important;
+    border: 1px solid $error !important;
+  }
+
+  .input-group-text {
+    background-color: $dark-blue;
+    color: $white;
+    border: 1px solid $dark-blue;
+
+    &:hover {
+      background-color: $light-blue;
+      border-color: $light-blue;
+    }
+  }
 
   .submit-btn {
     width: 100%;

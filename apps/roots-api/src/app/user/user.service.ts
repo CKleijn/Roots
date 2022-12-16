@@ -8,8 +8,10 @@ import { User, UserDocument } from './user.schema';
 
 @Injectable()
 export class UserService {
-  constructor(@InjectModel(User.name) private userModel: Model<UserDocument>, 
-  private readonly companyService : CompanyService) {}
+  constructor(
+    @InjectModel(User.name) private userModel: Model<UserDocument>,
+    private readonly companyService: CompanyService
+  ) {}
 
   async findByEmailAddress(emailAddress: string): Promise<User> {
     return await this.userModel.findOne({ emailAddress });
@@ -25,19 +27,34 @@ export class UserService {
     const newUser = new this.userModel({
       ...createUserDto,
       password: await bcrypt.hashSync(createUserDto.password, 10),
-      company: await this.companyService.getByEmailDomain(createUserDto.emailAddress.split("@").at(1))
+      company: await this.companyService.getByEmailDomain(
+        createUserDto.emailAddress.split('@').at(1)
+      ),
     });
 
     return await this.userModel.create(newUser);
   }
 
   async validate(user) {
-    if((await this.userModel.find({emailAddress: user.emailAddress})).length > 0){
-      throw new HttpException(`Email address is already in use!`, HttpStatus.BAD_REQUEST);
+    if (
+      (await this.userModel.find({ emailAddress: user.emailAddress })).length >
+      0
+    ) {
+      throw new HttpException(
+        `Het e-mailadres is al in gebruik!`,
+        HttpStatus.BAD_REQUEST
+      );
     }
-      
-    if((await this.companyService.getByEmailDomain(user.emailAddress.split("@").at(1))) === null) {
-      throw new HttpException(`There's no company registered for the given email domain!`, HttpStatus.BAD_REQUEST);
+
+    if (
+      (await this.companyService.getByEmailDomain(
+        user.emailAddress.split('@').at(1)
+      )) === null
+    ) {
+      throw new HttpException(
+        `Er bestaat geen bedrijf met het opgegeven email domein!`,
+        HttpStatus.BAD_REQUEST
+      );
     }
   }
 }
