@@ -1,9 +1,9 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
-import { environment } from "apps/roots-app/src/environments/environment.prod";
-import { Observable, catchError } from "rxjs";
+import { catchError, Observable } from "rxjs";
+import { environment } from "../../../environments/environment";
 import { AuthService } from "../auth/auth.service";
-import { Event } from '../event/event.model'
+import { Event } from '../event/event.model';
 
 @Injectable({
     providedIn: 'root'
@@ -27,6 +27,7 @@ export class EventService {
             catchError((error: any) => {
                 throw new Error(error.error.message);
             })
+        // eslint-disable-next-line @typescript-eslint/ban-types
         ) as Observable<Object>
     }
 
@@ -38,6 +39,7 @@ export class EventService {
             catchError((error: any) => {
                 throw new Error(error.error.message);
             })
+        // eslint-disable-next-line @typescript-eslint/ban-types
         ) as Observable<Object>
     }
 }

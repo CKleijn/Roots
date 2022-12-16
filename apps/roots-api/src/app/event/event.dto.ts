@@ -1,21 +1,21 @@
+import { IEvent } from '@roots/data';
 import { IsDefined, IsString, MaxLength } from 'class-validator';
-import { IEvent } from 'libs/data/src/lib/data';
 
 export class EventDto implements IEvent {
-    @IsString({ message: 'Title must be a string!' })
-    @IsDefined({ message: 'Title is required!' })
-    @MaxLength(75, { message: 'Title can be maximal 75 characters!' })
-    title: string;
-    
-    @IsString({ message: 'Description must be a string!' })
-    @IsDefined({ message: 'Description is required!' })
-    @MaxLength(150, { message: 'Description can be maximal 150 characters!' })
-    description: string;
+  @IsString({ message: 'Titel moet van het type string zijn!' })
+  @IsDefined({ message: 'Titel is verplicht!' })
+  @MaxLength(75, { message: 'Titel mag maximaal 75 karakters bevatten!' })
+  title: string;
 
-    @IsString({ message: 'Content must be a string!' })
-    @IsDefined({ message: 'Content is required!' })
-    content: string;
-  
-    @IsDefined({ message: 'Date is required!' })
-    eventDate: Date;
+  @IsString({ message: 'Beschrijving moet van het type string zijn!' })
+  @IsDefined({ message: 'Beschrijving is verplicht!' })
+  @MaxLength(150, { message: 'Beschrijving mag maximaal 150 karakters bevatten!' })
+  description: string;
+
+  @IsString({ message: 'Inhoud moet van het type string zijn!' })
+  @IsDefined({ message: 'Inhoud is verplicht!' })
+  content: string;
+
+  @IsDefined({ message: 'Gebeurtenisdatum is verplicht!' })
+  eventDate: Date;
 }

@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                                 <div class="form-outline mt-4">
-                                    <label for="content" class="form-label">Content</label>
+                                    <label for="content" class="form-label">Inhoud</label>
                                     <quill-editor [style]="editorStyle" [modules]="config" formControlName="content"
                                         id="content" [required]="true" placeholder="&nbsp;" [ngClass]="{
                                             'is-invalid':
@@ -57,11 +57,11 @@
                                 <div *ngIf="eventForm.get('content')?.invalid && eventForm.get('content')?.touched"
                                     class="invalid-feeback">
                                     <div *ngIf="eventForm.get('content')?.errors?.['required']">
-                                        Content is verplicht!
+                                        Inhoud is verplicht!
                                     </div>
                                 </div>
                                 <div class="form-outline mt-4">
-                                    <label for="eventDate" class="form-label">Datum</label>
+                                    <label for="eventDate" class="form-label">Gebeurtenisdatum</label>
                                     <mat-form-field appearance="fill" class="datePicker">
                                         <mat-label>Kies een datum</mat-label>
                                         <input matInput [matDatepicker]="picker" required formControlName="eventDate"
@@ -76,7 +76,7 @@
                                 <div *ngIf="eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched"
                                     class="invalid-feeback">
                                     <div *ngIf="eventForm.get('eventDate')?.errors?.['required']">
-                                        Datum van de gebeurtenis is verplicht!
+                                        Gebeurtenisdatum is verplicht!
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-center mt-5">

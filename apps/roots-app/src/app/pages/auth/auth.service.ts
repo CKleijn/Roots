@@ -2,10 +2,10 @@ import { HttpClient, HttpHeaders } from '@angular/common/http';
 import { Injectable } from '@angular/core';
 import { Router } from '@angular/router';
 import { User } from '@roots/data';
-import { environment } from 'apps/roots-app/src/environments/environment';
 import { ToastrService } from 'ngx-toastr';
 import { BehaviorSubject, Observable, of } from 'rxjs';
 import { catchError, map, switchMap } from 'rxjs/operators';
+import { environment } from '../../../environments/environment';
 
 @Injectable({
   providedIn: 'root',
@@ -48,12 +48,12 @@ export class AuthService {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
 
-          this.toastr.success('You are succesfully logged in', 'Log in successful');
+          this.toastr.success('Je bent succesvol ingelogd!', 'Inloggen succesvol');
 
           return user;
         }),
         catchError((err: any) => {          
-          this.toastr.error(err.error.message, 'Log in failed');
+          this.toastr.error(err.error.message, 'Inloggen gefaald');
 
           return of(undefined);
         })
@@ -69,12 +69,11 @@ export class AuthService {
         map((user) => {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
-          this.toastr.success('You have successfully registered', 'Registration successful')
+          this.toastr.success('Je bent succesvol geregistreerd!', 'Registratie succesvol')
           return user;
         }),
         catchError((err: any) => {
-          this.toastr.error(err.error.message, 'Registration failed');
-
+          this.toastr.error(err.error.message, 'Registratie gefaald');
           return of(undefined);
         })
       );
@@ -105,7 +104,7 @@ export class AuthService {
     localStorage.removeItem(this.CURRENT_USER);
     this.currentUser$.next(undefined);
 
-    this.toastr.success('You have been logged out', 'Log out successful');
+    this.toastr.success('Je bent succesvol uitgelogd!', 'Uitloggen succesvol');
   }
 
   getUserFromLocalStorage(): Observable<User> {
