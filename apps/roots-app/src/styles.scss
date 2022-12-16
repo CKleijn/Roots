@@ -3,16 +3,15 @@
 @import '~bootstrap/dist/css/bootstrap.css';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-//variables
-$black: #212121;
-$dark-blue: #0083b7;
-$light-blue: #03b0eb;
+$primary-color: #9381FF;
+$secondary-color: #B8B8FF;
+$background-color: #9381FF;
 $white: #ffffff;
+$black: #000000;
 $error: #dc3545;
-$box-shadow: 0 3px 10px rgb(0 0 0 / 0.2);
 
 body {
-  // background-color: cadetblue !important;
+  background-color: $background-color !important;
   font-family: 'Montserrat', sans-serif !important;
 
   h1,
@@ -26,11 +25,11 @@ body {
   }
 
   .text-link {
-    color: $dark-blue;
+    color: $primary-color;
     text-decoration: none;
 
     &:hover {
-      color: $light-blue;
+      color: $secondary-color;
     }
   }
 
@@ -40,13 +39,13 @@ body {
   }
 
   .input-group-text {
-    background-color: $dark-blue;
+    background-color: $primary-color;
     color: $white;
-    border: 1px solid $dark-blue;
+    border: 1px solid $primary-color;
 
     &:hover {
-      background-color: $light-blue;
-      border-color: $light-blue;
+      background-color: $secondary-color;
+      border-color: $secondary-color;
     }
   }
 
@@ -72,26 +71,48 @@ body {
       box-shadow: none;
     }
   }
-}
 
-.invalid-feeback {
-  color: red !important;
-}
+  .card {
+    border-radius: 0px !important;
+  }
 
-.form-control {
-  border-radius: 0px !important;
-}
+  .invalid-feeback {
+    color: red !important;
+  }
 
-.form-control:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
+  .form-control {
+    border-radius: 0px !important;
+  }
 
-.charCount {
-  float: right;
-  font-size: 12px;
-}
+  .form-control:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 
-.mdc-floating-label--required {
-  display: none !important;
+  .charCount {
+    float: right;
+    font-size: 12px;
+  }
+
+  .mdc-floating-label--required {
+    display: none !important;
+  }
+
+  .btn {
+    background-color: $primary-color !important;
+    border-color: $primary-color !important;
+    border-width: 3px !important;
+    border-radius: 0px !important;
+    color: #ffffff !important;
+  }
+
+  .btn:hover {
+    border-color: $primary-color !important;
+    background-color: #ffffff !important;
+    color: $primary-color !important;
+  }
+
+  .btn-100 {
+    width: 100% !important;
+  }
 }

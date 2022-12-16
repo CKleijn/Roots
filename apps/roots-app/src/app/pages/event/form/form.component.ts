@@ -98,7 +98,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     }
     else {
       this.updateSubscription = this.eventService.putEvent(this.eventForm.value, (this.eventId as string), (this.companyId as string)).subscribe({
-        next: () => this.router.navigate(['..'], { relativeTo: this.route }),
+        next: () => this.router.navigate(['timeline']),
         error: (error) => this.error = error.message
       })
     }

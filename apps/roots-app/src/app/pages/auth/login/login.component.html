@@ -2,53 +2,44 @@
   <div class="row justify-content-center">
     <div class="col-sm-10 col-md-8 col-lg-6 my-5">
       <div class="card card-auth shadow-lg p-3 px-md-5 py-md-4">
-        <h2>Inloggen</h2>
-        <form
-          class="form-signin"
-          [formGroup]="loginForm"
-          (ngSubmit)="onSubmit()"
-        >
-          <div class="form-group">
+        <div class="d-flex justify-content-center">
+          <h2>Inloggen</h2>
+        </div>
+        <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
+          <div class="form-group mt-4">
             <label for="inputEmailAddress">E-mailadres</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="emailAddress"
-              id="inputEmailAddress"
-              aria-describedby="emailAddressHelp"
-              [ngClass]="{
+            <input type="text" class="form-control" formControlName="emailAddress" id="inputEmailAddress"
+              aria-describedby="emailAddressHelp" [ngClass]="{
                 'is-invalid':
                   loginForm.get('emailAddress')?.invalid &&
                   loginForm.get('emailAddress')?.touched
-              }"
-            />
-            <span
-              *ngIf="
+              }" />
+            <span *ngIf="
                 !loginForm.get('emailAddress')?.valid &&
                 loginForm.get('emailAddress')?.touched
-              "
-              class="invalid-feedback"
-            >
+              " class="invalid-feedback">
               <p id="emailAddress-invalid">Vul een e-mailadres in!</p>
             </span>
           </div>
 
-          <div class="form-group">
+          <div class="form-group mt-4">
             <label for="inputPassword">Wachtwoord</label>
             <div class="input-group">
-              <input
-                type="{{ showPassword ? 'text' : 'password' }}"
-                class="form-control"
-                formControlName="password"
-                id="inputPassword"
-                [ngClass]="{
+              <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control" formControlName="password"
+                id="inputPassword" [ngClass]="{
                   'is-invalid':
                     loginForm.get('password')?.invalid &&
                     loginForm.get('password')?.touched
-                }"
-              />
+                }" />
 
               <div class="input-group-append">
+                <span class="input-group-text" style="border-radius: 0px; cursor: pointer" [ngClass]="{
+                    'is-invalid-eye':
+                      loginForm.get('password')?.invalid &&
+                      loginForm.get('password')?.touched
+                  }">
+                  <i *ngIf="showPassword" (click)="showPasswordToggle()" class="bi bi-eye-slash"></i>
+                  <i *ngIf="!showPassword" (click)="showPasswordToggle()" class="bi bi-eye"></i>
                 <span
                   class="input-group-text"
                   style="border-radius: 0px; cursor: pointer"
@@ -70,37 +61,25 @@
                   ></i>
                 </span>
               </div>
-              <span
-                *ngIf="
+              <span *ngIf="
                   !loginForm.get('password')?.valid &&
                   loginForm.get('password')?.touched
-                "
-                class="invalid-feedback"
-              >
+                " class="invalid-feedback">
                 <p id="password-invalid">Vul een wachtwoord in!</p>
               </span>
             </div>
           </div>
 
-          <div class="form-group">
-            <button
-              id="submitbutton"
-              class="btn submit-btn btn-block"
-              type="submit"
-              style="margin-top: 15px"
-              [disabled]="!loginForm.valid && !submitted"
-            >
+          <div class="form-group mt-4">
+            <button id="submitbutton" class="btn btn-100 btn-block" type="submit" style="margin-top: 15px"
+              [disabled]="!loginForm.valid && !submitted">
               Inloggen
             </button>
           </div>
 
           <p class="mt-2">
             Heb je nog geen account? Registreer
-            <a
-              routerLink="/register"
-              class="text-link"
-              >hier</a
-            >!
+            <a routerLink="/register" class="text-link">hier</a>!
           </p>
         </form>
       </div>
