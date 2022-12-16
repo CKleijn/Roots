@@ -14,10 +14,10 @@ describe('AppController', () => {
   });
 
   describe('getData', () => {
-    it('should return "Welcome to roots-api!"', () => {
+    it('should return "Welkom bij de API van Roots!"', () => {
       const appController = app.get<AppController>(AppController);
       expect(appController.getData()).toEqual({
-        message: 'Welcome to roots-api!',
+        message: 'Welkom bij de API van Roots!',
       });
     });
   });
