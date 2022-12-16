@@ -14,8 +14,8 @@ describe('AppService', () => {
   });
 
   describe('getData', () => {
-    it('should return "Welcome to roots-api!"', () => {
-      expect(service.getData()).toEqual({ message: 'Welcome to roots-api!' });
+    it('should return "Welkom bij de API van Roots!"', () => {
+      expect(service.getData()).toEqual({ message: 'Welkom bij de API van Roots!' });
     });
   });
 });

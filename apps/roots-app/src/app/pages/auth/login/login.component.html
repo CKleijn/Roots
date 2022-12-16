@@ -40,6 +40,25 @@
                   }">
                   <i *ngIf="showPassword" (click)="showPasswordToggle()" class="bi bi-eye-slash"></i>
                   <i *ngIf="!showPassword" (click)="showPasswordToggle()" class="bi bi-eye"></i>
+                <span
+                  class="input-group-text"
+                  style="border-radius: 0px; cursor: pointer"
+                  [ngClass]="{
+                    'is-invalid-eye':
+                      loginForm.get('password')?.invalid &&
+                      loginForm.get('password')?.touched
+                  }"
+                >
+                  <i
+                    *ngIf="showPassword"
+                    (click)="showPasswordToggle()"
+                    class="bi bi-eye-slash"
+                  ></i>
+                  <i
+                    *ngIf="!showPassword"
+                    (click)="showPasswordToggle()"
+                    class="bi bi-eye"
+                  ></i>
                 </span>
               </div>
               <span *ngIf="
