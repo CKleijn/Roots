@@ -1,46 +1,46 @@
 import { Optional } from '@nestjs/common';
-import { IsDefined, IsEmail, IsString, Matches, MinLength } from 'class-validator';
+import { IsDefined, IsEmail, IsString, Matches } from 'class-validator';
 
 export class CreateUserDto {
-  @IsString({ message: 'Firstname must be a string!' })
-  @IsDefined({ message: 'Firstname is required!' })
+  @IsString({ message: 'Voornaam moet van het type string zijn!' })
+  @IsDefined({ message: 'Voornaam is verplicht!' })
   firstname: string;
 
-  @IsString({ message: 'Lastname must be a string!' })
-  @IsDefined({ message: 'Lastname is required!' })
+  @IsString({ message: 'Achternaam moet van het type string zijn!' })
+  @IsDefined({ message: 'Achternaam is verplicht!' })
   lastname: string;
 
   @IsEmail()
-  @IsString({ message: 'Email must be a string!' })
-  @IsDefined({ message: 'Email is required!' })
+  @IsString({ message: 'E-mailadres moet van het type string zijn!!' })
+  @IsDefined({ message: 'E-mailadres is verplicht!' })
   emailAddress: string;
 
-  @IsString({ message: 'Password must be a string!' })
-  @IsDefined({ message: 'Password is required!' })
-  @Matches(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"),{ message: 'Password not strong enough! Must contain at least: 8 characters, 1 uppercase letter, 1 lowercase letter and 1 number!' })
+  @IsString({ message: 'Wachtwoord moet van het type string zijn!!' })
+  @IsDefined({ message: 'Wachtwoord is verplicht!' })
+  @Matches(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"),{ message: 'Het wachtwoord is niet sterk genoeg! Het moet op zijn minst bestaan uit: 8 karakters, 1 hoofdletter, 1 kleine letter and 1 getal!' })
   password: string;
 }
 
 export class UpdateUserDto {
   @Optional()
-  @IsString({ message: 'Firstname must be a string!' })
-  @IsDefined({ message: 'Firstname is required!' })
+  @IsString({ message: 'Voornaam moet van het type string zijn!' })
+  @IsDefined({ message: 'Voornaam is verplicht!' })
   firstname: string;
 
   @Optional()
-  @IsString({ message: 'Firstname must be a string!' })
-  @IsDefined({ message: 'Firstname is required!' })
+  @IsString({ message: 'Achternaam moet van het type string zijn!' })
+  @IsDefined({ message: 'Achternaam is verplicht!' })
   lastname: string;
 
   @Optional()
   @IsEmail()
-  @IsString({ message: 'Email must be a string!' })
-  @IsDefined({ message: 'Email is required!' })
+  @IsString({ message: 'E-mailadres moet van het type string zijn!!' })
+  @IsDefined({ message: 'E-mailadres is verplicht!' })
   emailAddress: string;
 
   @Optional()
-  @IsString({ message: 'Password must be a string!' })
-  @IsDefined({ message: 'Password is required!' })
-  @MinLength(8, { message: 'Password must be at least 8 characters long!' })
+  @IsString({ message: 'Wachtwoord moet van het type string zijn!!' })
+  @IsDefined({ message: 'Wachtwoord is verplicht!' })
+  @Matches(new RegExp("^(?=.*[a-z])(?=.*[A-Z])(?=.*\\d)[a-zA-Z\\d]{8,}$"),{ message: 'Het wachtwoord is niet sterk genoeg! Het moet op zijn minst bestaan uit: 8 karakters, 1 hoofdletter, 1 kleine letter and 1 getal!' })
   password: string;
 }
