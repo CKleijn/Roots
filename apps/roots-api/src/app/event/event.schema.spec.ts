@@ -39,7 +39,7 @@ describe('Event schema - Unit tests', () => {
         const err = model.validateSync();
 
         expect(err.errors.title).toBeInstanceOf(Error);
-        expect(err.errors.title.message).toEqual('Title is required!');
+        expect(err.errors.title.message).toEqual('Titel is verplicht!');
         expect(err.errors.title).toBeTruthy();
     });
 
@@ -49,7 +49,7 @@ describe('Event schema - Unit tests', () => {
         const err = model.validateSync();
 
         expect(err.errors.description).toBeInstanceOf(Error);
-        expect(err.errors.description.message).toEqual('Description is required!');
+        expect(err.errors.description.message).toEqual('Beschrijving is verplicht!');
         expect(err.errors.description).toBeTruthy();
     });
 
@@ -59,7 +59,7 @@ describe('Event schema - Unit tests', () => {
         const err = model.validateSync();
 
         expect(err.errors.content).toBeInstanceOf(Error);
-        expect(err.errors.content.message).toEqual('Content is required!');
+        expect(err.errors.content.message).toEqual('Inhoud is verplicht!');
         expect(err.errors.content).toBeTruthy();
     });
 
@@ -69,7 +69,7 @@ describe('Event schema - Unit tests', () => {
         const err = model.validateSync();
 
         expect(err.errors.eventDate).toBeInstanceOf(Error);
-        expect(err.errors.eventDate.message).toEqual('Date is required!');
+        expect(err.errors.eventDate.message).toEqual('Gebeurtenisdatum is verplicht!');
         expect(err.errors.eventDate).toBeTruthy();
     });
 
@@ -81,7 +81,7 @@ describe('Event schema - Unit tests', () => {
         const err = model.validateSync();
 
         expect(err.errors.title).toBeInstanceOf(Error);
-        expect(err.errors.title.message).toEqual('Title can be maximal 75 characters!');
+        expect(err.errors.title.message).toEqual('Titel mag maximaal 75 karakters bevatten!');
         expect(err.errors.title).toBeTruthy();
     })
 
@@ -92,7 +92,7 @@ describe('Event schema - Unit tests', () => {
         const err = model.validateSync();
 
         expect(err.errors.description).toBeInstanceOf(Error);
-        expect(err.errors.description.message).toEqual('Description can be maximal 150 characters!');
+        expect(err.errors.description.message).toEqual('Beschrijving mag maximaal 150 karakters bevatten!');
         expect(err.errors.description).toBeTruthy();
     })
 });

@@ -102,11 +102,11 @@ describe('Event controller - Integration tests', () => {
         const result: any = await eventController.createEvent(companyId, exampleEvent);
 
         expect(createEvent).toBeCalledTimes(1);
-        expect(result.message).toEqual('Event has been successfully created!');
+        expect(result.message).toEqual('De gebeurtenis is succesvol aangemaakt!');
         expect(result.status).toEqual(201);
     });
 
-    it('should call create on the service', async () => {
+    it('should call update on the service', async () => {
         const exampleEvent: Event = {
             title: 'Event title 1',
             description: 'Event description 2',
@@ -123,7 +123,7 @@ describe('Event controller - Integration tests', () => {
         const result: any = await eventController.updateEvent(companyId, eventId, exampleEvent);
 
         expect(updateEvent).toBeCalledTimes(1);
-        expect(result.message).toEqual('Event has been successfully updated!');
+        expect(result.message).toEqual('De gebeurtenis is succesvol aangepast!');
         expect(result.status).toEqual(200);
     });
 });
