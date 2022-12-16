@@ -51,7 +51,7 @@ export class EventService {
     ]);
 
     if (event.length === 0)
-      throw new HttpException(`This event doesn't exists!`, HttpStatus.NOT_FOUND);
+      throw new HttpException(`Deze gebeurtenis bestaat niet!`, HttpStatus.NOT_FOUND);
 
     return event[0]?.events;
   }
@@ -69,7 +69,7 @@ export class EventService {
       );
 
     if (!updatedCompanyEvents)
-      throw new HttpException(`This company doesn't exists!`, HttpStatus.NOT_FOUND);
+      throw new HttpException(`Dit bedrijf bestaat niet!`, HttpStatus.NOT_FOUND);
 
     return updatedCompanyEvents;
   }
@@ -93,7 +93,7 @@ export class EventService {
       );
 
     if (!updatedEventFromCompany)
-      throw new HttpException(`This event doesn't exists!`, HttpStatus.NOT_FOUND);
+      throw new HttpException(`Deze gebeurtenis bestaat niet!`, HttpStatus.NOT_FOUND);
 
     return updatedEventFromCompany;
   }

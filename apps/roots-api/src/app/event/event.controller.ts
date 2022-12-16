@@ -4,7 +4,6 @@ import { EventDto } from './event.dto';
 import { Event } from './event.schema';
 import { EventService } from './event.service';
 
-
 @Controller('events')
 export class EventController {
     constructor(private readonly eventService: EventService) { }
@@ -31,6 +30,7 @@ export class EventController {
 
     @Public()
     @Post('new/:companyId')
+    // eslint-disable-next-line @typescript-eslint/ban-types
     async createEvent(@Param('companyId') companyId: string, @Body() eventDto: EventDto): Promise<Object> {
         try {
             Logger.log(`Create event (POST)`);
@@ -39,7 +39,7 @@ export class EventController {
 
             return {
                 status: 201,
-                message: 'Event has been successfully created!'
+                message: 'De gebeurtenis is succesvol aangemaakt!'
             }
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.NOT_FOUND);
@@ -49,6 +49,7 @@ export class EventController {
 
     @Public()
     @Put(':companyId/:eventId/edit')
+    // eslint-disable-next-line @typescript-eslint/ban-types
     async updateEvent(@Param('companyId') companyId: string, @Param('eventId') eventId: string, @Body() eventDto: EventDto): Promise<Object> {
         try {
             Logger.log(`Update event ${eventId} from company ${companyId} (PUT)`);
@@ -57,7 +58,7 @@ export class EventController {
 
             return {
                 status: 200,
-                message: 'Event has been successfully updated!'
+                message: 'De gebeurtenis is succesvol aangepast!'
             }
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.NOT_MODIFIED)

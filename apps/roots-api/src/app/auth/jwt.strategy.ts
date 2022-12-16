@@ -20,7 +20,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     if (user) {
       return user;
     } else {
-      throw new HttpException('Login has expired!', HttpStatus.UNAUTHORIZED);
+      throw new HttpException('Login is verlopen!', HttpStatus.UNAUTHORIZED);
     }
   }
 }

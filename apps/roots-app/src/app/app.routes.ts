@@ -2,10 +2,10 @@ import { Route } from '@angular/router';
 import { LoggedInAuthGuard } from './pages/auth/auth.guards';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
-import { TimelineComponent } from './pages/timeline/timeline.component';
+import { EventDetailComponent } from './pages/event/detail/detail.component';
 import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
-import { EventDetailComponent } from './pages/event/event-detail/event-detail.component';
+import { TimelineComponent } from './pages/timeline/timeline.component';
 
 export const appRoutes: Route[] = [
   //TIMELINE

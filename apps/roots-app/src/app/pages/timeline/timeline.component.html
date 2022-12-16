@@ -11,11 +11,10 @@
     </div>
   </form>
 </div>
-
 <div class="timeline">
 
   <div class="timeline-year">
-    <span class="timeline-year-content">2018</span>
+    <span class="timeline-year-content">2022</span>
   </div>
 
   <div *ngFor="let event of events let left = even; let right = odd" class="timeline-container"
@@ -37,7 +36,7 @@
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button class="detail-button" routerLink="/events/{{event._id}}">Read more</button>
+        <button class="btn detail-button" routerLink="/events/{{event._id}}/edit">Bewerken</button>
       </div>
     </div>
   </div>

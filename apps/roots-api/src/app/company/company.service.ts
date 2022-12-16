@@ -35,11 +35,11 @@ export class CompanyService {
 
   async validate(company: any) : Promise<void> {
     if((await this.companyModel.find({name: company.name})).length > 0) {
-      throw new HttpException(`Company with this name already exists!`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(`Er bestaat al een bedrijf met de opgegeven naam!`, HttpStatus.BAD_REQUEST);
     }
 
     if((await this.companyModel.find({emailDomain: company.emailDomain})).length > 0) {
-      throw new HttpException(`Company with this email domain already exists!`, HttpStatus.BAD_REQUEST);
+      throw new HttpException(`Er bestaat al een bedrijf met het opgegeven email domein!`, HttpStatus.BAD_REQUEST);
     }
   }
 }

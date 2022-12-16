@@ -2,88 +2,59 @@
   <div class="row justify-content-center">
     <div class="col-sm-10 col-md-8 col-lg-6 my-5">
       <div class="card card-auth shadow-lg p-3 px-md-5 py-md-4">
-        <h2>Registreren</h2>
-        <form
-          class="form-signin"
-          [formGroup]="registerForm"
-          (ngSubmit)="onSubmit()"
-        >
+        <div class="d-flex justify-content-center">
+          <h2>Registreren</h2>
+        </div>
+        <form class="form-signin" [formGroup]="registerForm" (ngSubmit)="onSubmit()">
           <!--
             firstName
            -->
-          <div class="form-group">
+          <div class="form-group mt-4">
             <label for="inputFirstName">Voornaam</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="firstname"
-              id="inputFirstName"
-              [ngClass]="{
+            <input type="text" class="form-control" formControlName="firstname" id="inputFirstName" [ngClass]="{
                 'is-invalid':
                   registerForm.get('firstname')?.invalid &&
                   registerForm.get('firstname')?.touched
-              }"
-            />
-            <span
-              *ngIf="
+              }" />
+            <span *ngIf="
                 !registerForm.get('firstname')?.valid &&
                 registerForm.get('firstname')?.touched
-              "
-              class="invalid-feedback"
-            >
+              " class="invalid-feedback">
               <p id="firstName-invalid">Voornaam is verplicht!</p>
             </span>
           </div>
           <!--
             lastName
            -->
-          <div class="form-group">
+          <div class="form-group mt-4">
             <label for="inputLastName">Achternaam</label>
-            <input
-              type="text"
-              class="form-control"
-              formControlName="lastname"
-              id="inputLastName"
-              [ngClass]="{
+            <input type="text" class="form-control" formControlName="lastname" id="inputLastName" [ngClass]="{
                 'is-invalid':
                   registerForm.get('lastname')?.invalid &&
                   registerForm.get('lastname')?.touched
-              }"
-            />
-            <span
-              *ngIf="
+              }" />
+            <span *ngIf="
                 !registerForm.get('lastname')?.valid &&
                 registerForm.get('lastname')?.touched
-              "
-              class="invalid-feedback"
-            >
+              " class="invalid-feedback">
               <p id="lastName-invalid">Achternaam is verplicht!</p>
             </span>
           </div>
           <!--
             email
            -->
-          <div class="form-group">
+          <div class="form-group mt-4">
             <label for="inputEmailAddress">E-mailadres</label>
-            <input
-              type="email"
-              class="form-control"
-              formControlName="emailAddress"
-              id="inputEmailAddress"
-              aria-describedby="emailAddressHelp"
-              [ngClass]="{
+            <input type="email" class="form-control" formControlName="emailAddress" id="inputEmailAddress"
+              aria-describedby="emailAddressHelp" [ngClass]="{
                 'is-invalid':
                   registerForm.get('emailAddress')?.invalid &&
                   registerForm.get('emailAddress')?.touched
-              }"
-            />
-            <span
-              *ngIf="
+              }" />
+            <span *ngIf="
                 !registerForm.get('emailAddress')?.valid &&
                 registerForm.get('emailAddress')?.touched
-              "
-              class="invalid-feedback"
-            >
+              " class="invalid-feedback">
               <p id="email-invalid">Vul een geldig e-mailadres in!</p>
             </span>
           </div>
@@ -91,46 +62,31 @@
           <!--
             password
            -->
-          <div class="form-group">
+          <div class="form-group mt-4">
             <label for="inputPassword">Wachtwoord</label>
             <div class="input-group">
-              <input
-                type="{{ showPassword ? 'text' : 'password' }}"
-                class="form-control"
-                formControlName="password"
-                id="inputPassword"
-                [ngClass]="{
+              <input type="{{ showPassword ? 'text' : 'password' }}" class="form-control" formControlName="password"
+                id="inputPassword" [ngClass]="{
                   'is-invalid':
                     registerForm.get('password')?.invalid &&
                     registerForm.get('password')?.touched
-                }"
-              />
+                }" />
 
               <div class="input-group-append">
-                <span
-                  class="input-group-text"
-                  style="border-radius: 0px; cursor: pointer"
-                >
-                  <i
-                    *ngIf="showPassword"
-                    (click)="showPasswordToggle()"
-                    class="bi bi-eye-slash"
-                  ></i>
-                  <i
-                    *ngIf="!showPassword"
-                    (click)="showPasswordToggle()"
-                    class="bi bi-eye"
-                  ></i>
+                <span class="input-group-text" style="border-radius: 0px; cursor: pointer" [ngClass]="{
+                  'is-invalid-eye':
+                    registerForm.get('password')?.invalid &&
+                    registerForm.get('password')?.touched
+                }">
+                  <i *ngIf="showPassword" (click)="showPasswordToggle()" class="bi bi-eye-slash"></i>
+                  <i *ngIf="!showPassword" (click)="showPasswordToggle()" class="bi bi-eye"></i>
                 </span>
               </div>
 
-              <span
-                *ngIf="
+              <span *ngIf="
                   !registerForm.get('password')?.valid &&
                   registerForm.get('password')?.touched
-                "
-                class="invalid-feedback"
-              >
+                " class="invalid-feedback">
                 <p id="password-invalid">
                   Wachtwoord moet bestaan uit minimaal 1 hoofdletter, 1 kleine
                   letter, 1 cijfer en minimaal 8 karakters!
@@ -142,44 +98,29 @@
           <!--
             confirm password
            -->
-          <div class="form-group">
+          <div class="form-group mt-4">
             <label for="inputConfirmPassword">Bevestig wachtwoord</label>
             <div class="input-group">
-              <input
-                type="{{ showConfirmPassword ? 'text' : 'password' }}"
-                class="form-control"
-                formControlName="confirmPassword"
-                id="inputConfirmPassword"
-                [ngClass]="{
+              <input type="{{ showConfirmPassword ? 'text' : 'password' }}" class="form-control"
+                formControlName="confirmPassword" id="inputConfirmPassword" [ngClass]="{
                   'is-invalid':
                     registerForm.get('confirmPassword')?.invalid &&
                     registerForm.get('confirmPassword')?.touched
-                }"
-              />
+                }" />
               <div class="input-group-append">
-                <span
-                  class="input-group-text"
-                  style="border-radius: 0px; cursor: pointer"
-                >
-                  <i
-                    *ngIf="showConfirmPassword"
-                    (click)="showConfirmPasswordToggle()"
-                    class="bi bi-eye-slash"
-                  ></i>
-                  <i
-                    *ngIf="!showConfirmPassword"
-                    (click)="showConfirmPasswordToggle()"
-                    class="bi bi-eye"
-                  ></i>
+                <span class="input-group-text" style="border-radius: 0px; cursor: pointer" [ngClass]="{
+                  'is-invalid-eye':
+                    registerForm.get('password')?.invalid &&
+                    registerForm.get('password')?.touched
+                }">
+                  <i *ngIf="showConfirmPassword" (click)="showConfirmPasswordToggle()" class="bi bi-eye-slash"></i>
+                  <i *ngIf="!showConfirmPassword" (click)="showConfirmPasswordToggle()" class="bi bi-eye"></i>
                 </span>
               </div>
-              <span
-                *ngIf="
+              <span *ngIf="
                   !registerForm.get('confirmPassword')?.valid &&
                   registerForm.get('confirmPassword')?.touched
-                "
-                class="invalid-feedback"
-              >
+                " class="invalid-feedback">
                 <p id="confirmPassword-invalid">
                   Wachtwoorden komen niet overeen!
                 </p>
@@ -187,24 +128,15 @@
             </div>
           </div>
 
-          <div class="form-group">
-            <button
-              id="submitbutton"
-              class="btn btn-primary submit-btn"
-              type="submit"
-              style="margin-top: 15px"
-              [disabled]="!registerForm.valid"
-            >
+          <div class="form-group mt-4">
+            <button id="submitbutton" class="btn btn-100" type="submit" style="margin-top: 15px"
+              [disabled]="!registerForm.valid">
               Registreren
             </button>
           </div>
           <p class="mt-2">
             Heb je al een account? Log
-            <a
-              style="text-decoration: underline; color: #0d6efd"
-              routerLink="/login"
-              >hier</a
-            >
+            <a class="text-link" routerLink="/login">hier</a>
             in!
           </p>
         </form>

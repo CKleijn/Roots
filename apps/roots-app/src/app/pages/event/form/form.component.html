@@ -5,19 +5,19 @@
                 <div class="card shadow-lg" style="border-radius: 15px">
                     <div class="card-body p-5">
                         <div class="d-flex justify-content-center">
-                            <h3 *ngIf="!editMode">Event toevoegen</h3>
-                            <h3 *ngIf="editMode">Event bewerken</h3>
+                            <h2 *ngIf="!editMode">Gebeurtenis toevoegen</h2>
+                            <h2 *ngIf="editMode">Gebeurtenis bewerken</h2>
                         </div>
                         <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">
                             <div class="row d-flex justify-content-center align-items-center">
                                 <div class="form-outline mt-4">
                                     <label for="title" class="form-label">Titel</label>
-                                    <input type="text" class="form-control form-control-lg" formControlName="title"
+                                    <input type="text" class="form-control" formControlName="title"
                                         id="title" required maxlength="75" [ngClass]="{
                                         'is-invalid':
                                         eventForm.get('title')?.invalid && eventForm.get('title')?.touched
                                     }">
-                                    <small class="charCount">{{eventForm.value?.title?.length || 0}}/75</small>
+                                    <small class="charCount mt-1">{{eventForm.value?.title?.length || 0}}/75</small>
                                 </div>
                                 <div *ngIf="eventForm.get('title')?.invalid && eventForm.get('title')?.touched"
                                     class="invalid-feeback">
@@ -30,12 +30,12 @@
                                 </div>
                                 <div class="form-outline mt-4">
                                     <label for="description" class="form-label">Beschrijving</label>
-                                    <input type="text" class="form-control form-control-lg" required maxlength="150"
+                                    <input type="text" class="form-control" required maxlength="150"
                                         formControlName="description" id="description" [ngClass]="{
                                             'is-invalid':
                                             eventForm.get('description')?.invalid && eventForm.get('description')?.touched
                                         }">
-                                    <small class="charCount">{{eventForm.value?.description?.length || 0}}/150</small>
+                                    <small class="charCount mt-1">{{eventForm.value?.description?.length || 0}}/150</small>
                                 </div>
                                 <div *ngIf="eventForm.get('description')?.invalid && eventForm.get('description')?.touched"
                                     class="invalid-feeback">
@@ -47,7 +47,7 @@
                                     </div>
                                 </div>
                                 <div class="form-outline mt-4">
-                                    <label for="content" class="form-label">Content</label>
+                                    <label for="content" class="form-label">Inhoud</label>
                                     <quill-editor [style]="editorStyle" [modules]="config" formControlName="content"
                                         id="content" [required]="true" placeholder="&nbsp;" [ngClass]="{
                                             'is-invalid':
@@ -57,13 +57,12 @@
                                 <div *ngIf="eventForm.get('content')?.invalid && eventForm.get('content')?.touched"
                                     class="invalid-feeback">
                                     <div *ngIf="eventForm.get('content')?.errors?.['required']">
-                                        Content is verplicht!
+                                        Inhoud is verplicht!
                                     </div>
                                 </div>
                                 <div class="form-outline mt-4">
-                                    <label for="eventDate" class="form-label">Datum</label>
+                                    <label for="eventDate" class="form-label">Gebeurtenisdatum</label>
                                     <mat-form-field appearance="fill" class="datePicker">
-                                        <mat-label>Kies een datum</mat-label>
                                         <input matInput [matDatepicker]="picker" required formControlName="eventDate"
                                             id="eventDate" [ngClass]="{
                                                 'is-invalid':
@@ -76,12 +75,12 @@
                                 <div *ngIf="eventForm.get('eventDate')?.invalid && eventForm.get('eventDate')?.touched"
                                     class="invalid-feeback">
                                     <div *ngIf="eventForm.get('eventDate')?.errors?.['required']">
-                                        Datum van de gebeurtenis is verplicht!
+                                        Gebeurtenisdatum is verplicht!
                                     </div>
                                 </div>
                                 <div class="d-flex justify-content-center mt-5">
                                     <button type="submit" [disabled]="!eventForm.valid"
-                                        class="btn input-block-level form-control btn-success">Opslaan</button>
+                                        class="btn btn-100 input-block-level form-controls">Opslaan</button>
                                 </div>
                             </div>
                         </form>
