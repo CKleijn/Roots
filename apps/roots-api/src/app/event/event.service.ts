@@ -74,23 +74,23 @@ export class EventService {
     return updatedCompanyEvents;
   }
 
-  async update(eventId: string, eventDto: EventDto) {
-    console.log(eventDto)
-    const updatedEventFromCompany = await this.companyModel.findOneAndUpdate(
-      { "events._id": eventId },
-      {
-        $set: {
-          "events.$.title": eventDto?.title,
-          "events.$.description": eventDto?.description,
-          "events.$.content": eventDto?.content,
-          "events.$.eventDate": eventDto?.eventDate,
+  async update(eventId: string, eventDto: EventDto): Promise<any> {
+    const updatedEventFromCompany = await this.companyModel.findOneAndUpdate
+      (
+        { "events._id": eventId },
+        {
+          $set: {
+            "events.$.title": eventDto?.title,
+            "events.$.description": eventDto?.description,
+            "events.$.content": eventDto?.content,
+            "events.$.eventDate": eventDto?.eventDate,
+          },
         },
-      },
-      {
-        new: true,
-        runValidators: true
-      }
-    );
+        {
+          new: true,
+          runValidators: true
+        }
+      );
 
     if (!updatedEventFromCompany)
       throw new HttpException(`Deze gebeurtenis bestaat niet!`, HttpStatus.NOT_FOUND);
