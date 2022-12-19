@@ -13,6 +13,7 @@ $error: #dc3545;
 body {
   background-color: $background-color !important;
   font-family: 'Montserrat', sans-serif !important;
+  scroll-behavior: smooth;
 
   h1,
   h2,
