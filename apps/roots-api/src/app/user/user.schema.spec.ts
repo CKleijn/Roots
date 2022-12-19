@@ -1,8 +1,8 @@
 import { Test } from '@nestjs/testing';
 
-import { Model, disconnect, Types } from 'mongoose';
-import { MongooseModule, getModelToken } from '@nestjs/mongoose';
+import { getModelToken, MongooseModule } from '@nestjs/mongoose';
 import { MongoMemoryServer } from 'mongodb-memory-server';
+import { disconnect, Model, Types } from 'mongoose';
 
 import { User, UserDocument, UserSchema } from "./user.schema";
 
@@ -69,8 +69,8 @@ describe('User Schema Tests', () => {
 
     describe('Check email input is unique', () => {
         it('has a unique emailAddress', async () => {
-            const original = new userModel({ _id: new Types.ObjectId(), firstname: 'Test', lastname: 'Doe', emailAddress: 't.doe@gmail.com', password: '12345', company: null });
-            const duplicate = new userModel({ _id: new Types.ObjectId(), firstname: 'Rob', lastname: 'Doe', emailAddress: 'r.doe@gmail.com', password: '12345', company: null });
+            const original = new userModel({ _id: new Types.ObjectId(), firstname: 'Test', lastname: 'Doe', emailAddress: 't.doe@gmail.com', password: '12345', organization: null });
+            const duplicate = new userModel({ _id: new Types.ObjectId(), firstname: 'Rob', lastname: 'Doe', emailAddress: 'r.doe@gmail.com', password: '12345', organization: null });
             
             await original.save();
             
@@ -78,8 +78,8 @@ describe('User Schema Tests', () => {
         });
         
         it('does not have unique emailAddress', async () => {
-            const original = new userModel({_id: new Types.ObjectId(), firstname: 'John', lastname:'Doe', emailAddress:'j.doe@gmail.com',password:'12345',company:null   });
-            const duplicate = new userModel({_id: new Types.ObjectId(), firstname: 'John', lastname:'Doe', emailAddress:'j.doe@gmail.com',password:'12345',company:null   });
+            const original = new userModel({_id: new Types.ObjectId(), firstname: 'John', lastname:'Doe', emailAddress:'j.doe@gmail.com',password:'12345',organization:null   });
+            const duplicate = new userModel({_id: new Types.ObjectId(), firstname: 'John', lastname:'Doe', emailAddress:'j.doe@gmail.com',password:'12345',organization:null   });
 
             await original.save();
 
@@ -89,7 +89,7 @@ describe('User Schema Tests', () => {
 
     describe('Check email input is valid', () => {
         it('has a correct emailAddress', async () => {
-            const model = new userModel({ _id: new Types.ObjectId(), firstname: 'Test', lastname: 'Doe', emailAddress: 't.doe@gmail.com', password: '12345', company: null });
+            const model = new userModel({ _id: new Types.ObjectId(), firstname: 'Test', lastname: 'Doe', emailAddress: 't.doe@gmail.com', password: '12345', organization: null });
             
             const err = model.validateSync();
             
@@ -97,7 +97,7 @@ describe('User Schema Tests', () => {
         });
         
         it('does not have correct emailAddress', async () => {
-            const model = new userModel({_id: new Types.ObjectId(), firstname: 'John', lastname:'Doe', emailAddress:'.jdoegom',password:'12345',company:null   });
+            const model = new userModel({_id: new Types.ObjectId(), firstname: 'John', lastname:'Doe', emailAddress:'.jdoegom',password:'12345',organization:null   });
             
             const err = model.validateSync();
             

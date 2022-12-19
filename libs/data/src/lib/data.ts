@@ -8,7 +8,7 @@ export interface IUser {
   password: string;
 }
 
-export interface ICompany {
+export interface IOrganization {
   name: string;
   emailDomain: string;
   events:IEvent[];

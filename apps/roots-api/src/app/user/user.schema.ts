@@ -42,10 +42,10 @@ export class User implements IUser {
   password: string;
 
   @Prop({
-    ref: 'Company',
+    ref: 'Organization',
     type: Types.ObjectId
   })
-  company: ObjectId
+  organization: ObjectId
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
