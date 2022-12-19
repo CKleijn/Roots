@@ -1,6 +1,7 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IOrganization } from '@roots/data';
 import { IsDefined, IsString } from 'class-validator';
+import { Types } from 'mongoose';
 import { Event, EventSchema } from '../event/event.schema';
 
 export type OrganizationDocument = Organization & Document;
@@ -19,10 +20,16 @@ export class Organization implements IOrganization {
   emailDomain: string;
 
   @Prop({
-    default:[],
+    default: [],
     type:[EventSchema]
   })
   events: [Event];
+
+  @Prop({
+    default: [],
+    type: [Types.ObjectId]
+  })
+  tags: [Types.ObjectId]
 }
 
 export const OrganizationSchema = SchemaFactory.createForClass(Organization);

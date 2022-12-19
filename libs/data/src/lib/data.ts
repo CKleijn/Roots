@@ -21,6 +21,10 @@ export interface IEvent {
   eventDate: Date;
 }
 
+export interface ITag {
+  name:string;
+}
+
 // CLASSES
 export class User implements IUser {
   _id = new Types.ObjectId();
