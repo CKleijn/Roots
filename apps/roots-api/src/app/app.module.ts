@@ -6,15 +6,15 @@ import { AppController } from './app.controller';
 import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
-import { CompanyModule } from './company/company.module';
 import { EventModule } from './event/event.module';
+import { OrganizationModule } from './organization/organization.module';
 import { UserModule } from './user/user.module';
 
 @Module({
   imports: [
     MongooseModule.forRoot(environment.API_URL),
     UserModule,
-    CompanyModule,
+    OrganizationModule,
     EventModule,
     AuthModule,
   ],

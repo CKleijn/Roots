@@ -1,6 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Company, CompanySchema } from '../company/company.schema';
+import { Organization, OrganizationSchema } from '../organization/organization.schema';
 import { EventController } from './event.controller';
 import { EventSchema } from './event.schema';
 import { EventService } from './event.service';
@@ -9,7 +9,7 @@ import { EventService } from './event.service';
   imports: [
     MongooseModule.forFeature([
       { name: Event.name, schema: EventSchema },
-      { name: Company.name, schema: CompanySchema }]),
+      { name: Organization.name, schema: OrganizationSchema }]),
   ],
   providers: [EventService],
   controllers: [EventController],
