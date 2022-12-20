@@ -5,6 +5,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
@@ -43,6 +44,7 @@ import { NavComponent } from './shared/nav/nav.component';
     }),
     AuthModule,
     ReactiveFormsModule,
+    MatTooltipModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
