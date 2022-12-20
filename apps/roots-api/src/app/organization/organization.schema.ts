@@ -1,12 +1,12 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
-import { ICompany } from '@roots/data';
+import { IOrganization } from '@roots/data';
 import { IsDefined, IsString } from 'class-validator';
 import { Event, EventSchema } from '../event/event.schema';
 
-export type CompanyDocument = Company & Document;
+export type OrganizationDocument = Organization & Document;
 
 @Schema()
-export class Company implements ICompany {
+export class Organization implements IOrganization {
   
   @IsString({ message: 'Naam moet van het type string zijn!' })
   @IsDefined({ message: 'Naam is verplicht!' })
@@ -25,4 +25,4 @@ export class Company implements ICompany {
   events: [Event];
 }
 
-export const CompanySchema = SchemaFactory.createForClass(Company);
+export const OrganizationSchema = SchemaFactory.createForClass(Organization);

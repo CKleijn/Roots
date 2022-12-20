@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
-import { Company, CompanyDocument } from '../company/company.schema';
+import { Organization, OrganizationDocument } from '../organization/organization.schema';
 import { EventDto } from './event.dto';
 import { Event, EventDocument } from './event.schema';
 
@@ -9,11 +9,11 @@ import { Event, EventDocument } from './event.schema';
 export class EventService {
   constructor(
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
-    @InjectModel(Company.name) private companyModel: Model<CompanyDocument>
+    @InjectModel(Organization.name) private organizationModel: Model<OrganizationDocument>
   ) { }
 
   async getAll(): Promise<Event[]> {
-    const events = await this.companyModel.aggregate([
+    const events = await this.organizationModel.aggregate([
       {
         '$project': {
           '_id': 0,
@@ -32,8 +32,28 @@ export class EventService {
     return events[0]?.events;
   }
 
+  async getPerPage(query: any): Promise<Event[]> {
+    const events = await this.organizationModel.aggregate([
+      {
+        '$project': {
+          '_id': 0,
+          'events': {
+            '$sortArray': {
+              'input': '$events',
+              'sortBy': {
+                'eventDate': -1
+              }
+            }
+          }
+        }
+      }
+    ]);
+
+    return events[0]?.events.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
+  }
+
   async getById(id: string): Promise<Event> {
-    const event = await this.companyModel.aggregate([
+    const event = await this.organizationModel.aggregate([
       {
         '$unwind': {
           'path': '$events'
@@ -56,11 +76,11 @@ export class EventService {
     return event[0]?.events;
   }
 
-  async create(companyId: string, eventDto: EventDto): Promise<any> {
+  async create(organizationId: string, eventDto: EventDto): Promise<any> {
     const event = new this.eventModel(eventDto);
-    const updatedCompanyEvents = await this.companyModel.findOneAndUpdate
+    const updatedOrganizationEvents = await this.organizationModel.findOneAndUpdate
       (
-        { _id: companyId },
+        { _id: organizationId },
         { $push: { events: event } },
         {
           new: true,
@@ -68,14 +88,14 @@ export class EventService {
         }
       );
 
-    if (!updatedCompanyEvents)
+    if (!updatedOrganizationEvents)
       throw new HttpException(`Dit bedrijf bestaat niet!`, HttpStatus.NOT_FOUND);
 
-    return updatedCompanyEvents;
+    return updatedOrganizationEvents;
   }
 
   async update(eventId: string, eventDto: EventDto): Promise<any> {
-    const updatedEventFromCompany = await this.companyModel.findOneAndUpdate
+    const updatedEventFromOrganization = await this.organizationModel.findOneAndUpdate
       (
         { "events._id": eventId },
         {
@@ -92,9 +112,9 @@ export class EventService {
         }
       );
 
-    if (!updatedEventFromCompany)
+    if (!updatedEventFromOrganization)
       throw new HttpException(`Deze gebeurtenis bestaat niet!`, HttpStatus.NOT_FOUND);
 
-    return updatedEventFromCompany;
+    return updatedEventFromOrganization;
   }
 }
