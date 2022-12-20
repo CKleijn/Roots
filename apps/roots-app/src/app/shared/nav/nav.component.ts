@@ -14,11 +14,13 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class NavComponent {
   userAuthenticated!: boolean;
   loggedInUser$!: Observable<User | undefined> 
+  currentUser!: User
 
   constructor(private authService: AuthService, private modalService: NgbModal) {}
 
   ngOnInit(): void {
     this.loggedInUser$ = this.authService.currentUser$;
+    this.authService.getUserFromLocalStorage().subscribe((user) => this.currentUser = user)
   }
 
   logout() {

@@ -31,14 +31,15 @@
         </span>
       </div>
     </div>
-    <div class="timeline-textbox">
+    <div class="timeline-textbox" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}">
+      
       <h2>{{event.title}}</h2>
       <p>
         {{event.description.slice(0, 150)}}
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button class="btn detail-button" routerLink="/events/{{event._id}}/edit">Bewerken</button>
+        <button class="btn detail-button" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}/edit">Bewerken</button>
       </div>
     </div>
   </div>
