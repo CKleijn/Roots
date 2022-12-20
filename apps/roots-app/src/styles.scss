@@ -1,6 +1,7 @@
 //imports
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import '~bootstrap/dist/css/bootstrap.css';
+@import 'quill-emoji/dist/quill-emoji.css';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
 $primary-color: #9381FF;
@@ -22,6 +23,14 @@ body {
   h6 {
     font-weight: bold;
     color: $black;
+  }
+
+  a {
+    color: $primary-color;
+  }
+
+  input:focus-visible {
+    border-color: $primary-color !important;
   }
 
   .text-link {
@@ -84,7 +93,7 @@ body {
     border-radius: 0px !important;
   }
 
-  .form-control:focus {
+  .form-control:focus, input:focus-visible {
     outline: none !important;
     box-shadow: none !important;
   }
@@ -114,5 +123,77 @@ body {
 
   .btn-100 {
     width: 100% !important;
+  }
+
+  iframe {
+    width: 100vw !important;
+    height: 45vh !important;
+  }
+
+  .ql-editor {
+    min-height: 200px !important;
+  }
+
+  #tab-panel {
+    justify-content: unset !important;
+    padding: 7px !important;
+  }
+
+  .ql-container {
+    font-family: 'Montserrat', sans-serif !important;
+  }
+
+  .ql-tooltip {
+    top: 0% !important;
+    left: 52% !important;
+    right: 1% !important;
+  }
+
+  .ql-tooltip[data-mode="video"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode="link"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip::before {
+    content: 'Acties:' !important;
+  }
+
+  .ql-tooltip[data-mode="video"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode="link"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode="video"] a.ql-action::after {
+    content: 'Voeg toe' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip[data-mode="link"] a.ql-action::after {
+    content: 'Voeg toe' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip a.ql-action::after {
+    content: 'Bewerken' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip a.ql-remove::before {
+    content: 'Verwijderen' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip .ql-preview {
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip > input::placeholder {
+    color: $white !important;
   }
 }

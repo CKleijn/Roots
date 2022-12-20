@@ -1,3 +1,4 @@
+import * as QuillNamespace from 'quill';
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
@@ -6,6 +7,12 @@ import { Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Event } from '../event.model';
 import { EventService } from '../event.service';
+
+let Quill: any = QuillNamespace;
+const ImageResize = require('quill-image-resize-module');
+const Emoji = require('quill-emoji');
+Quill.register('modules/imageResize', ImageResize.default);
+Quill.register("modules/emoji", Emoji.default);
 
 @Component({
   selector: 'roots-event-form',
@@ -25,17 +32,24 @@ export class EventFormComponent implements OnInit, OnDestroy {
   event: Event = new Event();
   eventForm: FormGroup = new FormGroup({});
   editorStyle = {
-    height: '300px',
+    height: '100%',
     width: '100%'
   }
   config = {
     toolbar: [
       ['bold', 'italic', 'underline'],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }], 
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
-    ]
+      ['link', 'image', 'video'],
+      ['emoji'],
+    ],
+    imageResize: {
+      modules: ['Resize', 'DisplaySize']
+    },
+    'emoji-toolbar': true,
   }
 
   constructor(
@@ -84,7 +98,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     const date = new Date(this.eventForm.value.eventDate);
     date.setHours(date.getHours() + 2);
     this.eventForm.value.eventDate = date;
-    
+
     this.authSubscription = this.authService.currentUser$.subscribe({
       next: (user: any) => this.companyId = user.company,
       error: (error) => this.error = error.message
