@@ -6,9 +6,10 @@ export interface IUser {
   lastname: string;
   emailAddress: string;
   password: string;
+  organization: Types.ObjectId
 }
 
-export interface ICompany {
+export interface IOrganization {
   name: string;
   emailDomain: string;
   events:IEvent[];
@@ -29,4 +30,5 @@ export class User implements IUser {
   emailAddress = '';
   password = '';
   access_token = '';
+  organization = new Types.ObjectId()
 }

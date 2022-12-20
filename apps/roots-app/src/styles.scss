@@ -1,10 +1,54 @@
-/* You can add global styles to this file, and also import other style files */
+//imports
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
-/* Importing Bootstrap SCSS file. */
 @import '~bootstrap/dist/css/bootstrap.css';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+$primary-color: #9381FF;
+$secondary-color: #B8B8FF;
+$background-color: #9381FF;
+$white: #ffffff;
+$black: #000000;
+$error: #dc3545;
 
 body {
-  background-color: cadetblue !important;
+  background-color: $background-color !important;
+  font-family: 'Montserrat', sans-serif !important;
+  scroll-behavior: smooth;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold;
+    color: $black;
+  }
+
+  .text-link {
+    color: $primary-color;
+    text-decoration: none;
+
+    &:hover {
+      color: $secondary-color;
+    }
+  }
+
+  .is-invalid-eye {
+    background-color: $error !important;
+    border: 1px solid $error !important;
+  }
+
+  .input-group-text {
+    background-color: $primary-color;
+    color: $white;
+    border: 1px solid $primary-color;
+
+    &:hover {
+      background-color: $secondary-color;
+      border-color: $secondary-color;
+    }
+  }
 
   .submit-btn {
     width: 100%;
@@ -28,26 +72,48 @@ body {
       box-shadow: none;
     }
   }
-}
 
-.invalid-feeback {
-  color: red !important;
-}
+  .card {
+    border-radius: 0px !important;
+  }
 
-.form-control {
-  border-radius: 0px !important;
-}
+  .invalid-feeback {
+    color: red !important;
+  }
 
-.form-control:focus {
-  outline: none !important;
-  box-shadow: none !important;
-}
+  .form-control {
+    border-radius: 0px !important;
+  }
 
-.charCount {
-  float: right;
-  font-size: 12px;
-}
+  .form-control:focus {
+    outline: none !important;
+    box-shadow: none !important;
+  }
 
-.mdc-floating-label--required {
-  display: none !important;
+  .charCount {
+    float: right;
+    font-size: 12px;
+  }
+
+  .mdc-floating-label--required {
+    display: none !important;
+  }
+
+  .btn {
+    background-color: $primary-color !important;
+    border-color: $primary-color !important;
+    border-width: 3px !important;
+    border-radius: 0px !important;
+    color: #ffffff !important;
+  }
+
+  .btn:hover {
+    border-color: $primary-color !important;
+    background-color: #ffffff !important;
+    color: $primary-color !important;
+  }
+
+  .btn-100 {
+    width: 100% !important;
+  }
 }

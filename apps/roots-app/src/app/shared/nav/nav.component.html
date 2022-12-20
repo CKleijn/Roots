@@ -6,13 +6,18 @@
       >
     </li>
     <li>
+      <a routerLink="organizations/{{currentUser.organization}}}/events/new" *ngIf="(loggedInUser$ | async) !== undefined"
+        >Gebeurtenis toevoegen</a
+      >
+    </li>
+    <li>
       <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"
         >Inloggen</a
       >
     </li>
     <li>
       <a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined"
-        >Registeren</a
+        >Registreren</a
       >
     </li>
     <li>
@@ -40,11 +45,11 @@
     <span>Weet je zeker dat je uit wil loggen?</span>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn btn-danger" (click)="logout()">
-      Uitloggen
-    </button>
-    <button type="button" class="btn btn-secondary" (click)="modal.dismiss()">
+    <button type="button" class="btn" (click)="modal.dismiss()">
       Annuleren
+    </button>
+    <button type="button" class="btn" (click)="logout()">
+      Uitloggen
     </button>
   </div>
 </ng-template>

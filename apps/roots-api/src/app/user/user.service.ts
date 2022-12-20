@@ -2,7 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
-import { CompanyService } from '../company/company.service';
+import { OrganizationService } from '../organization/organization.service';
 import { CreateUserDto } from './user.dto';
 import { User, UserDocument } from './user.schema';
 
@@ -10,7 +10,7 @@ import { User, UserDocument } from './user.schema';
 export class UserService {
   constructor(
     @InjectModel(User.name) private userModel: Model<UserDocument>,
-    private readonly companyService: CompanyService
+    private readonly organizationService: OrganizationService
   ) {}
 
   async findByEmailAddress(emailAddress: string): Promise<User> {
@@ -27,7 +27,7 @@ export class UserService {
     const newUser = new this.userModel({
       ...createUserDto,
       password: await bcrypt.hashSync(createUserDto.password, 10),
-      company: await this.companyService.getByEmailDomain(
+      organization: await this.organizationService.getByEmailDomain(
         createUserDto.emailAddress.split('@').at(1)
       ),
     });
@@ -47,7 +47,7 @@ export class UserService {
     }
 
     if (
-      (await this.companyService.getByEmailDomain(
+      (await this.organizationService.getByEmailDomain(
         user.emailAddress.split('@').at(1)
       )) === null
     ) {

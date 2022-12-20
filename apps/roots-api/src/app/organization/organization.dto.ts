@@ -1,7 +1,7 @@
 import { Optional } from '@nestjs/common';
 import { IsDefined, IsString } from 'class-validator';
 
-export class CreateCompanyDTO {
+export class CreateOrganizationDTO {
     @IsString({ message: 'Naam moet van het type string zijn!' })
     @IsDefined({ message: 'Naam is verplicht!' })
     name: string;
@@ -11,7 +11,7 @@ export class CreateCompanyDTO {
     emailDomain: string;
 }
 
-export class UpdateCompanyDTO {
+export class UpdateOrganizationDTO {
     @Optional()
     @IsString({ message: 'Naam moet van het type string zijn!' })
     @IsDefined({ message: 'Naam is verplicht!' })

@@ -19,7 +19,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
   createSubscription: Subscription | undefined;
   updateSubscription: Subscription | undefined;
   eventId: string | undefined;
-  companyId: string | undefined;
+  organizationId: string | undefined;
   editMode = false;
   error: string | undefined;
   event: Event = new Event();
@@ -81,21 +81,24 @@ export class EventFormComponent implements OnInit, OnDestroy {
   }
 
   onSubmit() {
-    this.eventForm.value.eventDate.setHours(this.eventForm.value.eventDate.getHours() + 2);
+    const date = new Date(this.eventForm.value.eventDate);
+    date.setHours(date.getHours() + 2);
+    this.eventForm.value.eventDate = date;
+    
     this.authSubscription = this.authService.currentUser$.subscribe({
-      next: (user: any) => this.companyId = user.company,
+      next: (user: any) => this.organizationId = user.organization,
       error: (error) => this.error = error.message
     });
 
     if (!this.editMode) {
-      this.createSubscription = this.eventService.postEvent(this.eventForm.value, (this.companyId as string)).subscribe({
+      this.createSubscription = this.eventService.postEvent(this.eventForm.value, (this.organizationId as string)).subscribe({
         next: () => this.router.navigate(['timeline']),
         error: (error) => this.error = error.message
       })
     }
     else {
-      this.updateSubscription = this.eventService.putEvent(this.eventForm.value, (this.eventId as string), (this.companyId as string)).subscribe({
-        next: () => this.router.navigate(['..'], { relativeTo: this.route }),
+      this.updateSubscription = this.eventService.putEvent(this.eventForm.value, (this.eventId as string), (this.organizationId as string)).subscribe({
+        next: () => this.router.navigate(['timeline']),
         error: (error) => this.error = error.message
       })
     }

@@ -14,10 +14,10 @@ export const appRoutes: Route[] = [
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent, pathMatch: 'full' },
   // EVENTS
-  { path: 'events', pathMatch: 'full', component: EventComponent, canActivate: [LoggedInAuthGuard] },
-  { path: 'events/new', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
-  { path: 'events/:eventId', pathMatch: 'full', component: EventDetailComponent, canActivate: [LoggedInAuthGuard] },
-  { path: 'events/:eventId/edit', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
+  { path: 'organizations/:organizationId/events', pathMatch: 'full', component: EventComponent, canActivate: [LoggedInAuthGuard] },
+  { path: 'organizations/:organizationId/events/new', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
+  { path: 'organizations/:organizationId/events/:eventId', pathMatch: 'full', component: EventDetailComponent, canActivate: [LoggedInAuthGuard] },
+  { path: 'organizations/:organizationId/events/:eventId/edit', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
   //FALLBACK
   { path: '**', redirectTo: 'login' },
 ];
