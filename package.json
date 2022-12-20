@@ -56,6 +56,7 @@
     "@angular/platform-browser": "~15.0.0",
     "@angular/platform-browser-dynamic": "~15.0.0",
     "@angular/router": "~15.0.0",
+    "@material/tooltip": "^15.0.0-canary.7971d6ad5.0",
     "@nestjs/common": "^9.0.0",
     "@nestjs/core": "^9.0.0",
     "@nestjs/jwt": "^9.0.0",
