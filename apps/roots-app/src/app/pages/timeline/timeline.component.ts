@@ -1,6 +1,8 @@
 /* eslint-disable prefer-const */
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
-import { elementAt } from 'rxjs';
+import { User } from '@roots/data';
+import { elementAt, Observable } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
 import { EventService } from '../event/event.service';
 
 @Component({
@@ -10,8 +12,10 @@ import { EventService } from '../event/event.service';
 })
 export class TimelineComponent implements OnInit, AfterViewChecked {
   events: any = [];
+  loggedInUser!: User; 
 
-  constructor(private eventService: EventService) {}
+
+  constructor(private eventService: EventService, private authService: AuthService) {}
 
   ngOnInit(): void {
     this.eventService.getAllEvents().subscribe((events) => {
@@ -21,6 +25,8 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
         event.eventDate = new Date(event.eventDate);
       });
     });
+
+   this.authService.getUserFromLocalStorage().subscribe((user) => this.loggedInUser = user);
   }
 
   ngAfterViewChecked(): void {
