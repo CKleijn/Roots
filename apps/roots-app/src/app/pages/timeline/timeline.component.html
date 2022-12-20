@@ -13,7 +13,7 @@
 </div>
 
 
-<div class="timeline">
+<div class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
 
   <div class="timeline-year">
     <span class="timeline-year-content">2022</span>

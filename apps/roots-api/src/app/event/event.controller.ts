@@ -1,4 +1,4 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Put, Query } from '@nestjs/common';
 import { Public } from '../auth/auth.module';
 import { EventDto } from './event.dto';
 import { Event } from './event.schema';
@@ -14,6 +14,14 @@ export class EventController {
         Logger.log('Retrieving all events (READ)');
 
         return await this.eventService.getAll();
+    }
+
+    @Public()
+    @Get('filter')
+    async getEventsPerPage(@Query() query): Promise<Event[]> {
+        Logger.log('Retrieving events per page (READ)');
+
+        return await this.eventService.getPerPage(query);
     }
 
     @Public()

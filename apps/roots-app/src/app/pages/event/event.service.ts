@@ -17,6 +17,10 @@ export class EventService {
         return this.httpClient.get(environment.SERVER_API_URL + '/events') as Observable<Event[]>;
     }
 
+    getEventsPerPage(old_records: number, new_records: number): Observable<Event[]> {
+        return this.httpClient.get(environment.SERVER_API_URL + `/events/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<Event[]>;
+    }
+
     getEventById(eventId: string): Observable<Event> {
         return this.httpClient.get(environment.SERVER_API_URL + '/events/' + eventId) as Observable<Event>;
     }
