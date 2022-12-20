@@ -14,7 +14,7 @@ export class Tag implements ITag {
   @Prop({
     type: Types.ObjectId
   })
-  organisation: Types.ObjectId
+  organization: Types.ObjectId
 }
 
 export const TagSchema = SchemaFactory.createForClass(Tag);
