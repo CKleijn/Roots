@@ -21,6 +21,7 @@ import { EventFormComponent } from './pages/event/form/form.component';
 import { OrganizationModule } from './pages/organization/organization.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -52,6 +53,7 @@ import { NavComponent } from './shared/nav/nav.component';
     MatNativeDateModule,
     QuillModule.forRoot(),
     OrganizationModule,
+    InfiniteScrollModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

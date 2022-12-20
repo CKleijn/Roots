@@ -6,7 +6,7 @@
       >
     </li>
     <li>
-      <a routerLink="/events/new" *ngIf="(loggedInUser$ | async) !== undefined"
+      <a routerLink="organizations/{{currentUser.organization}}}/events/new" *ngIf="(loggedInUser$ | async) !== undefined"
         >Gebeurtenis toevoegen</a
       >
     </li>

@@ -1,6 +1,7 @@
 /* eslint-disable prefer-const */
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
-import { elementAt } from 'rxjs';
+import { User } from '@roots/data';
+import { AuthService } from '../auth/auth.service';
 import { EventService } from '../event/event.service';
 
 @Component({
@@ -10,17 +11,24 @@ import { EventService } from '../event/event.service';
 })
 export class TimelineComponent implements OnInit, AfterViewChecked {
   events: any = [];
-
-  constructor(private eventService: EventService) {}
+  throttle = 0;
+  distance = 2;
+  old_records = 0;
+  new_records = 5;
+  loggedInUser!: User; 
+  constructor(private eventService: EventService, private authService: AuthService) {}
 
   ngOnInit(): void {
-    this.eventService.getAllEvents().subscribe((events) => {
+    this.eventService.getEventsPerPage(this.old_records, this.new_records).subscribe((events) => {
+      console.log('Read the first 5 events')
       this.events = events;
 
       events.forEach((event) => {
         event.eventDate = new Date(event.eventDate);
       });
     });
+
+   this.authService.getUserFromLocalStorage().subscribe((user) => this.loggedInUser = user);
   }
 
   ngAfterViewChecked(): void {
@@ -38,5 +46,17 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
       observer.observe(element);
     });
     return;
+  }
+
+  onScroll(): void {
+    console.log('scrolled');
+    this.eventService.getEventsPerPage(this.old_records, this.new_records).subscribe((events) => {
+      console.log('Read another 5 events')
+      this.old_records += this.new_records;
+      events.forEach((event) => {
+        event.eventDate = new Date(event.eventDate);
+      });
+      this.events.push(...events);
+    });
   }
 }

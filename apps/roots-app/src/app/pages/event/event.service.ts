@@ -1,6 +1,9 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-
+import { environment } from "../../../environments/environment.prod";
+import { Observable, catchError, map, of } from "rxjs";
+import { AuthService } from "../auth/auth.service";
+import { Event } from '../event/event.model'
 import { ToastrService } from 'ngx-toastr';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -23,11 +26,13 @@ export class EventService {
     ) as Observable<Event[]>;
   }
 
-  getEventById(eventId: string): Observable<Event> {
-    return this.httpClient.get(
-      environment.SERVER_API_URL + '/events/' + eventId
-    ) as Observable<Event>;
-  }
+    getEventsPerPage(old_records: number, new_records: number): Observable<Event[]> {
+        return this.httpClient.get(environment.SERVER_API_URL + `/events/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<Event[]>;
+    }
+
+    getEventById(eventId: string): Observable<Event> {
+        return this.httpClient.get(environment.SERVER_API_URL + '/events/' + eventId) as Observable<Event>;
+    }
 
   postEvent(event: Event, companyId: string): Observable<any> {
     return this.httpClient

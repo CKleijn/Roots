@@ -13,7 +13,7 @@
 </div>
 
 
-<div class="timeline">
+<div class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
 
   <div class="timeline-year">
     <span class="timeline-year-content">2022</span>
@@ -32,13 +32,14 @@
       </div>
     </div>
     <div class="timeline-textbox">
+      
       <h2>{{event.title}}</h2>
       <p>
         {{event.description.slice(0, 150)}}
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button class="btn detail-button" routerLink="/events/{{event._id}}/edit">Bewerken</button>
+        <button class="detail-button" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}">Lees meer</button>
       </div>
     </div>
   </div>
