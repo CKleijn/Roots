@@ -1,6 +1,7 @@
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
+// eslint-disable-next-line @nrwl/nx/enforce-module-boundaries
 import { environment } from "apps/roots-app/src/environments/environment.prod";
 import { Observable, catchError, map, of } from "rxjs";
 import { AuthService } from "../auth/auth.service";

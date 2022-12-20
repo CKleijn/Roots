@@ -83,6 +83,7 @@ export class EventService {
             "events.$.title": eventDto?.title,
             "events.$.description": eventDto?.description,
             "events.$.content": eventDto?.content,
+            "events.$.tags":eventDto?.tags,
             "events.$.eventDate": eventDto?.eventDate,
           },
         },

@@ -32,11 +32,29 @@ export class TagController {
     @Public()
     @Post('new/organizations/:organizationId/events/:eventId')
     // eslint-disable-next-line @typescript-eslint/ban-types
-    async createTag(@Param('organizationId', ParseObjectIdPipe) organizationId: string,@Param('eventId', ParseObjectIdPipe) eventId: string, @Body() tagDto: TagDto): Promise<Object> {
+    async createTagInEvent(@Param('organizationId', ParseObjectIdPipe) organizationId: string,@Param('eventId', ParseObjectIdPipe) eventId: string, @Body() tagDto: TagDto): Promise<Object> {
         try {
             Logger.log(`Create tag (POST)`);
 
-            const tag = await this.tagService.create(organizationId, eventId, tagDto);
+            const tag = await this.tagService.createInEvent(organizationId, eventId, tagDto);
+
+            return {
+                status: 201,
+                message: 'De tag is succesvol aangemaakt!'
+            }
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
+        }
+    }
+
+    @Public()
+    @Post('new/organizations/:organizationId')
+    // eslint-disable-next-line @typescript-eslint/ban-types
+    async createTagInOrganization(@Param('organizationId', ParseObjectIdPipe) organizationId: string, @Body() tagDto: TagDto): Promise<Object> {
+        try {
+            Logger.log(`Create tag (POST)`);
+            console.log(tagDto, organizationId);
+            const tag = await this.tagService.createInOrganization(organizationId, tagDto);
 
             return {
                 status: 201,

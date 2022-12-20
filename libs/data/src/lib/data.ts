@@ -6,6 +6,7 @@ export interface IUser {
   lastname: string;
   emailAddress: string;
   password: string;
+  organization: string;
 }
 
 export interface IOrganization {
@@ -33,4 +34,5 @@ export class User implements IUser {
   emailAddress = '';
   password = '';
   access_token = '';
+  organization = '';
 }

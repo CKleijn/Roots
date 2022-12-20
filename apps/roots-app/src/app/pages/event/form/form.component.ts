@@ -1,11 +1,17 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { Subscription } from 'rxjs';
+import { map, Observable, startWith, Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Event } from '../event.model';
 import { EventService } from '../event.service';
+import { Tag } from './tag.model';
+import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
+import { MatChipInputEvent, MatChipEditedEvent } from '@angular/material/chips';
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
+import { TagService } from './tag.service';
+import { User } from '@roots/data';
 
 @Component({
   selector: 'roots-event-form',
@@ -18,8 +24,14 @@ export class EventFormComponent implements OnInit, OnDestroy {
   authSubscription: Subscription | undefined;
   createSubscription: Subscription | undefined;
   updateSubscription: Subscription | undefined;
+  getAllTagsSubscription: Subscription | undefined;
+  loggedInUserSubscription: Subscription | undefined;
+  createTagSubscription: Subscription | undefined;
+
+  loggedInUser$!: Observable<User | undefined>
   eventId: string | undefined;
-  companyId: string | undefined;
+  organizationId: string | undefined;
+  organizationIdString: string | undefined;
   editMode = false;
   error: string | undefined;
   event: Event = new Event();
@@ -38,23 +50,44 @@ export class EventFormComponent implements OnInit, OnDestroy {
     ]
   }
 
+  //tags
+  separatorKeysCodes: number[] = [ENTER, COMMA]
+  tagCtrl = new FormControl('');
+  filteredTags: Observable<string[] | undefined>;
+  tags: string[] = [];
+  allTags: string[] = [];
+  selectable = true;
+  removable = true;
+
+  @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
+
   constructor(
     private route: ActivatedRoute,
     private router: Router,
     private eventService: EventService,
     private authService: AuthService,
-    private dateAdapter: DateAdapter<Date>
+    private dateAdapter: DateAdapter<Date>,
+    private tagService: TagService,
   ) {
-    this.dateAdapter.setLocale('nl-NL')
+    this.dateAdapter.setLocale('nl-NL');
+    this.filteredTags = this.tagCtrl.valueChanges.pipe(startWith(null), map((tag: string | null) => (tag ? this._filter(tag) : this.allTags?.slice())))
   }
 
   ngOnInit(): void {
     this.paramSubscription = this.route.paramMap.subscribe((params: ParamMap) => (this.eventId as any) = params.get('eventId'));
 
+    this.loggedInUser$ = this.authService.currentUser$;
+    this.loggedInUserSubscription = this.loggedInUser$.subscribe((p) => {
+      this.organizationIdString = p?.organization.toString();
+    });
+
+    this.getAllTags();
+
     this.eventForm = new FormGroup({
       title: new FormControl(null, [Validators.required]),
       description: new FormControl(null, [Validators.required]),
       content: new FormControl(null, [Validators.required]),
+      tags: new FormControl(null, [Validators.required, this.validateTags.bind(this)]),
       eventDate: new FormControl(null, [Validators.required])
     });
 
@@ -68,6 +101,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
             ...event
           }
 
+          this.getCurrentTags();
+
           this.eventForm.patchValue({
             title: this.event.title,
             description: this.event.description,
@@ -80,24 +115,37 @@ export class EventFormComponent implements OnInit, OnDestroy {
     }
   }
 
-  onSubmit() {
+  async onSubmit() {
+    let allTags = [] as any[] | undefined;
+    // eslint-disable-next-line prefer-const
+    let allSelectedTags = [] as any[];
+
+    await this.checkTagsExists();
+
+    if (this.organizationIdString) {
+      allTags = await this.tagService.getAllTagsByOrganization(this.organizationIdString).toPromise();
+      for await (const tagName of this.tags) {
+        allSelectedTags.push(allTags?.filter(p => p.name === tagName).at(0)?._id);
+      }
+    }
+
     const date = new Date(this.eventForm.value.eventDate);
     date.setHours(date.getHours() + 2);
     this.eventForm.value.eventDate = date;
-    
+
     this.authSubscription = this.authService.currentUser$.subscribe({
-      next: (user: any) => this.companyId = user.company,
+      next: (user: any) => this.organizationId = user.company,
       error: (error) => this.error = error.message
     });
 
     if (!this.editMode) {
-      this.createSubscription = this.eventService.postEvent(this.eventForm.value, (this.companyId as string)).subscribe({
+      this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
         next: () => this.router.navigate(['timeline']),
         error: (error) => this.error = error.message
       })
     }
     else {
-      this.updateSubscription = this.eventService.putEvent(this.eventForm.value, (this.eventId as string), (this.companyId as string)).subscribe({
+      this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
         next: () => this.router.navigate(['timeline']),
         error: (error) => this.error = error.message
       })
@@ -110,5 +158,90 @@ export class EventFormComponent implements OnInit, OnDestroy {
     this.authSubscription?.unsubscribe;
     this.createSubscription?.unsubscribe;
     this.updateSubscription?.unsubscribe;
+    this.getAllTagsSubscription?.unsubscribe;
+    this.loggedInUserSubscription?.unsubscribe;
+    this.createTagSubscription?.unsubscribe;
+  }
+
+  add(tag: MatChipInputEvent): void {
+    const value = (tag.value || '').trim();
+
+    if (value) {
+      this.tags?.push(value);
+    }
+
+    tag.chipInput.clear();
+
+    this.tagCtrl.setValue(null);
+  }
+
+  remove(tag: string): void {
+    const index = this.tags?.indexOf(tag);
+
+    if (index > -1) {
+      this.tags?.splice(index, 1);
+    }
+  }
+
+  selected(tag: MatAutocompleteSelectedEvent): void {
+    if (!this.tags?.includes(tag.option.viewValue)) {
+      this.tags?.push(tag.option.viewValue);
+
+      if (this.tagInput) {
+        this.tagInput.nativeElement.value = '';
+      }
+
+      this.tagCtrl.setValue(null);
+    }
+  }
+
+  private _filter(value: string): string[] | undefined {
+    const filterValue = value.toLowerCase();
+
+    return this.allTags?.filter(tag => tag.toLowerCase().includes(filterValue));
+  }
+
+  async getAllTags() {
+    if (this.organizationIdString) {
+      const tags = await this.tagService.getAllTagsByOrganization(this.organizationIdString).toPromise();
+      if (tags) {
+        for await (const tag of tags) {
+          this.allTags?.push(tag.name);
+        }
+      }
+    }
+  }
+
+  async checkTagsExists() {
+    for await (const tag of this.tags) {
+      if (!this.allTags.includes(tag)) {
+        if (this.organizationIdString) {
+          this.createSubscription = this.tagService.postTagInOrganization({ name: tag }, this.organizationIdString).subscribe();
+        }
+      }
+    }
+  }
+
+  async getCurrentTags() {
+    // eslint-disable-next-line prefer-const
+    let selectedTags = [] as Tag[];
+    this.tagService.getAllTagsByOrganization(this.organizationIdString as string).subscribe(async (p) => {
+      for await (const tagId of this.event.tags) {
+        selectedTags.push(p.filter(p => p._id === tagId).at(0));
+      }
+
+      for await (const tag of selectedTags) {
+        this.tags.push(tag.name);
+      }
+    });
+  }
+
+  validateTags(control: FormControl): { [s: string]: boolean } {
+    const tags = control.value;
+
+    console.log(tags);
+
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    return { tags: false };
   }
 }

@@ -23,10 +23,10 @@ export class TagService {
             const tag = (await this.tagModel.findOne({ _id: new Types.ObjectId(tagId) }));
 
             tags.push({
+                _id: tag._id,
                 name: tag.name,
                 organisation: tag.organization
             });
-            
         }
 
         return tags;
@@ -40,11 +40,12 @@ export class TagService {
         return tag;
     }
 
-    async create(organizationId: string, eventId: string, tagDto: TagDto): Promise<Tag> {
+    async createInEvent(organizationId: string, eventId: string, tagDto: TagDto): Promise<Tag> {
         // validation
         const organization = this.organizationModel.findOne({ _id: new Types.ObjectId(organizationId) });
         if (!organization) throw new HttpException('Organisatie niet gevonden', HttpStatus.NOT_FOUND);
 
+        // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const event = (await organization).events.filter(p => new Types.ObjectId((p as any)._id).equals(new Types.ObjectId(eventId))).at(0);
         if (!event) throw new HttpException(`Event niet gevonden van organisatie met id: ${organizationId}`, HttpStatus.NOT_FOUND);
 
@@ -71,6 +72,35 @@ export class TagService {
 
         // push to event
         await this.organizationModel.updateOne({ _id: new Types.ObjectId(organizationId), "events._id": new Types.ObjectId(eventId) }, { $push: { "events.$.tags": new Types.ObjectId(tag._id) }  } , {new:true});
+
+        return tag;
+    }
+    
+    async createInOrganization(organizationId: string, tagDto: TagDto): Promise<Tag> {
+        // validation
+        const organization = this.organizationModel.findOne({ _id: new Types.ObjectId(organizationId) });
+        if (!organization) throw new HttpException('Organisatie niet gevonden', HttpStatus.NOT_FOUND);
+
+        // new tag
+        const newTag = new this.tagModel({
+            ...tagDto,
+            organization: new Types.ObjectId(organizationId)
+        });
+
+        // create new tag in collection
+        const tag = await this.tagModel.create(newTag);
+        if (!tag) throw new HttpException('Kan geen nieuwe tag aanmaken', HttpStatus.BAD_REQUEST);
+
+        // push to organization
+        await this.organizationModel.updateOne(
+                {_id: new Types.ObjectId(organizationId)},
+                {
+                    $push: { tags: new Types.ObjectId(tag._id)}
+                },
+                {
+                    new: true,
+                }
+        );
 
         return tag;
     }

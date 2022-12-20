@@ -29,6 +29,4 @@ export class NavComponent {
   open(content: any) {
 		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
 	}
-
-
 }

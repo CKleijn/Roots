@@ -1,5 +1,6 @@
 import { IEvent } from '@roots/data';
-import { IsDefined, IsString, MaxLength } from 'class-validator';
+import { ArrayNotEmpty, IsDefined, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { Tag } from '../tag/tag.schema';
 
 export class EventDto implements IEvent {
   @IsString({ message: 'Titel moet van het type string zijn!' })
@@ -18,4 +19,9 @@ export class EventDto implements IEvent {
 
   @IsDefined({ message: 'Gebeurtenisdatum is verplicht!' })
   eventDate: Date;
+
+  @IsNotEmpty({ message: 'Tags zijn verplicht!' })
+  @ArrayNotEmpty({message: 'There has to be at least 1 tag!'})
+  @IsDefined({ message: 'Tags zijn verplicht!' })
+  tags: Tag[];
 }
