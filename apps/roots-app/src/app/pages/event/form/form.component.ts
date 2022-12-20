@@ -26,7 +26,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
   updateSubscription: Subscription | undefined;
   getAllTagsSubscription: Subscription | undefined;
   loggedInUserSubscription: Subscription | undefined;
-  createTagSubscription: Subscription | undefined;
 
   loggedInUser$!: Observable<User | undefined>
   eventId: string | undefined;
@@ -160,7 +159,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
     this.updateSubscription?.unsubscribe;
     this.getAllTagsSubscription?.unsubscribe;
     this.loggedInUserSubscription?.unsubscribe;
-    this.createTagSubscription?.unsubscribe;
   }
 
   add(tag: MatChipInputEvent): void {
@@ -216,7 +214,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     for await (const tag of this.tags) {
       if (!this.allTags.includes(tag)) {
         if (this.organizationIdString) {
-          this.createSubscription = this.tagService.postTagInOrganization({ name: tag }, this.organizationIdString).subscribe();
+          await this.tagService.postTagInOrganization({ name: tag }, this.organizationIdString).toPromise();
         }
       }
     }
@@ -224,16 +222,11 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   async getCurrentTags() {
     // eslint-disable-next-line prefer-const
-    let selectedTags = [] as Tag[];
-    this.tagService.getAllTagsByOrganization(this.organizationIdString as string).subscribe(async (p) => {
-      for await (const tagId of this.event.tags) {
-        selectedTags.push(p.filter(p => p._id === tagId).at(0));
-      }
+    const tags = await this.tagService.getAllTagsByOrganization(this.organizationIdString as string).toPromise();
 
-      for await (const tag of selectedTags) {
-        this.tags.push(tag.name);
-      }
-    });
+    for await (const tagId of this.event.tags) {
+      this.tags.push(tags?.filter(p => p._id === tagId).at(0).name);
+    }
   }
 
   validateTags(control: FormControl): { [s: string]: boolean } {
