@@ -7,7 +7,9 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
+import { OrganizationService } from '../../organization/organization.service';
 import { AuthService } from '../auth.service';
 
 @Component({
@@ -23,7 +25,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
   showConfirmPassword = false;
   emailDomainInput = '';
 
-  constructor(private authService: AuthService, private router: Router) {}
+  constructor(
+    private authService: AuthService,
+    private router: Router,
+    private organizationService: OrganizationService,
+    private toastr: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.registerForm = new FormGroup(
@@ -62,9 +69,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
       const organization = {
         name: this.registerForm.value.organizationName,
         emailDomain: this.emailDomainInput,
+        events: [],
       };
-
-      console.log(organization);
 
       //remove unneeded value, that's not needed for user object
       delete this.registerForm.value.confirmPassword;
@@ -75,7 +81,17 @@ export class RegisterComponent implements OnInit, OnDestroy {
         ...this.registerForm.value,
       };
 
-      console.log(user);
+      this.organizationService
+        .create(organization)
+        .subscribe((organization) => {
+          if (organization) {
+            this.authService.register(user).subscribe((user) => {
+              if (user) {
+                this.router.navigate(['/']);
+              }
+            });
+          }
+        });
     }
   }
 

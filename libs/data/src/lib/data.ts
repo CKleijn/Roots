@@ -11,7 +11,7 @@ export interface IUser {
 export interface IOrganization {
   name: string;
   emailDomain: string;
-  events:IEvent[];
+  events: IEvent[];
 }
 
 export interface IEvent {
@@ -29,4 +29,10 @@ export class User implements IUser {
   emailAddress = '';
   password = '';
   access_token = '';
+}
+
+export class Organization implements IOrganization {
+  name = '';
+  emailDomain = '';
+  events = [];
 }

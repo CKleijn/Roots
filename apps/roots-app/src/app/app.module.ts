@@ -18,6 +18,7 @@ import { AuthModule } from './pages/auth/auth.module';
 import { EventDetailComponent } from './pages/event/detail/detail.component';
 import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
+import { OrganizationModule } from './pages/organization/organization.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
 
@@ -50,6 +51,7 @@ import { NavComponent } from './shared/nav/nav.component';
     MatInputModule,
     MatNativeDateModule,
     QuillModule.forRoot(),
+    OrganizationModule,
   ],
   providers: [],
   bootstrap: [AppComponent],
