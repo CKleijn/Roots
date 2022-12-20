@@ -16,8 +16,6 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
   old_records = 0;
   new_records = 5;
   loggedInUser!: User; 
-
-
   constructor(private eventService: EventService, private authService: AuthService) {}
 
   ngOnInit(): void {
