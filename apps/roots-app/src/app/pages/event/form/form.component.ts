@@ -87,7 +87,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
       title: new FormControl(null, [Validators.required]),
       description: new FormControl(null, [Validators.required]),
       content: new FormControl(null, [Validators.required]),
-      tags: new FormControl(null, [Validators.required, this.validateTags.bind(this)]),
+      tags: new FormControl(null),
       eventDate: new FormControl(null, [Validators.required])
     });
 

@@ -45,7 +45,7 @@ export class User implements IUser {
     ref: 'Organization',
     type: Types.ObjectId
   })
-  organization: ObjectId
+  organization: Types.ObjectId
 }
 
 export const UserSchema = SchemaFactory.createForClass(User);
