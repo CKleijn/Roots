@@ -59,7 +59,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     MatChipsModule,
     MatIconModule,
     MatSelectModule,
-    MatAutocompleteModule
+    MatAutocompleteModule,
     OrganizationModule,
     InfiniteScrollModule,
   ],

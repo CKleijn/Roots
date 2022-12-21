@@ -7,10 +7,6 @@ import { Observable, catchError, map, of } from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { Event } from '../event/event.model'
 import { ToastrService } from 'ngx-toastr';
-import { catchError, map, Observable, of } from 'rxjs';
-import { environment } from '../../../environments/environment';
-import { AuthService } from '../auth/auth.service';
-import { Event } from '../event/event.model';
 
 @Injectable({
   providedIn: 'root',
