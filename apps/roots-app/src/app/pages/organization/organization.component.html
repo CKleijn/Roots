@@ -1,0 +1,24 @@
+<div class="mask d-flex align-items-center">
+<div class="container">
+    <div class="row d-flex justify-content-center align-items-center">
+        <div class="col-8">
+            <table class="table table-dark">
+                <thead>
+                    <tr>
+                        <th scope="col">Naam</th>
+                        <th scope="col">E-mailadres</th>
+                        <th scope="col"></th>
+                    </tr>
+                </thead>
+                <tbody>
+                    <tr *ngFor="let participant of participants">
+                        <td>{{ participant.firstname }} {{ participant.lastname }}</td>
+                        <td>{{ participant.emailAddress }}</td>
+                        <td><button class="btn">Deactiveer</button></td>
+                    </tr>
+                </tbody>
+            </table>
+        </div>
+    </div>
+</div>
+</div>

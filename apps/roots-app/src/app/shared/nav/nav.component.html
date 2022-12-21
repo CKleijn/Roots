@@ -8,6 +8,10 @@
         *ngIf="(loggedInUser$ | async) !== undefined">Gebeurtenis toevoegen</a>
     </li>
     <li>
+      <a routerLink="organizations/{{currentUser.organization}}"
+        *ngIf="(loggedInUser$ | async) !== undefined">Organisatie</a>
+    </li>
+    <li>
       <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined">Inloggen</a>
     </li>
     <li>

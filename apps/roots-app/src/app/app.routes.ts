@@ -5,6 +5,7 @@ import { RegisterComponent } from './pages/auth/register/register.component';
 import { EventDetailComponent } from './pages/event/detail/detail.component';
 import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
+import { OrganizationComponent } from './pages/organization/organization.component';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 
 export const appRoutes: Route[] = [
@@ -18,6 +19,8 @@ export const appRoutes: Route[] = [
   { path: 'organizations/:organizationId/events/new', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
   { path: 'organizations/:organizationId/events/:eventId', pathMatch: 'full', component: EventDetailComponent, canActivate: [LoggedInAuthGuard] },
   { path: 'organizations/:organizationId/events/:eventId/edit', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
+  // ORGANIZATION
+  { path: 'organizations/:organizationId', pathMatch: 'full', component: OrganizationComponent, canActivate: [LoggedInAuthGuard] },
   //FALLBACK
   { path: '**', redirectTo: 'login' },
 ];
