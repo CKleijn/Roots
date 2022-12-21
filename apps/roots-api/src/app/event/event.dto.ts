@@ -20,8 +20,5 @@ export class EventDto implements IEvent {
   @IsDefined({ message: 'Gebeurtenisdatum is verplicht!' })
   eventDate: Date;
 
-  @IsNotEmpty({ message: 'Tags zijn verplicht!' })
-  @ArrayNotEmpty({message: 'There has to be at least 1 tag!'})
-  @IsDefined({ message: 'Tags zijn verplicht!' })
   tags: Tag[];
 }
