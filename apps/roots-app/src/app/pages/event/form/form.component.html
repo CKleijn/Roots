@@ -72,7 +72,7 @@
                                             </button>
                                           </mat-chip-row>
                                         </mat-chip-grid>
-                                        <input placeholder="Nieuwe Tag..." #tagInput [formControl]="tagCtrl"
+                                        <input #tagInput [formControl]="tagCtrl"
                                           [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
                                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                           (matChipInputTokenEnd)="add($event)"
