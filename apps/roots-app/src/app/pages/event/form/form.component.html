@@ -60,6 +60,35 @@
                                         Inhoud is verplicht!
                                     </div>
                                 </div>
+
+                                <div class="form-outline mt-4">
+                                    <label for="tags" class="form-label">Tags</label>
+                                    <mat-form-field class="chip-list" appearance="fill">
+                                        <mat-chip-grid #chipGrid aria-label="Tags selectie">
+                                          <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
+                                            {{tag}}
+                                            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+                                              <mat-icon>cancel</mat-icon>
+                                            </button>
+                                          </mat-chip-row>
+                                        </mat-chip-grid>
+                                        <input placeholder="Nieuwe Tag..." #tagInput [formControl]="tagCtrl"
+                                          [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+                                          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+                                          (matChipInputTokenEnd)="add($event)"
+                                          maxLength='15' formControlName="tags"
+                                          id="tags"
+                                        />
+                                        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+                                          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                                            {{tag}}
+                                          </mat-option>
+                                        </mat-autocomplete>
+                                      </mat-form-field>
+                                </div>
+                                
+                                
+
                                 <div class="form-outline mt-4">
                                     <label for="eventDate" class="form-label">Gebeurtenisdatum</label>
                                     <mat-form-field appearance="fill" class="datePicker">

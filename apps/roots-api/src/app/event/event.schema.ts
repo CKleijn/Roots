@@ -1,5 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IEvent } from '@roots/data';
+import { Types } from 'mongoose';
 
 export type EventDocument = Event & Document;
 
@@ -26,6 +27,12 @@ export class Event implements IEvent {
     required: [true, 'Gebeurtenisdatum is verplicht!']
   })
   eventDate: Date;
+
+  @Prop({
+    default: [],
+    type: [Types.ObjectId]
+  })
+  tags: [Types.ObjectId]
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
