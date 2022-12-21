@@ -6,12 +6,12 @@ import { map, Observable, startWith, Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Event } from '../event.model';
 import { EventService } from '../event.service';
-import { Tag } from './tag.model';
+import { Tag } from '../../tag/tag.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipEditedEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
-import { TagService } from './tag.service';
 import { User } from '@roots/data';
+import { TagService } from '../../tag/tag.service';
 
 @Component({
   selector: 'roots-event-form',
