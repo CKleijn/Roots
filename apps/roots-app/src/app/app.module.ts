@@ -5,6 +5,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
+import { MatTooltipModule } from '@angular/material/tooltip';
 import { BrowserModule } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { RouterModule } from '@angular/router';
@@ -17,8 +18,10 @@ import { AuthModule } from './pages/auth/auth.module';
 import { EventDetailComponent } from './pages/event/detail/detail.component';
 import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
+import { OrganizationModule } from './pages/organization/organization.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
+import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 
 @NgModule({
   declarations: [
@@ -43,11 +46,14 @@ import { NavComponent } from './shared/nav/nav.component';
     }),
     AuthModule,
     ReactiveFormsModule,
+    MatTooltipModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
     MatNativeDateModule,
     QuillModule.forRoot(),
+    OrganizationModule,
+    InfiniteScrollModule,
   ],
   providers: [],
   bootstrap: [AppComponent],

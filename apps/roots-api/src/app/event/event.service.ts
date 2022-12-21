@@ -32,6 +32,26 @@ export class EventService {
     return events[0]?.events;
   }
 
+  async getPerPage(query: any): Promise<Event[]> {
+    const events = await this.organizationModel.aggregate([
+      {
+        '$project': {
+          '_id': 0,
+          'events': {
+            '$sortArray': {
+              'input': '$events',
+              'sortBy': {
+                'eventDate': -1
+              }
+            }
+          }
+        }
+      }
+    ]);
+
+    return events[0]?.events.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
+  }
+
   async getById(id: string): Promise<Event> {
     const event = await this.organizationModel.aggregate([
       {

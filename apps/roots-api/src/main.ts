@@ -1,6 +1,6 @@
 import { Logger, ValidationError, ValidationPipe } from '@nestjs/common';
 import { NestFactory } from '@nestjs/core';
-
+import { urlencoded, json } from 'express';
 import { AppModule } from './app/app.module';
 import { ValidationException } from './app/shared/filters/validation.exception';
 import { ValidationFilter } from './app/shared/filters/validation.filter';
@@ -11,6 +11,10 @@ async function bootstrap() {
   const globalPrefix = 'api';
 
   app.setGlobalPrefix(globalPrefix);
+
+  app.use(json({ limit: '50mb' }));
+
+  app.use(urlencoded({ extended: true, limit: '50mb' }));
 
   app.enableCors();
 

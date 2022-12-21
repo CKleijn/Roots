@@ -61,7 +61,6 @@ $background-color: #9381FF;
   margin: 0 10px 10px 0;
 }
 
-
 //area around timeline
 .timeline {
   position: relative;
@@ -123,9 +122,8 @@ $background-color: #9381FF;
   width: 50%;
   display: none;
 
-  > //date-circle on the line
-
-  .timeline-icon {
+  //date-circle on the line
+  >.timeline-icon {
     position: absolute;
     width: 70px;
     height: 70px;
@@ -213,17 +211,20 @@ $background-color: #9381FF;
 }
 
 .detail-button {
-  background-color: $primary-color !important;
-  border-color: $primary-color !important;
-  border-width: 3px !important;
-  border-radius: 0px !important;
-  color: #ffff !important;
-}
+  padding: 10px 30px;
+  outline: 0;
+  border: 2px solid $primary-color;
+  background-color: transparent;
+  position: relative;
+  z-index: 1;
+  font-size: 19px;
+  font-weight: 500;
+  color: $primary-color;
 
-.detail-button:hover {
-  border-color: $primary-color !important;
-  background-color: #ffff !important;
-  color: $primary-color !important;
+  &:hover {
+    background-color: $primary-color;
+    color: #FFF
+  }
 }
 
 .timeline-container-seen {
@@ -271,6 +272,10 @@ $background-color: #9381FF;
   .right,
   .right>.timeline-icon {
     left: 0%;
+
+    >.timeline-textbox>.detail-button-container {
+      text-align: start;
+    }
   }
 
   .left>.timeline-icon {
