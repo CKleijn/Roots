@@ -1,6 +1,27 @@
-<div class="container content">
-  <div class="detail-button-container ps-3 pt-3 ">
-    <button class="btn detail-button" routerLink="/timeline"><i class="bi bi-arrow-left"></i> Terug </button>
+<div class="detail-content container">
+  <div class="detail-button-container row">
+    <div class="col-6">
+      <button class="btn detail-button" routerLink="/timeline">
+        <i class="bi bi-arrow-left"></i> Terug
+      </button>
+    </div>
+    <div class="col-6" align="end">
+      <button class="btn detail-edit-button" routerLink="/timeline">
+        Bewerk gebeurtenis <i class="bi bi-pencil-square"></i>
+      </button>
+    </div>
   </div>
-  <quill-view-html [content]="event.content" class="p-1"></quill-view-html>
+  <div>
+    <div class="detail-body">
+      <div class="row detail-header">
+        <h1 class="col-9 detail-title">{{ event.title }}</h1>
+        <div class="detail-date col-3">
+          <h4 class="">{{ event.eventDate | date : 'dd-MM-YYYY' }}</h4>
+        </div>
+      </div>
+      <div class="col-8">
+        <quill-view-html [content]="event.content" class=""></quill-view-html>
+      </div>
+    </div>
+  </div>
 </div>

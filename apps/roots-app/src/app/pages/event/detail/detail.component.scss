@@ -1,3 +1,23 @@
-.content{
+.detail-body{
+    background-color: white;
+    padding: 15px;
+}
+
+.detail-content{
+    padding: 0;
+}
+
+.detail-header{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.detail-date{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.detail-edit-button{
     background-color: white;
 }
