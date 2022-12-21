@@ -6,7 +6,7 @@ export interface IUser {
   lastname: string;
   emailAddress: string;
   password: string;
-  organization: Types.ObjectId
+  organization: Types.ObjectId;
 }
 
 export interface IOrganization {
@@ -22,6 +22,10 @@ export interface IEvent {
   eventDate: Date;
 }
 
+export interface ITag {
+  name:string;
+}
+
 // CLASSES
 export class User implements IUser {
   _id = new Types.ObjectId();
@@ -30,7 +34,7 @@ export class User implements IUser {
   emailAddress = '';
   password = '';
   access_token = '';
-  organization = new Types.ObjectId()
+  organization = new Types.ObjectId();
 }
 
 export class Organization implements IOrganization {

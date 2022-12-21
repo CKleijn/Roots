@@ -8,6 +8,7 @@ import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { EventModule } from './event/event.module';
 import { OrganizationModule } from './organization/organization.module';
+import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
 
 @Module({
@@ -17,6 +18,7 @@ import { UserModule } from './user/user.module';
     OrganizationModule,
     EventModule,
     AuthModule,
+    TagModule
   ],
   controllers: [AppController],
   providers: [
