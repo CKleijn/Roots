@@ -1,3 +1,44 @@
-<div class="container content">
-  <quill-view-html [content]="event.content"></quill-view-html>
+<div class="container">
+  <div class="detail-button-container row">
+    <div class="col-6">
+      <button class="btn detail-button" routerLink="/timeline">
+        <i class="bi bi-arrow-left"></i> Terug
+      </button>
+    </div>
+    <div class="col-6" align="end">
+      <button class="btn detail-edit-button" routerLink="./edit">
+        Bewerk gebeurtenis <i class="bi bi-pencil-square"></i>
+      </button>
+    </div>
+  </div>
+  <div>
+    <div class="detail-body">
+      <div class="row detail-header">
+        <h1 class="col-9 detail-title">{{ event.title }}</h1>
+        <div class="detail-date col-3">
+          <h4 class="">{{ event.eventDate | date : 'dd-MM-YYYY' }}</h4>
+        </div>
+      </div>
+      <div class="row detail-content">
+        <div class="col-8">
+          <quill-view-html [content]="event.content" class=""></quill-view-html>
+        </div>
+        <div class="col-2"></div>
+        <div class="tagslist col-2">
+          <div class="detail-label">
+            <label>Tags</label>
+          </div>
+          <div class="detail-tags" *ngIf="tags.length !== 0">
+            <ul *ngFor="let tag of tags">
+              <li>{{ tag.name }}</li>
+            </ul>
+          </div>
+          <div class="detail-tags" *ngIf="tags.length === 0">
+            <p>Er zijn nog geen tags gekoppeld aan deze gebeurtenis!</p>
+            <p>Voeg een tag toe door deze gebeurtenis te bewerken.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+  </div>
 </div>
