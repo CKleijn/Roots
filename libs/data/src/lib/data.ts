@@ -12,7 +12,7 @@ export interface IUser {
 export interface IOrganization {
   name: string;
   emailDomain: string;
-  events:IEvent[];
+  events: IEvent[];
 }
 
 export interface IEvent {
@@ -35,4 +35,10 @@ export class User implements IUser {
   password = '';
   access_token = '';
   organization = new Types.ObjectId();
+}
+
+export class Organization implements IOrganization {
+  name = '';
+  emailDomain = '';
+  events = [];
 }

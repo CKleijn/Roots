@@ -1,11 +1,12 @@
 //imports
 @import '~@angular/material/prebuilt-themes/indigo-pink.css';
 @import '~bootstrap/dist/css/bootstrap.css';
+@import 'quill-emoji/dist/quill-emoji.css';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-$primary-color: #9381FF;
-$secondary-color: #B8B8FF;
-$background-color: #9381FF;
+$primary-color: #9381ff;
+$secondary-color: #b8b8ff;
+$background-color: #9381ff;
 $white: #ffffff;
 $black: #000000;
 $error: #dc3545;
@@ -13,6 +14,7 @@ $error: #dc3545;
 body {
   background-color: $background-color !important;
   font-family: 'Montserrat', sans-serif !important;
+  scroll-behavior: smooth;
 
   h1,
   h2,
@@ -24,6 +26,14 @@ body {
     color: $black;
   }
 
+  a {
+    color: $primary-color;
+  }
+
+  input:focus-visible {
+    border-color: $primary-color !important;
+  }
+
   .text-link {
     color: $primary-color;
     text-decoration: none;
@@ -31,6 +41,22 @@ body {
     &:hover {
       color: $secondary-color;
     }
+  }
+
+  .form-divider {
+    background: $primary-color;
+    height: 2px;
+    position: relative;
+    border: none;
+    margin: 5px 0;
+  }
+
+  #input-invalid {
+    margin-bottom: 0 !important;
+  }
+
+  .--organization-form-group {
+    margin-top: 30px;
   }
 
   .is-invalid-eye {
@@ -84,7 +110,7 @@ body {
     border-radius: 0px !important;
   }
 
-  .form-control:focus {
+  .form-control:focus, input:focus-visible {
     outline: none !important;
     box-shadow: none !important;
   }
@@ -115,4 +141,139 @@ body {
   .btn-100 {
     width: 100% !important;
   }
+
+  iframe {
+    width: 100vw !important;
+    height: 45vh !important;
+  }
+
+  .ql-editor {
+    min-height: 200px !important;
+  }
+
+  #tab-panel {
+    justify-content: unset !important;
+    padding: 7px !important;
+  }
+
+  .ql-container {
+    font-family: 'Montserrat', sans-serif !important;
+  }
+
+  .ql-tooltip {
+    top: 0% !important;
+    left: 52% !important;
+    right: 1% !important;
+  }
+
+  .ql-tooltip[data-mode="video"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode="link"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip::before {
+    content: 'Acties:' !important;
+  }
+
+  .ql-tooltip[data-mode="video"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode="link"]::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode="video"] a.ql-action::after {
+    content: 'Voeg toe' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip[data-mode="link"] a.ql-action::after {
+    content: 'Voeg toe' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip a.ql-action::after {
+    content: 'Bewerken' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip a.ql-remove::before {
+    content: 'Verwijderen' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip .ql-preview {
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip > input::placeholder {
+    color: $white !important;
+  }
+  
+  //Checkbox
+
+  .checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    padding-top: 1px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+  }
+
+  .checkbox-container:hover input ~ .checkmark {
+    background-color: #ced4da;
+  }
+
+  .checkbox-container input:checked ~ .checkmark {
+    background-color: $primary-color;
+  }
+
+  .checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+
+  .checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  .checkbox-container .checkmark:after {
+    left: 9px;
+    top: 3px;
+    width: 8px;
+    height: 16px;
+    border: solid $white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  //END Checkbox
 }

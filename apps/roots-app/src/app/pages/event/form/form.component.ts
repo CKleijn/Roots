@@ -1,4 +1,5 @@
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import * as QuillNamespace from 'quill';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
@@ -12,6 +13,12 @@ import { MatChipInputEvent, MatChipEditedEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { User } from '@roots/data';
 import { TagService } from '../../tag/tag.service';
+
+let Quill: any = QuillNamespace;
+const ImageResize = require('quill-image-resize-module');
+const Emoji = require('quill-emoji');
+Quill.register('modules/imageResize', ImageResize.default);
+Quill.register("modules/emoji", Emoji.default);
 
 @Component({
   selector: 'roots-event-form',
@@ -36,17 +43,24 @@ export class EventFormComponent implements OnInit, OnDestroy {
   event: Event = new Event();
   eventForm: FormGroup = new FormGroup({});
   editorStyle = {
-    height: '300px',
+    height: '100%',
     width: '100%'
   }
   config = {
     toolbar: [
       ['bold', 'italic', 'underline'],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
+      [{ 'indent': '-1'}, { 'indent': '+1' }], 
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
-    ]
+      ['link', 'image', 'video'],
+      ['emoji'],
+    ],
+    imageResize: {
+      modules: ['Resize', 'DisplaySize']
+    },
+    'emoji-toolbar': true,
   }
 
   //tags
@@ -133,7 +147,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     this.eventForm.value.eventDate = date;
 
     this.authSubscription = this.authService.currentUser$.subscribe({
-      next: (user: any) => this.organizationId = user.company,
+      next: (user: any) => this.organizationId = user.organization,
       error: (error) => this.error = error.message
     });
 

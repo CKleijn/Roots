@@ -61,7 +61,6 @@ $background-color: #9381FF;
   margin: 0 10px 10px 0;
 }
 
-
 //area around timeline
 .timeline {
   position: relative;
@@ -92,7 +91,7 @@ $background-color: #9381FF;
     left: 50%;
     transform: translateX(-50%);
     border-radius: 50%;
-    border: 2px solid white;
+    border: 2px solid #FFF;
   }
 }
 
@@ -121,53 +120,54 @@ $background-color: #9381FF;
   padding: 0 49px;
   position: relative;
   width: 50%;
-}
+  display: none;
 
-//date-circle on the line
-.timeline-icon {
-  position: absolute;
-  width: 70px;
-  height: 70px;
-  border-radius: 50%;
-  background-color: #FFF;
-  right: -35px;
-  top: 1.6rem;
-  z-index: 1;
-
-  //content of a date-circle
-  >.timeline-icon-content {
+  //date-circle on the line
+  >.timeline-icon {
     position: absolute;
-    left: 50%;
-    top: 5px;
-    transform: translateX(-50%);
-    text-align: center;
-    padding: 0;
-    margin: 0;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #FFF;
+    right: -35px;
+    top: 1.6rem;
+    z-index: 1;
 
-    //day of the event inside date-circle
-    >.timeline-icon-content-day {
-      font-size: 35px;
-      line-height: 1.2;
-    }
-
-    //month of the event inside date-circle
-    >.timeline-icon-content-month {
+    //content of a date-circle
+    >.timeline-icon-content {
       position: absolute;
-      top: 34px;
       left: 50%;
+      top: 5px;
       transform: translateX(-50%);
-    }
-  }
+      text-align: center;
+      padding: 0;
+      margin: 0;
 
-  //triangle that connects an event to a date-circle
-  &::after {
-    content: '';
-    position: absolute;
-    top: 50%;
-    transform: translateY(-50%);
-    z-index: 10;
-    border-top: 15px solid transparent;
-    border-bottom: 15px solid transparent;
+      //day of the event inside date-circle
+      >.timeline-icon-content-day {
+        font-size: 35px;
+        line-height: 1.2;
+      }
+
+      //month of the event inside date-circle
+      >.timeline-icon-content-month {
+        position: absolute;
+        top: 34px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    //triangle that connects an event to a date-circle
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+    }
   }
 }
 
@@ -178,7 +178,7 @@ $background-color: #9381FF;
   //triangle points right for left events
   >.timeline-icon::after {
     right: 100%;
-    border-left: 15px solid white;
+    border-left: 15px solid #FFF;
   }
 }
 
@@ -193,7 +193,7 @@ $background-color: #9381FF;
     //triangle points left for right events
     &::after {
       left: 100%;
-      border-right: 15px solid white;
+      border-right: 15px solid #FFF;
     }
   }
 
@@ -211,20 +211,38 @@ $background-color: #9381FF;
 }
 
 .detail-button {
-  background-color: $primary-color !important;
-  border-color: $primary-color !important;
-  border-width: 3px !important;
-  border-radius: 0px !important;
-  color: #ffff !important;
+  padding: 10px 30px;
+  outline: 0;
+  border: 2px solid $primary-color;
+  background-color: transparent;
+  position: relative;
+  z-index: 1;
+  font-size: 19px;
+  font-weight: 500;
+  color: $primary-color;
+
+  &:hover {
+    background-color: $primary-color;
+    color: #FFF
+  }
 }
 
-.detail-button:hover {
-  border-color: $primary-color !important;
-  background-color: #ffff !important;
-  color: $primary-color !important;
+.timeline-container-seen {
+  @extend .timeline-container;
+  display: block;
 }
 
+@keyframes slide-up {
+  0% {
+    margin-top: 500px;
+  }
+}
 
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-container {
+    animation: slide-up 1s 1;
+  }
+}
 
 //changes values when using smaller screen
 @media screen and (max-width: 800px) {
@@ -254,6 +272,10 @@ $background-color: #9381FF;
   .right,
   .right>.timeline-icon {
     left: 0%;
+
+    >.timeline-textbox>.detail-button-container {
+      text-align: start;
+    }
   }
 
   .left>.timeline-icon {
@@ -261,7 +283,7 @@ $background-color: #9381FF;
 
     &::after {
       left: 100%;
-      border-right: 15px solid white;
+      border-right: 15px solid #FFF;
       border-left: none;
     }
   }

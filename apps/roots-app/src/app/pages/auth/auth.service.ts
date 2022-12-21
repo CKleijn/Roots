@@ -48,11 +48,14 @@ export class AuthService {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
 
-          this.toastr.success('Je bent succesvol ingelogd!', 'Inloggen succesvol!');
+          this.toastr.success(
+            'Je bent succesvol ingelogd!',
+            'Inloggen succesvol!'
+          );
 
           return user;
         }),
-        catchError((err: any) => {          
+        catchError((err: any) => {
           this.toastr.error(err.error.message, 'Inloggen gefaald!');
 
           return of(undefined);
@@ -69,7 +72,10 @@ export class AuthService {
         map((user) => {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
-          this.toastr.success('Je bent succesvol geregistreerd!', 'Registratie succesvol!')
+          this.toastr.success(
+            'Je bent succesvol geregistreerd!',
+            'Registratie succesvol!'
+          );
           return user;
         }),
         catchError((err: any) => {

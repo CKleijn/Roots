@@ -1,32 +1,20 @@
 <nav class="stroke gradient-custom w-100">
   <ul style="margin-bottom: 0">
     <li>
-      <a routerLink="/" *ngIf="(loggedInUser$ | async) !== undefined"
-        >Tijdlijn</a
-      >
+      <a routerLink="/" *ngIf="(loggedInUser$ | async) !== undefined">Tijdlijn</a>
     </li>
     <li>
-      <a routerLink="/events/new" *ngIf="(loggedInUser$ | async) !== undefined"
-        >Gebeurtenis toevoegen</a
-      >
+      <a routerLink="organizations/{{currentUser.organization}}/events/new"
+        *ngIf="(loggedInUser$ | async) !== undefined">Gebeurtenis toevoegen</a>
     </li>
     <li>
-      <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"
-        >Inloggen</a
-      >
+      <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined">Inloggen</a>
     </li>
     <li>
-      <a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined"
-        >Registreren</a
-      >
+      <a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined">Registreren</a>
     </li>
     <li>
-      <a
-        class="logout-button"
-        *ngIf="(loggedInUser$ | async) !== undefined"
-        (click)="open(content)"
-        >Uitloggen</a
-      >
+      <a class="logout-button" *ngIf="(loggedInUser$ | async) !== undefined" (click)="open(content)">Uitloggen</a>
     </li>
   </ul>
 </nav>
@@ -34,12 +22,7 @@
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Uitloggen</h4>
-    <button
-      type="button"
-      class="btn-close"
-      aria-label="Close"
-      (click)="modal.dismiss('Cross click')"
-    ></button>
+    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
   </div>
   <div class="modal-body">
     <span>Weet je zeker dat je uit wil loggen?</span>
