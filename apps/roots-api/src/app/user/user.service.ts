@@ -21,6 +21,10 @@ export class UserService {
     return await this.userModel.findOne({ _id });
   }
 
+  async getAllParticipants(organizationId: string): Promise<User[]> {
+    return await this.userModel.find({ organization: organizationId });
+  }
+
   async create(createUserDto: CreateUserDto): Promise<User> {
     await this.validate(createUserDto);
 

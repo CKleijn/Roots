@@ -26,6 +26,7 @@ import { OrganizationModule } from './pages/organization/organization.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
+import { OrganizationComponent } from './pages/organization/organization.component';
 
 @NgModule({
   declarations: [
@@ -35,6 +36,7 @@ import { InfiniteScrollModule } from 'ngx-infinite-scroll';
     EventComponent,
     EventFormComponent,
     EventDetailComponent,
+    OrganizationComponent
   ],
   imports: [
     BrowserModule,

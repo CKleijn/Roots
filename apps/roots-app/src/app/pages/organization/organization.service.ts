@@ -1,6 +1,6 @@
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Organization } from '@roots/data';
+import { Organization, User } from '@roots/data';
 
 import { ToastrService } from 'ngx-toastr';
 import { catchError, map, Observable, of } from 'rxjs';
@@ -15,7 +15,15 @@ export class OrganizationService {
     private httpClient: HttpClient,
     private authService: AuthService,
     private toastr: ToastrService
-  ) {}
+  ) { }
+
+  getParticipants(organizationId: string): Observable<User[]> {
+    return this.httpClient
+      .get(
+        environment.SERVER_API_URL + `/organizations/${organizationId}/participants`,
+        this.authService.getHttpOptions()
+      ) as Observable<User[]>
+  }
 
   create(organization: Organization): Observable<any> {
     return this.httpClient

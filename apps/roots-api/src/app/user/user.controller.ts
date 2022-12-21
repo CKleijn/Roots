@@ -10,6 +10,14 @@ export class UserController {
   constructor(private readonly userService: UserService) {}
 
   @Public()
+  @Get('organizations/:id/participants')
+  async getParticipants(@Param('id', ParseObjectIdPipe) id: string): Promise<User[]> {
+    Logger.log(`Retrieve participants (READ)`);
+
+    return await this.userService.getAllParticipants(id);
+  }
+
+  @Public()
   @Get('users/:id')
   async getById(@Param('id', ParseObjectIdPipe) id: string): Promise<User> {
     Logger.log(`Retrieve user with id: ${id} (READ)`);
