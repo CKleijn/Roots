@@ -142,20 +142,38 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
     let fullSelectedTags: Tag[] = [];
     let fullTags = await this.tagService.getAllTagsByOrganization(this.organizationId as string).toPromise();
 
-    this.tags.forEach(tag => {
+    for await (const tag of this.tags) {
       fullSelectedTags.push(fullTags?.filter(p => p.name === tag).at(0));
-    });
+    }
 
     const tempEvents = this.events as Event[];
     let newEvents: Event[] = [];
 
-    tempEvents.forEach(event => {
-      event.tags.forEach(tag => {
-        if (fullSelectedTags.filter(p => p._id === tag).length > 0) {
-          newEvents.push(event);
+    if (this.tags.length === 1) {
+      for await (const event of tempEvents) {
+        for await (const tag of event.tags) {
+          if (fullSelectedTags.filter(p => p._id === tag).length > 0) {
+            newEvents.push(event);
+          }
         }
-      });
-    });
+      }
+    } else if (this.tags.length > 1) {
+      let containsAllTags = true;
+
+      for await (const event of tempEvents) {
+        for await (const fullSelectedTag of fullSelectedTags) {
+          if (event.tags.filter(p => p === fullSelectedTag._id).length === 0) {
+            containsAllTags = false;
+          }
+        }
+
+        if (containsAllTags) {
+          newEvents.push(event);
+        } else {
+          containsAllTags = true;
+        }
+      }
+    }
 
     if (newEvents.length === 0 && this.tags.length === 0) {
       this.events = this.standardEvents;
