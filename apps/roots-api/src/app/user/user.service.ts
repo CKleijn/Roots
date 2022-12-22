@@ -31,12 +31,37 @@ export class UserService {
     const newUser = new this.userModel({
       ...createUserDto,
       password: await bcrypt.hashSync(createUserDto.password, 10),
+      isActive: true, //until email validation is implemented
       organization: await this.organizationService.getByEmailDomain(
         createUserDto.emailAddress.split('@').at(1)
       ),
     });
 
     return await this.userModel.create(newUser);
+  }
+
+  async status(id: string, req: any): Promise<User> {
+    const targetUser = await this.getById(id);
+
+    if (
+      targetUser.organization.toString() !== req.user.organization.toString()
+    ) {
+      throw new HttpException(
+        `Je mag alleen gebruikers van activeren/deactiveren van het bedrijf waar je werkt!`,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    if (id.toString() === req.user._id.toString()) {
+      throw new HttpException(
+        `Je mag jouw eigen account niet activeren/deactiveren!`,
+        HttpStatus.BAD_REQUEST
+      );
+    }
+
+    return await this.userModel.findOneAndUpdate({ _id: id }, [
+      { $set: { isActive: { $not: '$isActive' } } },
+    ]);
   }
 
   async validate(user) {
