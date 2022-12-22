@@ -68,11 +68,11 @@
                                           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
                                             {{tag}}
                                             <button matChipRemove [attr.aria-label]="'remove ' + tag">
-                                              <mat-icon>x</mat-icon>
+                                              <mat-icon><i class="bi bi-x"></i></mat-icon>
                                             </button>
                                           </mat-chip-row>
                                         </mat-chip-grid>
-                                        <input placeholder="Nieuwe Tag..." #tagInput [formControl]="tagCtrl"
+                                        <input #tagInput [formControl]="tagCtrl"
                                           [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
                                           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
                                           (matChipInputTokenEnd)="add($event)"

@@ -68,7 +68,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
   //tags
   separatorKeysCodes: number[] = [ENTER, COMMA]
   tagCtrl = new FormControl('');
-  filteredTags: Observable<string[] | undefined>;
+  filteredTags: Observable<string[] | undefined> | undefined;
   tags: string[] = [];
   allTags: string[] = [];
   selectable = true;
@@ -85,7 +85,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private tagService: TagService,
   ) {
     this.dateAdapter.setLocale('nl-NL');
-    this.filteredTags = this.tagCtrl.valueChanges.pipe(startWith(null), map((tag: string | null) => (tag ? this._filter(tag) : this.allTags?.slice())))
   }
 
   ngOnInit(): void {
@@ -96,7 +95,10 @@ export class EventFormComponent implements OnInit, OnDestroy {
       this.organizationIdString = p?.organization.toString();
     });
 
-    this.getAllTags();
+    this.getAllTags().then(() => {
+        this.filteredTags = this.tagCtrl.valueChanges.pipe(startWith(null), map((tag: string | null) => (tag ? this._filter(tag) : this.allTags?.slice())));
+      }
+    );
 
     this.eventForm = new FormGroup({
       title: new FormControl(null, [Validators.required]),
@@ -243,14 +245,5 @@ export class EventFormComponent implements OnInit, OnDestroy {
     for await (const tagId of this.event.tags) {
       this.tags.push(tags?.filter(p => p._id === tagId).at(0).name);
     }
-  }
-
-  validateTags(control: FormControl): { [s: string]: boolean } {
-    const tags = control.value;
-
-    console.log(tags);
-
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    return { tags: false };
   }
 }

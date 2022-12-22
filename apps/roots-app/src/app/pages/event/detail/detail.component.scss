@@ -1,3 +1,37 @@
-.content{
+.detail-body{
     background-color: white;
+    padding: 15px;
+}
+
+.detail-header{
+    padding-left: 15px;
+    padding-right: 15px;
+}
+
+.detail-date{
+    display: flex;
+    justify-content: right;
+    align-items: center;
+}
+
+.detail-edit-button{
+    background-color: white;
+}
+
+.detail-content{
+    padding-right: 15px;
+}
+
+.tagslist{
+    text-align: center;
+}
+
+.detail-tags{
+    margin-top: 18.45px;
+    display: inline-block;
+    text-align: left;
+}
+
+ul {
+    list-style-type: circle;
 }
