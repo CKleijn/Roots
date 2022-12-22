@@ -10,7 +10,7 @@ import { TimelineComponent } from './pages/timeline/timeline.component';
 
 export const appRoutes: Route[] = [
   //TIMELINE
-  { path: 'timeline', component: TimelineComponent, pathMatch: 'full', canActivate: [LoggedInAuthGuard] },
+  { path: 'organizations/:organizationId/timeline', component: TimelineComponent, pathMatch: 'full', canActivate: [LoggedInAuthGuard] },
   //AUTH
   { path: 'login', component: LoginComponent, pathMatch: 'full' },
   { path: 'register', component: RegisterComponent, pathMatch: 'full' },

@@ -1,6 +1,8 @@
 /* eslint-disable prefer-const */
 import { AfterViewChecked, Component, OnInit } from '@angular/core';
+import { ActivatedRoute, ParamMap } from '@angular/router';
 import { User } from '@roots/data';
+import { switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { EventService } from '../event/event.service';
 
@@ -15,20 +17,36 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
   distance = 2;
   old_records = 0;
   new_records = 5;
-  loggedInUser!: User; 
-  constructor(private eventService: EventService, private authService: AuthService) {}
+  loggedInUser!: User;
+  constructor(
+    private eventService: EventService,
+    private authService: AuthService,
+    private route: ActivatedRoute
+  ) {}
 
   ngOnInit(): void {
-    this.eventService.getEventsPerPage(this.old_records, this.new_records).subscribe((events) => {
-      console.log('Read the first 5 events')
-      this.events = events;
+    this.route.paramMap
+      .pipe(
+        switchMap((params: ParamMap) =>
+          this.eventService.getEventsPerPage(
+            this.old_records,
+            this.new_records,
+            params.get('organizationId')!
+          )
+        )
+      )
+      .subscribe((events) => {
+        console.log('Read the first 5 events');
+        this.events = events;
 
-      events.forEach((event) => {
-        event.eventDate = new Date(event.eventDate);
+        events.forEach((event) => {
+          event.eventDate = new Date(event.eventDate);
+        });
       });
-    });
 
-   this.authService.getUserFromLocalStorage().subscribe((user) => this.loggedInUser = user);
+    this.authService
+      .getUserFromLocalStorage()
+      .subscribe((user) => (this.loggedInUser = user));
   }
 
   ngAfterViewChecked(): void {
@@ -50,13 +68,23 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
 
   onScroll(): void {
     console.log('scrolled');
-    this.eventService.getEventsPerPage(this.old_records, this.new_records).subscribe((events) => {
-      console.log('Read another 5 events')
-      this.old_records += this.new_records;
-      events.forEach((event) => {
-        event.eventDate = new Date(event.eventDate);
+    this.route.paramMap
+      .pipe(
+        switchMap((params: ParamMap) =>
+          this.eventService.getEventsPerPage(
+            this.old_records,
+            this.new_records,
+            params.get('organizationId')!
+          )
+        )
+      )
+      .subscribe((events) => {
+        console.log('Read another 5 events');
+        this.old_records += this.new_records;
+        events.forEach((event) => {
+          event.eventDate = new Date(event.eventDate);
+        });
+        this.events.push(...events);
       });
-      this.events.push(...events);
-    });
   }
 }

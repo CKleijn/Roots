@@ -1,4 +1,4 @@
-import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
+import { HttpException, HttpStatus, Injectable, Logger } from '@nestjs/common';
 import { InjectModel } from '@nestjs/mongoose';
 import mongoose, { Model } from 'mongoose';
 import { Organization, OrganizationDocument } from '../organization/organization.schema';
@@ -32,8 +32,13 @@ export class EventService {
     return events[0]?.events;
   }
 
-  async getPerPage(query: any): Promise<Event[]> {
+  async getPerPage(query: any, organizationId: string): Promise<Event[]> {
     const events = await this.organizationModel.aggregate([
+      {
+        '$match': {
+          '_id': new mongoose.Types.ObjectId(organizationId)
+        }
+      },
       {
         '$project': {
           '_id': 0,
@@ -49,6 +54,7 @@ export class EventService {
       }
     ]);
 
+    Logger.log(events[0]?.events.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records)))
     return events[0]?.events.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
   }
 
