@@ -16,10 +16,22 @@ export class AuthService {
     const user: User = await this.userService.findByEmailAddress(username);
 
     if (user && (await bcrypt.compareSync(pass, user.password))) {
+      if (user.isActive === false) {
+        throw new HttpException(
+          `Jouw account is gedeactiveerd!`,
+          HttpStatus.BAD_REQUEST
+        );
+      }
+
+      await this.userService.setLastLoginTimeStamp(user._id.toString());
+
       return user;
     }
 
-    throw new HttpException(`Incorrecte inloggegevens!`, HttpStatus.BAD_REQUEST);
+    throw new HttpException(
+      `Incorrecte inloggegevens!`,
+      HttpStatus.BAD_REQUEST
+    );
   }
 
   async register(createUserDto: CreateUserDto) {
