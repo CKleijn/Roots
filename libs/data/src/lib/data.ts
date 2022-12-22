@@ -6,6 +6,7 @@ export interface IUser {
   lastname: string;
   emailAddress: string;
   password: string;
+  isActive: boolean;
   organization: Types.ObjectId;
 }
 
@@ -23,7 +24,7 @@ export interface IEvent {
 }
 
 export interface ITag {
-  name:string;
+  name: string;
 }
 
 // CLASSES
@@ -36,6 +37,7 @@ export class User implements IUser {
   access_token = '';
   organization = new Types.ObjectId();
   initials = '';
+  isActive = true;
 }
 
 export class Organization implements IOrganization {

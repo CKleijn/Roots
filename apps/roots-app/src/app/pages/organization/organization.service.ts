@@ -15,14 +15,14 @@ export class OrganizationService {
     private httpClient: HttpClient,
     private authService: AuthService,
     private toastr: ToastrService
-  ) { }
+  ) {}
 
   getParticipants(organizationId: string): Observable<User[]> {
-    return this.httpClient
-      .get(
-        environment.SERVER_API_URL + `/organizations/${organizationId}/participants`,
-        this.authService.getHttpOptions()
-      ) as Observable<User[]>
+    return this.httpClient.get(
+      environment.SERVER_API_URL +
+        `/organizations/${organizationId}/participants`,
+      this.authService.getHttpOptions()
+    ) as Observable<User[]>;
   }
 
   create(organization: Organization): Observable<any> {
@@ -44,6 +44,32 @@ export class OrganizationService {
         catchError((err: any) => {
           window.scroll(0, 0);
           this.toastr.error(err.error.message, 'Organisatie niet aangemaakt');
+          return of(undefined);
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-types
+      ) as Observable<Object>;
+  }
+
+  status(id: string): Observable<any> {
+    return this.httpClient
+      .post(
+        environment.SERVER_API_URL + '/users/' + id + '/status',
+        {},
+        this.authService.getHttpOptions()
+      )
+      .pipe(
+        map((user: any) => {
+          const status = user.isActive ? 'geactiveerd' : 'gedeactiveerd';
+
+          this.toastr.success(
+            `Je hebt het account succesvol ${status}`,
+            'Account status veranderd'
+          );
+          return user;
+        }),
+        catchError((err: any) => {
+          window.scroll(0, 0);
+          this.toastr.error(err.error.message, 'Account status niet veranderd');
           return of(undefined);
         })
         // eslint-disable-next-line @typescript-eslint/ban-types

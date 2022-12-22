@@ -2,8 +2,6 @@ import {
   Body,
   Controller,
   Get,
-  HttpException,
-  HttpStatus,
   Logger,
   Param,
   Post,
@@ -49,18 +47,9 @@ export class UserController {
     @Param('id', ParseObjectIdPipe) id: string,
     @Req() req
     // eslint-disable-next-line @typescript-eslint/ban-types
-  ): Promise<Object> {
-    try {
-      Logger.log(`Changing isActive status of user with an id of ${id} (POST)`);
+  ): Promise<User> {
+    Logger.log(`Changing isActive status of user with an id of ${id} (POST)`);
 
-      await this.userService.status(id, req);
-
-      return {
-        status: 201,
-        message: 'De gebruiker is succesvol geactiveerd/gedeactiveerd!',
-      };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-    }
+    return await this.userService.status(id, req);
   }
 }
