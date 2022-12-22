@@ -53,6 +53,12 @@ export class User implements IUser {
   @Prop()
   isActive: boolean;
 
+  @Prop()
+  createdAt: Date;
+
+  @Prop()
+  lastLoginTimestamp: Date;
+
   @Prop({
     ref: 'Organization',
     type: Types.ObjectId,

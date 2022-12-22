@@ -32,12 +32,19 @@ export class UserService {
       ...createUserDto,
       password: await bcrypt.hashSync(createUserDto.password, 10),
       isActive: true, //until email validation is implemented
+      createdAt: new Date(),
       organization: await this.organizationService.getByEmailDomain(
         createUserDto.emailAddress.split('@').at(1)
       ),
     });
 
     return await this.userModel.create(newUser);
+  }
+
+  async setLastLoginTimeStamp(id: string) {
+    return await this.userModel.findOneAndUpdate({ _id: id }, [
+      { $set: { lastLoginTimestamp: new Date() } },
+    ]);
   }
 
   async status(id: string, req: any): Promise<User> {
