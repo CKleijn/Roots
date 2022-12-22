@@ -47,8 +47,18 @@
                                     <!-- Status -->
                                     <ng-container matColumnDef="status">
                                         <th mat-header-cell *matHeaderCellDef></th>
-                                        <td mat-cell *matCellDef="let participant"><button
-                                                class="btn">Deactiveer</button>
+                                        <td mat-cell *matCellDef="let participant">                      
+                                        <button
+                                        *ngIf="
+                                            loggedInUser._id.toString() !==
+                                            participant._id.toString()
+                                          "
+                                          style="width: 100%"
+                                          (click)="open(content, participant)"
+                                          class="btn"
+                                        >
+                                          {{ participant.isActive ? 'Deactiveren' : 'Activeren' }}
+                                        </button>
                                         </td>
                                     </ng-container>
                                     <!-- Headers -->
@@ -67,6 +77,41 @@
                     </div>
                 </div>
             </div>
+          </div>
         </div>
+      </div>
     </div>
+  </div>
 </div>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">
+      {{ selectedUser.isActive ? 'Deactiveren' : 'Activeren' }}
+    </h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <span
+      >Weet je zeker dat je dit account wilt
+      {{ selectedUser.isActive ? 'deactiveren' : 'activeren' }}?</span
+    >
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" (click)="modal.dismiss()">
+      Annuleren
+    </button>
+    <button
+      type="button"
+      class="btn"
+      (click)="changeStatus(selectedUser._id.toString())"
+    >
+      {{ selectedUser.isActive ? 'Deactiveren' : 'Activeren' }}
+    </button>
+  </div>
+</ng-template>
