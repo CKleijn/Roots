@@ -1,7 +1,8 @@
 /* eslint-disable prefer-const */
 import { Component, OnDestroy, OnInit } from '@angular/core';
+
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { User } from '@roots/data';
+import { Organization, User } from '@roots/data';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { OrganizationService } from './organization.service';
@@ -13,10 +14,12 @@ import { OrganizationService } from './organization.service';
 })
 export class OrganizationComponent implements OnInit, OnDestroy {
   authSubscription!: Subscription;
+  participantsSubscription!: Subscription;
   organizationSubscription!: Subscription;
   loggedInUser!: User;
   participants!: User[];
   selectedUser!: User;
+  organization: Organization | undefined;
   // Select columns that needs to be showed
   displayedColumns: string[] = [
     'picture',
@@ -33,30 +36,24 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     private modalService: NgbModal
   ) {}
 
-  ngOnInit(): void {
-    this.authSubscription = this.authService
-      .getUserFromLocalStorage()
-      .subscribe((user) => (this.loggedInUser = user));
-    this.organizationSubscription = this.organizationService
-      .getParticipants(this.loggedInUser.organization.toString())
-      .subscribe((participants) => {
-        this.participants = participants;
-        // Get foreach participant their initials
-        participants.forEach((participant) => {
-          let last = participant.lastname.split(' ');
-          participant.initials =
-            participant.firstname[0].toUpperCase() +
-            last[last.length - 1][0].toUpperCase();
-        });
-      });
-  }
-
-  ngOnDestroy(): void {
-    this.authSubscription.unsubscribe;
-    this.organizationSubscription.unsubscribe;
-  }
-
-  changeStatus(id: string) {
+    ngOnInit(): void {
+        this.authSubscription = this.authService.getUserFromLocalStorage()
+            .subscribe((user) => this.loggedInUser = user);
+        this.participantsSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString())
+            .subscribe((participants) => {
+                this.participants = participants;
+                // Get foreach participant their initials
+                participants.forEach(participant => {
+                    let last = participant.lastname.split(" ");
+                    participant.initials = participant.firstname[0].toUpperCase() + last[last.length - 1][0].toUpperCase();
+                });
+            });
+        // Get organization name
+        this.organizationSubscription = this.organizationService.getById(this.loggedInUser.organization.toString())
+            .subscribe((organization) => this.organization = organization);
+    }
+    
+      changeStatus(id: string) {
     this.modalService.dismissAll();
     this.organizationService.status(id).subscribe((user) => {
       if (user) {
@@ -69,4 +66,10 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.selectedUser = selectedUser;
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
+
+    ngOnDestroy(): void {
+        this.authSubscription.unsubscribe;
+        this.organizationSubscription.unsubscribe;
+        this.participantsSubscription.unsubscribe;
+    }
 }
