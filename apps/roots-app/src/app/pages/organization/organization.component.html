@@ -4,9 +4,10 @@
             <div class="col-12">
                 <div class="card shadow-lg">
                     <div class="card-body p-5">
-                        <div class="row d-flex justify-content-center align-items-center">
+                        <h1>{{ organization?.name }}</h1>
+                        <div class="row d-flex justify-content-center align-items-center mt-5">
                             <div class="col-12">
-                                <h3>Alle leden</h3>
+                                <h5>Alle leden</h5>
                                 <table mat-table [dataSource]="participants" class="mat-elevation-z8">
                                     <!-- Picture (Initials) -->
                                     <ng-container matColumnDef="picture">
@@ -60,7 +61,7 @@
                         <div class="row d-flex justify-content-center align-items-center mt-5">
                             <div class="col-12">
                                 <!-- Tags -->
-                                <h3>Alle tags</h3>
+                                <h5>Alle tags</h5>
                             </div>
                         </div>
                     </div>

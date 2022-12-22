@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-import { User } from '@roots/data';
+import { Organization, User } from '@roots/data';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { OrganizationService } from './organization.service';
@@ -12,9 +12,11 @@ import { OrganizationService } from './organization.service';
 })
 export class OrganizationComponent implements OnInit, OnDestroy {
     authSubscription!: Subscription;
+    participantsSubscription!: Subscription;
     organizationSubscription!: Subscription;
     loggedInUser!: User;
     participants!: User[];
+    organization: Organization | undefined;
     // Select columns that needs to be showed
     displayedColumns: string[] = ['picture', 'name', 'emailAddress', 'createdAt', 'lastLogin', 'status'];
 
@@ -23,7 +25,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     ngOnInit(): void {
         this.authSubscription = this.authService.getUserFromLocalStorage()
             .subscribe((user) => this.loggedInUser = user);
-        this.organizationSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString())
+        this.participantsSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString())
             .subscribe((participants) => {
                 this.participants = participants;
                 // Get foreach participant their initials
@@ -32,10 +34,14 @@ export class OrganizationComponent implements OnInit, OnDestroy {
                     participant.initials = participant.firstname[0].toUpperCase() + last[last.length - 1][0].toUpperCase();
                 });
             });
+        // Get organization name
+        this.organizationSubscription = this.organizationService.getById(this.loggedInUser.organization.toString())
+            .subscribe((organization) => this.organization = organization);
     }
 
     ngOnDestroy(): void {
         this.authSubscription.unsubscribe;
         this.organizationSubscription.unsubscribe;
+        this.participantsSubscription.unsubscribe;
     }
 }
