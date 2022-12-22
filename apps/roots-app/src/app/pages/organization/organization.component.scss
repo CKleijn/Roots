@@ -1,0 +1,41 @@
+$primary-color: #9381ff;
+$secondary-color: #b8b8ff;
+$background-color: #9381ff;
+
+.userPic {
+    height: 40px;
+    width: 40px;
+    background-color: lightgray;
+    border-radius: 50%;
+    display: table-cell;
+    vertical-align: middle;
+    text-align: center;
+}
+
+.mat-column-picture {
+    width: 10%;
+}
+
+.mat-column-name {
+    width: 20%;
+}
+
+.mat-column-emailAddress {
+    width: 20%;
+}
+
+.mat-column-createdAt {
+    width: 20%;
+}
+
+.mat-column-lastLogin {
+    width: 20%;
+}
+
+.mat-column-status {
+    width: 10%;
+}
+
+.btn {
+    font-size: 14px;
+}

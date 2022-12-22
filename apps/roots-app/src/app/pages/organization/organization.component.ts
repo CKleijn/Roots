@@ -15,6 +15,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     organizationSubscription!: Subscription;
     loggedInUser!: User;
     participants!: User[];
+    // Select columns that needs to be showed
+    displayedColumns: string[] = ['picture', 'name', 'emailAddress', 'createdAt', 'lastLogin', 'status'];
 
     constructor(private organizationService: OrganizationService, private authService: AuthService) { }
 
@@ -22,7 +24,14 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         this.authSubscription = this.authService.getUserFromLocalStorage()
             .subscribe((user) => this.loggedInUser = user);
         this.organizationSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString())
-            .subscribe((participants) => this.participants = participants);
+            .subscribe((participants) => {
+                this.participants = participants;
+                // Get foreach participant their initials
+                participants.forEach(participant => {
+                    let last = participant.lastname.split(" ");
+                    participant.initials = participant.firstname[0].toUpperCase() + last[last.length - 1][0].toUpperCase();
+                });
+            });
     }
 
     ngOnDestroy(): void {
