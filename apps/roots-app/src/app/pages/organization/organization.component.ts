@@ -2,7 +2,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { User } from '@roots/data';
+import { Organization, User } from '@roots/data';
+import { Types } from 'mongoose';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Tag } from '../tag/tag.model';
@@ -10,9 +11,9 @@ import { TagService } from '../tag/tag.service';
 import { OrganizationService } from './organization.service';
 
 @Component({
-    selector: 'roots-organization',
-    templateUrl: './organization.component.html',
-    styleUrls: ['./organization.component.scss'],
+  selector: 'roots-organization',
+  templateUrl: './organization.component.html',
+  styleUrls: ['./organization.component.scss'],
 })
 export class OrganizationComponent implements OnInit, OnDestroy {
 
@@ -23,6 +24,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     deleteSubscription!:Subscription;
     loggedInUser!: User;
     participants!: User[];
+    selectedUser!: User;
+    organization: Organization | undefined;
     // Select columns that needs to be showed
     displayedColumns: string[] = ['picture', 'name', 'emailAddress', 'createdAt', 'lastLogin', 'status'];
     displayedColumnsTag: string[] = ['tag', 'change'];
@@ -51,6 +54,20 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         this.tagsSubscription = this.tagService.getAllTagsByOrganization(this.loggedInUser.organization.toString())
             .subscribe((tags) => this.tags = tags);
     }
+    
+      changeStatus(id: string) {
+    this.modalService.dismissAll();
+    this.organizationService.status(id).subscribe((user) => {
+      if (user) {
+        this.ngOnInit();
+      }
+    });
+  }
+
+  open(content: any, selectedUser: User) {
+    this.selectedUser = selectedUser;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
 
     ngOnDestroy(): void {
         this.authSubscription.unsubscribe;
@@ -74,7 +91,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     
     async editTag(newTag:string) {
         let updateTag: Tag = {
-            _id:this.editTagId,
+            _id: new Types.ObjectId(this.editTagId),
             name:newTag,
             organization: this.loggedInUser.organization.toString()
         }
