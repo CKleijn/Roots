@@ -1,3 +1,5 @@
+/* eslint-disable @nrwl/nx/enforce-module-boundaries */
+/* eslint-disable @typescript-eslint/ban-types */
 import { HttpClient } from "@angular/common/http";
 import { Injectable } from "@angular/core";
 
@@ -58,12 +60,15 @@ export class TagService {
     }
 
     putTag(tag: Tag, tagId: string): Observable<any> {
+        console.log(tag);
+        console.log(tagId);
         return this.httpClient.put(environment.SERVER_API_URL + '/tags/' + tagId,
             tag,
             this.authService.getHttpOptions()
         ).pipe(
             map((tag) => {
                 this.toastr.success('Tag is succesvol aangepast!', 'Tag aangepast!');
+                console.log('done updating tag');
                 return tag;
             }),
             catchError((err: any) => {
@@ -71,7 +76,25 @@ export class TagService {
                 this.toastr.error(err.error.message, 'Tag niet aangepast!');
                 return of(undefined);
             })
-            // eslint-disable-next-line @typescript-eslint/ban-types
+        ) as Observable<Object>
+    }
+
+    deleteTag(tagId:string,organizationId:string): Observable<any> {
+        console.log('deleting tag')
+        return this.httpClient.delete(environment.SERVER_API_URL + '/tags/' + tagId +'/organization/' + organizationId,
+        this.authService.getHttpOptions()
+        ).
+        pipe(
+            map((tag) => {
+                this.toastr.success('Tag is succesvol verwijdert', 'Tag verwijdert!');
+                console.log('done deleting tag');
+                return tag;
+            }),
+            catchError((err:any) => {
+                window.scroll(0,0);
+                this.toastr.error(err.error.message, 'Tag niet verwijdert!');
+                return of(undefined);
+            })
         ) as Observable<Object>
     }
 }

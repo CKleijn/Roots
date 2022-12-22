@@ -1,5 +1,6 @@
 /* eslint-disable prefer-const */
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { User } from '@roots/data';
 import { Subscription } from 'rxjs';
@@ -18,32 +19,45 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     authSubscription!: Subscription;
     organizationSubscription!: Subscription;
     tagsSubscription!:Subscription;
+    editSubscription!:Subscription;
+    deleteSubscription!:Subscription;
     loggedInUser!: User;
     participants!: User[];
+    // Select columns that needs to be showed
+    displayedColumns: string[] = ['picture', 'name', 'emailAddress', 'createdAt', 'lastLogin', 'status'];
+    displayedColumnsTag: string[] = ['tag', 'change'];
     tags!:Tag[];
-
     //edit
-    editTagId?:string
-    editTagName?:string
+    editTagId!:string
+    editTagName!:string
     //delete
-    deleteTagId?:string
+    deleteTagId!:string
+    deleteTagName!:string
 
-    constructor(private organizationService: OrganizationService, private authService: AuthService, private tagService:TagService, private modalService: NgbModal) { }
+    constructor(private organizationService: OrganizationService, private authService: AuthService, private tagService:TagService, private modalService: NgbModal, private router:Router) { }
 
     ngOnInit(): void {
         this.authSubscription = this.authService.getUserFromLocalStorage()
             .subscribe((user) => this.loggedInUser = user);
-        this.organizationSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString())
-            .subscribe((participants) => this.participants = participants);
+        this.organizationSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString()) 
+            .subscribe((participants) => {
+                this.participants = participants;
+                // Get foreach participant their initials
+                participants.forEach(participant => {
+                    let last = participant.lastname.split(" ");
+                    participant.initials = participant.firstname[0].toUpperCase() + last[last.length - 1][0].toUpperCase();
+                });
+            });
         this.tagsSubscription = this.tagService.getAllTagsByOrganization(this.loggedInUser.organization.toString())
             .subscribe((tags) => this.tags = tags);
-        
     }
 
     ngOnDestroy(): void {
         this.authSubscription.unsubscribe;
         this.organizationSubscription.unsubscribe;
         this.tagsSubscription.unsubscribe;
+        this.editSubscription;
+        this.deleteSubscription;
     }
 
     editModal(content:any,tagId:string,tagName:string) {
@@ -51,11 +65,33 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         this.editTagName=tagName;
         this.modalService.open(content, { ariaLabelledBy: 'modal-tag-edit' })
     }
+    
     deleteModal(content:any,tagId:string,tagName:string) {
+        this.deleteTagId=tagId;
+        this.deleteTagName=tagName;
         this.modalService.open(content, { ariaLabelledBy: 'modal-tag-delete' })
     }
+    
+    async editTag(newTag:string) {
+        let updateTag: Tag = {
+            _id:this.editTagId,
+            name:newTag,
+            organization: this.loggedInUser.organization.toString()
+        }
+        this.editSubscription = this.tagService.putTag(updateTag,this.editTagId).subscribe();
+        this.modalService.dismissAll();
 
-    editTag() {
-        console.log('edit Tag')
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
+        });
+    }
+
+    deleteTag() {
+        this.deleteSubscription = this.tagService.deleteTag(this.deleteTagId,this.loggedInUser.organization.toString()).subscribe();
+        this.modalService.dismissAll();
+
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
+        });
     }
 }

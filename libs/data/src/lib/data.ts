@@ -35,6 +35,7 @@ export class User implements IUser {
   password = '';
   access_token = '';
   organization = new Types.ObjectId();
+  initials = '';
 }
 
 export class Organization implements IOrganization {

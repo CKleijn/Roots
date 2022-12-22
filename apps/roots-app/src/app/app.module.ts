@@ -2,6 +2,7 @@ import { HttpClientModule } from '@angular/common/http';
 import { NgModule } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatSelectModule } from '@angular/material/select'
+import { MatTableModule } from '@angular/material/table';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
 import { MatFormFieldModule } from '@angular/material/form-field';
@@ -27,6 +28,10 @@ import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { OrganizationComponent } from './pages/organization/organization.component';
+import { LOCALE_ID } from '@angular/core';
+import nl from '@angular/common/locales/nl';
+import { registerLocaleData } from '@angular/common';
+registerLocaleData(nl);
 
 @NgModule({
   declarations: [
@@ -53,6 +58,7 @@ import { OrganizationComponent } from './pages/organization/organization.compone
     AuthModule,
     ReactiveFormsModule,
     MatTooltipModule,
+    MatTableModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
@@ -65,8 +71,12 @@ import { OrganizationComponent } from './pages/organization/organization.compone
     OrganizationModule,
     InfiniteScrollModule,
   ],
-  providers: [],
+  providers: [
+    { 
+      provide: LOCALE_ID, 
+      useValue: "nl-NL" },
+  ],
   bootstrap: [AppComponent],
   exports: [NavComponent],
 })
-export class AppModule {}
+export class AppModule { }
