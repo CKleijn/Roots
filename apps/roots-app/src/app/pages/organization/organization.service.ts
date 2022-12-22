@@ -25,6 +25,14 @@ export class OrganizationService {
       ) as Observable<User[]>
   }
 
+  getById(organizationId: string): Observable<Organization> {
+    return this.httpClient
+      .get(
+        environment.SERVER_API_URL + `/organizations/${organizationId}`,
+        this.authService.getHttpOptions()
+      ) as Observable<Organization>
+  }
+
   create(organization: Organization): Observable<any> {
     return this.httpClient
       .post(
