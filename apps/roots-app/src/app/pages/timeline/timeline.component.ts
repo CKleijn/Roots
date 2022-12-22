@@ -146,7 +146,7 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
       fullSelectedTags.push(fullTags?.filter(p => p.name === tag).at(0));
     }
 
-    const tempEvents = this.events as Event[];
+    const tempEvents = this.standardEvents as Event[];
     let newEvents: Event[] = [];
 
     if (this.tags.length === 1) {
