@@ -32,8 +32,8 @@ export class TimelineComponent
 {
   events: any = [];
   standardEvents: any = [];
-  throttle = 20;
-  distance = 2;
+  throttle = 0;
+  distance = 0;
   old_records = 0;
   new_records = 5;
   loggedInUser!: User;
@@ -123,6 +123,7 @@ export class TimelineComponent
   }
 
   onScroll(): void {
+    this.old_records = this.old_records + this.new_records;
     this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) =>
@@ -134,12 +135,10 @@ export class TimelineComponent
           )
         )
       )
-      .subscribe((events) => {
-        this.old_records += this.new_records;
-        events.forEach((event) => {
-          if (this.events.indexOf(event) === 1) {
-            this.events.push(event);
-          }
+      .subscribe((newEvents) => {
+        newEvents.forEach((event) => {
+          event.eventDate = new Date(event.eventDate);
+          this.events.push(event);
         });
       });
   }

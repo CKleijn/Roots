@@ -72,26 +72,12 @@ $background-color: #9381FF;
     content: '';
     position: absolute;
     width: 6px;
-    height: 108%;
+    height: 100%;
     background-color: #FFF;
-    top: -8%;
+    top: 0%;
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;
-  }
-
-  //little dot on top of the line
-  &::after {
-    content: '';
-    position: absolute;
-    width: 20px;
-    height: 20px;
-    background-color: $secondary-color;
-    left: 50%;
-    top: -8%;
-    transform: translateX(-50%);
-    border-radius: 50%;
-    border: 2px solid #FFF;
   }
 }
 
