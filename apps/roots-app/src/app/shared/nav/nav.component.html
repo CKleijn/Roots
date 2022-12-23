@@ -17,40 +17,40 @@
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}/timeline"
-            *ngIf="(loggedInUser$ | async) !== undefined"
+            *ngIf="currentUser !== undefined"
             >Tijdlijn</a
           >
         </li>
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}/events/new"
-            *ngIf="(loggedInUser$ | async) !== undefined"
+            *ngIf="currentUser !== undefined"
             >Gebeurtenis toevoegen</a
           >
         </li>
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}"
-            *ngIf="(loggedInUser$ | async) !== undefined"
+            *ngIf="currentUser !== undefined"
             >Organisatie</a
           >
         </li>
         <li>
-          <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"
+          <a routerLink="/login" *ngIf="currentUser === undefined"
             >Inloggen</a
           >
         </li>
         <li>
           <a
             routerLink="/register"
-            *ngIf="(loggedInUser$ | async) === undefined"
+            *ngIf="currentUser === undefined"
             >Registreren</a
           >
         </li>
         <li>
           <a
             class="logout-button"
-            *ngIf="(loggedInUser$ | async) !== undefined"
+            *ngIf="currentUser !== undefined"
             (click)="open(content)"
             >Uitloggen</a
           >
