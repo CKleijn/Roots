@@ -1,32 +1,76 @@
-<nav class="stroke gradient-custom w-100">
-  <ul style="margin-bottom: 0">
-    <li>
-      <a routerLink="organizations/{{currentUser.organization}}/timeline" *ngIf="(loggedInUser$ | async) !== undefined">Tijdlijn</a>
-    </li>
-    <li>
-      <a routerLink="organizations/{{currentUser.organization}}/events/new"
-        *ngIf="(loggedInUser$ | async) !== undefined">Gebeurtenis toevoegen</a>
-    </li>
-    <li>
-      <a routerLink="organizations/{{currentUser.organization}}"
-        *ngIf="(loggedInUser$ | async) !== undefined">Organisatie</a>
-    </li>
-    <li>
-      <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined">Inloggen</a>
-    </li>
-    <li>
-      <a routerLink="/register" *ngIf="(loggedInUser$ | async) === undefined">Registreren</a>
-    </li>
-    <li>
-      <a class="logout-button" *ngIf="(loggedInUser$ | async) !== undefined" (click)="open(content)">Uitloggen</a>
-    </li>
-  </ul>
+<nav class="navbar navbar-expand-lg navbar-expand-md stroke ">
+  <div class="container-fluid">
+    <a routerLink="/" class="navbar-brand"></a>
+    <!-- Collapse button -->
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon "></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul style="margin-bottom: 0" class="mx-auto navbar-nav">
+        <li>
+          <a
+            routerLink="organizations/{{ currentUser.organization }}/timeline"
+            *ngIf="(loggedInUser$ | async) !== undefined"
+            >Tijdlijn</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="organizations/{{ currentUser.organization }}/events/new"
+            *ngIf="(loggedInUser$ | async) !== undefined"
+            >Gebeurtenis toevoegen</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="organizations/{{ currentUser.organization }}"
+            *ngIf="(loggedInUser$ | async) !== undefined"
+            >Organisatie</a
+          >
+        </li>
+        <li>
+          <a routerLink="/login" *ngIf="(loggedInUser$ | async) === undefined"
+            >Inloggen</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/register"
+            *ngIf="(loggedInUser$ | async) === undefined"
+            >Registreren</a
+          >
+        </li>
+        <li>
+          <a
+            class="logout-button"
+            *ngIf="(loggedInUser$ | async) !== undefined"
+            (click)="open(content)"
+            >Uitloggen</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
 </nav>
 
 <ng-template #content let-modal>
   <div class="modal-header">
     <h4 class="modal-title" id="modal-basic-title">Uitloggen</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
   </div>
   <div class="modal-body">
     <span>Weet je zeker dat je uit wil loggen?</span>
@@ -35,8 +79,6 @@
     <button type="button" class="btn" (click)="modal.dismiss()">
       Annuleren
     </button>
-    <button type="button" class="btn" (click)="logout()">
-      Uitloggen
-    </button>
+    <button type="button" class="btn" (click)="logout()">Uitloggen</button>
   </div>
 </ng-template>
