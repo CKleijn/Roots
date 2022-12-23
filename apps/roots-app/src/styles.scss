@@ -30,6 +30,10 @@ body {
     color: $primary-color;
   }
 
+  .toast-container .ngx-toastr {
+    margin-bottom: 15px;
+  }
+
   input:focus-visible {
     border-color: $primary-color !important;
   }
@@ -293,7 +297,7 @@ body {
 
   // Searchbar
   .search-searchbar:focus-visible {
-    border-bottom: 2px solid #FFF !important;
+    border-bottom: 2px solid #fff !important;
   }
 
   .search-form-container {

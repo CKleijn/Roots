@@ -1,10 +1,13 @@
 /* eslint-disable prefer-const */
 import { Component, OnDestroy, OnInit } from '@angular/core';
-
+import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Organization, User } from '@roots/data';
+import { Types } from 'mongoose';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
+import { Tag } from '../tag/tag.model';
+import { TagService } from '../tag/tag.service';
 import { OrganizationService } from './organization.service';
 
 @Component({
@@ -13,33 +16,33 @@ import { OrganizationService } from './organization.service';
   styleUrls: ['./organization.component.scss'],
 })
 export class OrganizationComponent implements OnInit, OnDestroy {
-  authSubscription!: Subscription;
-  participantsSubscription!: Subscription;
-  organizationSubscription!: Subscription;
-  loggedInUser!: User;
-  participants!: User[];
-  selectedUser!: User;
-  organization: Organization | undefined;
-  // Select columns that needs to be showed
-  displayedColumns: string[] = [
-    'picture',
-    'name',
-    'emailAddress',
-    'createdAt',
-    'lastLogin',
-    'status',
-  ];
 
-  constructor(
-    private organizationService: OrganizationService,
-    private authService: AuthService,
-    private modalService: NgbModal
-  ) {}
+    authSubscription!: Subscription;
+    organizationSubscription!: Subscription;
+    tagsSubscription!:Subscription;
+    editSubscription!:Subscription;
+    deleteSubscription!:Subscription;
+    loggedInUser!: User;
+    participants!: User[];
+    selectedUser!: User;
+    organization: Organization | undefined;
+    // Select columns that needs to be showed
+    displayedColumns: string[] = ['picture', 'name', 'emailAddress', 'createdAt', 'lastLogin', 'status'];
+    displayedColumnsTag: string[] = ['tag', 'change'];
+    tags!:Tag[];
+    //edit
+    editTagId!:string
+    editTagName!:string
+    //delete
+    deleteTagId!:string
+    deleteTagName!:string
+
+    constructor(private organizationService: OrganizationService, private authService: AuthService, private tagService:TagService, private modalService: NgbModal, private router:Router) { }
 
     ngOnInit(): void {
         this.authSubscription = this.authService.getUserFromLocalStorage()
             .subscribe((user) => this.loggedInUser = user);
-        this.participantsSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString())
+        this.organizationSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString()) 
             .subscribe((participants) => {
                 this.participants = participants;
                 // Get foreach participant their initials
@@ -48,9 +51,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
                     participant.initials = participant.firstname[0].toUpperCase() + last[last.length - 1][0].toUpperCase();
                 });
             });
-        // Get organization name
-        this.organizationSubscription = this.organizationService.getById(this.loggedInUser.organization.toString())
-            .subscribe((organization) => this.organization = organization);
+        this.tagsSubscription = this.tagService.getAllTagsByOrganization(this.loggedInUser.organization.toString())
+            .subscribe((tags) => this.tags = tags);
     }
     
       changeStatus(id: string) {
@@ -70,6 +72,43 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     ngOnDestroy(): void {
         this.authSubscription.unsubscribe;
         this.organizationSubscription.unsubscribe;
-        this.participantsSubscription.unsubscribe;
+        this.tagsSubscription.unsubscribe;
+        this.editSubscription;
+        this.deleteSubscription;
+    }
+
+    editModal(content:any,tagId:string,tagName:string) {
+        this.editTagId=tagId;
+        this.editTagName=tagName;
+        this.modalService.open(content, { ariaLabelledBy: 'modal-tag-edit' })
+    }
+    
+    deleteModal(content:any,tagId:string,tagName:string) {
+        this.deleteTagId=tagId;
+        this.deleteTagName=tagName;
+        this.modalService.open(content, { ariaLabelledBy: 'modal-tag-delete' })
+    }
+    
+    async editTag(newTag:string) {
+        let updateTag: Tag = {
+            _id: new Types.ObjectId(this.editTagId),
+            name:newTag,
+            organization: this.loggedInUser.organization.toString()
+        }
+        this.editSubscription = this.tagService.putTag(updateTag,this.editTagId).subscribe();
+        this.modalService.dismissAll();
+
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
+        });
+    }
+
+    deleteTag() {
+        this.deleteSubscription = this.tagService.deleteTag(this.deleteTagId,this.loggedInUser.organization.toString()).subscribe();
+        this.modalService.dismissAll();
+
+        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+            this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
+        });
     }
 }

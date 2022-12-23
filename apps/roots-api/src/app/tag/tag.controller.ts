@@ -1,4 +1,5 @@
-import { Body, Controller, Get, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
+import { Body, Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
+import { Organization } from '@roots/data';
 import { Public } from '../auth/auth.module';
 import { ParseObjectIdPipe } from '../shared/pipes/ParseObjectIdPipe';
 import { TagDto } from './tag.dto';
@@ -80,6 +81,23 @@ export class TagController {
             }
         } catch (error) {
             throw new HttpException(error.message, HttpStatus.NOT_MODIFIED)
+        }
+    }
+
+    @Public()
+    @Delete(':tagId/organization/:organizationId') 
+    async deleteTag(@Param('tagId', ParseObjectIdPipe) tagId:string, @Param('organizationId', ParseObjectIdPipe) organizationId:string) {
+        try { 
+            Logger.log(`Deleting tag with ${tagId} (DELETE)`);
+
+            const tag = await this.tagService.delete(tagId,organizationId);
+
+            return { 
+                status:200,
+                message: 'De tag is successvol verwijdert!'
+            }
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
         }
     }
 }
