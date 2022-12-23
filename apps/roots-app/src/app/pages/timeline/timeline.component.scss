@@ -294,4 +294,9 @@ $background-color: #E8ECFF;
       border-left: none;
     }
   }
+
+  .timeline-year {
+    left: -35px;
+    transform: translateX(35px);
+  }
 }
