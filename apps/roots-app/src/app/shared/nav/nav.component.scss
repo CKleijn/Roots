@@ -1,15 +1,20 @@
-$primary-color: #9381FF;
-$secondary-color: #B8B8FF;
-$background-color: #9381FF;
-
-.gradient-custom {
-  background: $background-color;
-}
+$primary-color: #9381ff;
+$secondary-color: #b8b8ff;
+$background-color: #9381ff;
 
 /* NAVIGATION */
 nav {
   margin: 0 auto;
   padding: 10px 0;
+}
+
+.navbar-toggler {
+  border: none;
+  color: transparent;
+}
+
+.navbar-toggler-icon {
+  background-image: url("data:image/svg+xml,%3csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 30 30'%3e%3cpath stroke='rgba%28255, 255, 255, 1%29' stroke-linecap='round' stroke-miterlimit='10' stroke-width='2' d='M4 7h22M4 15h22M4 23h22'/%3e%3c/svg%3e");
 }
 
 nav ul {
