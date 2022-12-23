@@ -84,7 +84,7 @@ $background-color: #E8ECFF;
     width: 6px;
     height: 100%;
     background-color: #FFF;
-    top: 0;
+    top: 0%;
     left: 50%;
     transform: translateX(-50%);
     z-index: -1;
@@ -127,10 +127,20 @@ $background-color: #E8ECFF;
 
 //container for a timeline item
 .timeline-container {
-  padding: 0 49px;
+  padding: 0 50px;
   position: relative;
   width: 50%;
   display: none;
+
+  >.timeline-year {
+    position: absolute;
+    padding: 0.2rem 0;
+    width: 70px;
+    right: -35px;
+    text-align: center;
+    background-color: #FFF;
+    z-index: 1;
+  }
 
   //date-circle on the line
   >.timeline-icon {
@@ -140,7 +150,7 @@ $background-color: #E8ECFF;
     border-radius: 50%;
     background-color: #FFF;
     right: -35px;
-    top: 1.6rem;
+    top: 2.6rem;
     z-index: 1;
 
     //content of a date-circle
@@ -195,6 +205,11 @@ $background-color: #E8ECFF;
 //items placed right of the timeline
 .right {
   left: 50%;
+
+  >.timeline-year {
+    right: 0;
+    left: -35px;
+  }
 
   //place icon of right sided events on the timeline
   >.timeline-icon {

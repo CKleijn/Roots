@@ -24,8 +24,8 @@ export class EventService {
     ) as Observable<Event[]>;
   }
 
-    getEventsPerPage(old_records: number, new_records: number, organizationId: string): Observable<Event[]> {
-        return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<Event[]>;
+    getEventsPerPage(old_records: number, new_records: number, organizationId: string): Observable<any[]> {
+        return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<any[]>;
     }
 
     getEventById(eventId: string): Observable<Event> {
