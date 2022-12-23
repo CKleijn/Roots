@@ -18,13 +18,13 @@ export class EventService {
     private toastr: ToastrService
   ) {}
 
-  getAllEvents(): Observable<Event[]> {
+  getAllEvents(): Observable<any[]> {
     return this.httpClient.get(
       environment.SERVER_API_URL + '/events'
     ) as Observable<Event[]>;
   }
 
-    getEventsPerPage(old_records: number, new_records: number): Observable<Event[]> {
+    getEventsPerPage(old_records: number, new_records: number): Observable<any[]> {
         return this.httpClient.get(environment.SERVER_API_URL + `/events/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<Event[]>;
     }
 
