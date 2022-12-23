@@ -17,45 +17,50 @@ import { OrganizationService } from './organization.service';
 })
 export class OrganizationComponent implements OnInit, OnDestroy {
 
-    authSubscription!: Subscription;
-    organizationSubscription!: Subscription;
-    tagsSubscription!:Subscription;
-    editSubscription!:Subscription;
-    deleteSubscription!:Subscription;
-    loggedInUser!: User;
-    participants!: User[];
-    selectedUser!: User;
-    organization: Organization | undefined;
-    // Select columns that needs to be showed
-    displayedColumns: string[] = ['picture', 'name', 'emailAddress', 'createdAt', 'lastLogin', 'status'];
-    displayedColumnsTag: string[] = ['tag', 'change'];
-    tags!:Tag[];
-    //edit
-    editTagId!:string
-    editTagName!:string
-    //delete
-    deleteTagId!:string
-    deleteTagName!:string
+  authSubscription!: Subscription;
+  participantsSubscription!: Subscription;
+  organizationSubscription!: Subscription;
+  tagsSubscription!: Subscription;
+  editSubscription!: Subscription;
+  deleteSubscription!: Subscription;
+  loggedInUser!: User;
+  participants!: User[];
+  selectedUser!: User;
+  organization: Organization | undefined;
+  // Select columns that needs to be showed
+  displayedColumns: string[] = ['picture', 'name', 'emailAddress', 'createdAt', 'lastLogin', 'status'];
+  displayedColumnsTag: string[] = ['tag', 'change'];
+  tags!: Tag[];
+  //edit
+  editTagId!: string
+  editTagName!: string
+  //delete
+  deleteTagId!: string
+  deleteTagName!: string
 
-    constructor(private organizationService: OrganizationService, private authService: AuthService, private tagService:TagService, private modalService: NgbModal, private router:Router) { }
+  constructor(private organizationService: OrganizationService, private authService: AuthService, private tagService: TagService, private modalService: NgbModal, private router: Router) { }
 
-    ngOnInit(): void {
-        this.authSubscription = this.authService.getUserFromLocalStorage()
-            .subscribe((user) => this.loggedInUser = user);
-        this.organizationSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString()) 
-            .subscribe((participants) => {
-                this.participants = participants;
-                // Get foreach participant their initials
-                participants.forEach(participant => {
-                    let last = participant.lastname.split(" ");
-                    participant.initials = participant.firstname[0].toUpperCase() + last[last.length - 1][0].toUpperCase();
-                });
-            });
-        this.tagsSubscription = this.tagService.getAllTagsByOrganization(this.loggedInUser.organization.toString())
-            .subscribe((tags) => this.tags = tags);
-    }
-    
-      changeStatus(id: string) {
+  ngOnInit(): void {
+    this.authSubscription = this.authService.getUserFromLocalStorage()
+      .subscribe((user) => this.loggedInUser = user);
+    this.participantsSubscription = this.organizationService.getParticipants(this.loggedInUser.organization.toString())
+      .subscribe((participants) => {
+        this.participants = participants;
+        // Get foreach participant their initials
+        participants.forEach(participant => {
+          let last = participant.lastname.split(" ");
+          participant.initials = participant.firstname[0].toUpperCase() + last[last.length - 1][0].toUpperCase();
+        });
+      });
+    // Get tags
+    this.tagsSubscription = this.tagService.getAllTagsByOrganization(this.loggedInUser.organization.toString())
+      .subscribe((tags) => this.tags = tags);
+    // Get organization name
+    this.organizationSubscription = this.organizationService.getById(this.loggedInUser.organization.toString())
+      .subscribe((organization) => this.organization = organization);
+  }
+
+  changeStatus(id: string) {
     this.modalService.dismissAll();
     this.organizationService.status(id).subscribe((user) => {
       if (user) {
@@ -69,46 +74,47 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
   }
 
-    ngOnDestroy(): void {
-        this.authSubscription.unsubscribe;
-        this.organizationSubscription.unsubscribe;
-        this.tagsSubscription.unsubscribe;
-        this.editSubscription;
-        this.deleteSubscription;
-    }
+  editModal(content: any, tagId: string, tagName: string) {
+    this.editTagId = tagId;
+    this.editTagName = tagName;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-tag-edit' })
+  }
 
-    editModal(content:any,tagId:string,tagName:string) {
-        this.editTagId=tagId;
-        this.editTagName=tagName;
-        this.modalService.open(content, { ariaLabelledBy: 'modal-tag-edit' })
-    }
-    
-    deleteModal(content:any,tagId:string,tagName:string) {
-        this.deleteTagId=tagId;
-        this.deleteTagName=tagName;
-        this.modalService.open(content, { ariaLabelledBy: 'modal-tag-delete' })
-    }
-    
-    async editTag(newTag:string) {
-        let updateTag: Tag = {
-            _id: new Types.ObjectId(this.editTagId),
-            name:newTag,
-            organization: this.loggedInUser.organization.toString()
-        }
-        this.editSubscription = this.tagService.putTag(updateTag,this.editTagId).subscribe();
-        this.modalService.dismissAll();
+  deleteModal(content: any, tagId: string, tagName: string) {
+    this.deleteTagId = tagId;
+    this.deleteTagName = tagName;
+    this.modalService.open(content, { ariaLabelledBy: 'modal-tag-delete' })
+  }
 
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
-        });
+  async editTag(newTag: string) {
+    let updateTag: Tag = {
+      _id: new Types.ObjectId(this.editTagId),
+      name: newTag,
+      organization: this.loggedInUser.organization.toString()
     }
+    this.editSubscription = this.tagService.putTag(updateTag, this.editTagId).subscribe();
+    this.modalService.dismissAll();
 
-    deleteTag() {
-        this.deleteSubscription = this.tagService.deleteTag(this.deleteTagId,this.loggedInUser.organization.toString()).subscribe();
-        this.modalService.dismissAll();
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
+    });
+  }
 
-        this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-            this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
-        });
-    }
+  deleteTag() {
+    this.deleteSubscription = this.tagService.deleteTag(this.deleteTagId, this.loggedInUser.organization.toString()).subscribe();
+    this.modalService.dismissAll();
+
+    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
+      this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
+    });
+  }
+
+  ngOnDestroy(): void {
+    this.authSubscription?.unsubscribe;
+    this.organizationSubscription?.unsubscribe;
+    this.participantsSubscription?.unsubscribe;
+    this.tagsSubscription?.unsubscribe;
+    this.editSubscription?.unsubscribe;
+    this.deleteSubscription?.unsubscribe;
+  }
 }

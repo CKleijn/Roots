@@ -8,8 +8,6 @@ import { OrganizationComponent } from './pages/organization/organization.compone
 import { TimelineComponent } from './pages/timeline/timeline.component';
 
 export const appRoutes: Route[] = [
-  //TIMELINE
-  { path: 'organizations/:organizationId/timeline', component: TimelineComponent, pathMatch: 'full', title: 'Tijdlijn', canActivate: [LoggedInAuthGuard] },
   //AUTH
   {
     path: 'login',
@@ -22,6 +20,14 @@ export const appRoutes: Route[] = [
     component: RegisterComponent,
     pathMatch: 'full',
     title: 'Registreren',
+  },
+  //TIMELINE
+  {
+    path: 'organizations/:organizationId/timeline',
+    component: TimelineComponent,
+    pathMatch: 'full',
+    title: 'Tijdlijn',
+    canActivate: [LoggedInAuthGuard]
   },
   // EVENTS
   {
