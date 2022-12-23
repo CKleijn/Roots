@@ -1,5 +1,12 @@
 /* eslint-disable prefer-const */
-import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import {
+  AfterContentChecked,
+  AfterViewChecked,
+  Component,
+  ElementRef,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
 import { map, Observable, startWith } from 'rxjs';
@@ -20,10 +27,12 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
 })
-export class TimelineComponent implements OnInit, AfterViewChecked, AfterContentChecked {
+export class TimelineComponent
+  implements OnInit, AfterViewChecked, AfterContentChecked
+{
   events: any = [];
-  throttle = 20;
   standardEvents: any = [];
+  throttle = 20;
   distance = 2;
   old_records = 0;
   new_records = 5;
@@ -37,7 +46,13 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
-  constructor(private eventService: EventService, private authService: AuthService, private route: ActivatedRoute, private tagService: TagService, private toastrService: ToastrService) { }
+  constructor(
+    private eventService: EventService,
+    private authService: AuthService,
+    private route: ActivatedRoute,
+    private tagService: TagService,
+    private toastrService: ToastrService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap
@@ -46,12 +61,12 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
           this.eventService.getEventsPerPage(
             this.old_records,
             this.new_records,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             params.get('organizationId')!
           )
         )
       )
       .subscribe((events) => {
-        console.log('Read the first 5 events');
         this.events = events;
         this.standardEvents = events;
 
@@ -59,29 +74,21 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
           event.eventDate = new Date(event.eventDate);
         });
       });
-    this.authService.getUserFromLocalStorage().subscribe((user) => this.loggedInUser = user);
+
+    this.authService
+      .getUserFromLocalStorage()
+      .subscribe((user) => (this.loggedInUser = user));
 
     this.organizationId = this.loggedInUser.organization.toString();
     this.getAllTags().then(() => {
       this.filteredTags = this.tagCtrl.valueChanges.pipe(
         startWith(null),
-        map((tag: string | null) => (tag ? this._filter(tag) : this.allTags.slice())),
+        map((tag: string | null) =>
+          tag ? this._filter(tag) : this.allTags.slice()
+        )
       );
-    })
-  }
-
-  ngAfterContentChecked(): void {
-    let currentYear = 0;
-    this.events.forEach((event: { eventDate: { getFullYear: () => number; }; _id: string; }) => {
-      if (event.eventDate.getFullYear() === currentYear) {
-        document
-          .getElementById('timeline-year-' + event._id)
-          ?.classList.add('d-none');
-      } else {
-        currentYear = event.eventDate.getFullYear();
-      }
     });
-
+  }
 
   ngAfterViewChecked(): void {
     let observer = new IntersectionObserver((entries) => {
@@ -97,6 +104,22 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
     targetGetIn.forEach((element) => {
       observer.observe(element);
     });
+    return;
+  }
+
+  ngAfterContentChecked(): void {
+    let currentYear = 0;
+    this.events.forEach(
+      (event: { eventDate: { getFullYear: () => number }; _id: string }) => {
+        if (event.eventDate.getFullYear() === currentYear) {
+          document
+            .getElementById('timeline-year-' + event._id)
+            ?.classList.add('d-none');
+        } else {
+          currentYear = event.eventDate.getFullYear();
+        }
+      }
+    );
   }
 
   onScroll(): void {
@@ -106,6 +129,7 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
           this.eventService.getEventsPerPage(
             this.old_records,
             this.new_records,
+            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             params.get('organizationId')!
           )
         )
@@ -113,11 +137,11 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
       .subscribe((events) => {
         this.old_records += this.new_records;
         events.forEach((event) => {
-          event.eventDate = new Date(event.eventDate);
           if (this.events.indexOf(event) === 1) {
             this.events.push(event);
           }
         });
+      });
   }
 
   add(event: MatChipInputEvent): void {
@@ -143,7 +167,7 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
   selected(event: MatAutocompleteSelectedEvent): void {
     if (!this.tags?.includes(event.option.viewValue)) {
       this.tags.push(event.option.viewValue);
-      
+
       if (this.tagInput) {
         this.tagInput.nativeElement.value = '';
       }
@@ -155,12 +179,16 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allTags.filter(tag => tag.toLowerCase().includes(filterValue));
+    return this.allTags.filter((tag) =>
+      tag.toLowerCase().includes(filterValue)
+    );
   }
 
   async getAllTags() {
     if (this.organizationId) {
-      const tags = await this.tagService.getAllTagsByOrganization(this.organizationId).toPromise();
+      const tags = await this.tagService
+        .getAllTagsByOrganization(this.organizationId)
+        .toPromise();
       if (tags) {
         for await (const tag of tags) {
           this.allTags?.push(tag.name);
@@ -171,10 +199,12 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
 
   async searchOnTag() {
     let fullSelectedTags: Tag[] = [];
-    let fullTags = await this.tagService.getAllTagsByOrganization(this.organizationId as string).toPromise();
+    let fullTags = await this.tagService
+      .getAllTagsByOrganization(this.organizationId as string)
+      .toPromise();
 
     for await (const tag of this.tags) {
-      fullSelectedTags.push(fullTags?.filter(p => p.name === tag).at(0));
+      fullSelectedTags.push(fullTags?.filter((p) => p.name === tag).at(0));
     }
 
     const tempEvents = this.standardEvents as Event[];
@@ -183,7 +213,7 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
     if (this.tags.length === 1) {
       for await (const event of tempEvents) {
         for await (const tag of event.tags) {
-          if (fullSelectedTags.filter(p => p._id === tag).length > 0) {
+          if (fullSelectedTags.filter((p) => p._id === tag).length > 0) {
             newEvents.push(event);
           }
         }
@@ -193,7 +223,9 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
 
       for await (const event of tempEvents) {
         for await (const fullSelectedTag of fullSelectedTags) {
-          if (event.tags.filter(p => p === fullSelectedTag._id).length === 0) {
+          if (
+            event.tags.filter((p) => p === fullSelectedTag._id).length === 0
+          ) {
             containsAllTags = false;
           }
         }
@@ -209,7 +241,10 @@ export class TimelineComponent implements OnInit, AfterViewChecked, AfterContent
     if (newEvents.length === 0 && this.tags.length === 0) {
       this.events = this.standardEvents;
     } else if (newEvents.length === 0) {
-      this.toastrService.error('Geen gebeurtenissen beschikken over deze tag(s)!', 'Filteren gefaald!')
+      this.toastrService.error(
+        'Geen gebeurtenissen beschikken over deze tag(s)!',
+        'Filteren gefaald!'
+      );
       this.events = this.standardEvents;
     } else {
       this.events = newEvents;
