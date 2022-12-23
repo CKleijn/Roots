@@ -1,21 +1,23 @@
-$primary-color: #9381FF;
-$secondary-color: #B8B8FF;
-$background-color: #9381FF;
+$primary-color: #FBA92C;
+$secondary-color: #ffffff;
+$background-color: #E8ECFF;
 
 // area around search bar
 .search {
   width: 100%;
-  height: 80px;
+  height: 350px;
 }
 
 //area around search bar
 .search-form {
   position: absolute;
-  background-color: $background-color;
+  background-color: $primary-color;
   width: inherit;
   height: inherit;
   z-index: 3;
   text-align: center;
+  display: table-cell;
+  vertical-align: middle;
 }
 
 //area around search bar, centered
@@ -23,26 +25,34 @@ $background-color: #9381FF;
   position: absolute;
   left: 50%;
   width: 80%;
+  top: 30%;
   height: 50px;
   transform: translateX(-50%);
   background-color: transparent;
 }
 
+.input-group {
+  width: 40% !important;
+}
+
+.search-title {
+  text-align: center;
+  color: #ffffff;
+}
+
 //search bar 
 .search-searchbar {
   border: none;
-  border-bottom: 2px solid #FFF;
-  background-color: transparent;
-  width: 90%;
+  background-color: $secondary-color;
+  width: 40% !important;
   height: 40px;
   font-size: 20px;
-  margin: 4px 0 0 10px;
-  color: #FFF;
+  color: $secondary-color;
 
   //search bar on mouse focus
   &:focus {
     outline: none;
-    caret-color: #FFF;
+    caret-color: $secondary-color;
   }
 }
 
@@ -50,15 +60,15 @@ $background-color: #9381FF;
 .search-submit {
   width: 40px;
   height: 40px;
-  background-color: transparent;
   border: none;
+  background-color: $secondary-color;
+  padding-left: 5px;
 }
 
 //button icon
 .search-submit-icon {
   height: 20px;
   width: 20px;
-  margin: 0 10px 10px 0;
 }
 
 //area around timeline
@@ -79,6 +89,40 @@ $background-color: #9381FF;
     transform: translateX(-50%);
     z-index: -1;
   }
+
+  //little dot on top of the line
+  &::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: $primary-color;
+    top: -19px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    border: 2px solid #FFF;
+  }
+}
+
+//container for year display
+.timeline-year {
+  position: fixed;
+  z-index: -2;
+}
+
+//year display
+.timeline-year-content {
+  user-select: none;
+  position: absolute;
+  margin: -200px 0 0 100px;
+  font-size: 500px;
+  font-weight: 700;
+  opacity: 0.6;
+  display: block;
+  color: $secondary-color;
+  -webkit-text-stroke: 2px $secondary-color;
+  text-shadow: rgba(0, 0, 0, 0.25) 0px 54px 55px, rgba(0, 0, 0, 0.12) 0px -12px 30px, rgba(0, 0, 0, 0.12) 0px 4px 6px, rgba(0, 0, 0, 0.17) 0px 12px 13px, rgba(0, 0, 0, 0.09) 0px -3px 5px;
 }
 
 //container for a timeline item

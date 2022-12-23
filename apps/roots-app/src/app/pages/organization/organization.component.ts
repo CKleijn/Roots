@@ -95,18 +95,14 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.editSubscription = this.tagService.putTag(updateTag, this.editTagId).subscribe();
     this.modalService.dismissAll();
 
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
-    });
+    this.ngOnInit();
   }
 
   deleteTag() {
     this.deleteSubscription = this.tagService.deleteTag(this.deleteTagId, this.loggedInUser.organization.toString()).subscribe();
     this.modalService.dismissAll();
 
-    this.router.navigateByUrl('/', { skipLocationChange: true }).then(() => {
-      this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}`]);
-    });
+    this.ngOnInit();
   }
 
   ngOnDestroy(): void {

@@ -109,14 +109,14 @@
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      <input #editedTag type="text" id="editedTag" name="editedTag" value="{{ editTagName }}" />
+      <input #editedTag type="text" class="form-control" id="editedTag" name="editedTag" value="{{ editTagName }}" />
     </div>
     <div class="modal-footer">
       <button type="button" class="btn" (click)="modal.dismiss()">
         Annuleren
       </button>
       <button type="button" class="btn" (click)="editTag(this.editedTag.value)">
-        aanpassen
+        Aanpassen
       </button>
     </div>
   </ng-template>

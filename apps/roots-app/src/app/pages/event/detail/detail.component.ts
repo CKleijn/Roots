@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { EventService } from '../event.service';
 import { Event } from '../event.model';
@@ -18,8 +18,8 @@ export class EventDetailComponent implements OnInit {
   constructor(
     private route: ActivatedRoute,
     private eventService: EventService,
-    private tagService: TagService
-  ) {}
+    private tagService: TagService,
+  ) { }
 
   ngOnInit(): void {
     this.route.paramMap
@@ -34,7 +34,6 @@ export class EventDetailComponent implements OnInit {
         foundEvent.tags.forEach((tag) => {
           this.tagService.getTagById(tag).subscribe((foundTag) => {
             this.tags.push(foundTag)
-            console.log(foundTag.name)
           });
         });
       });

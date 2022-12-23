@@ -127,7 +127,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
             eventDate: new Date(this.event.eventDate).toISOString().slice(0, 10)
           });
         },
-        error: () => this.router.navigate(['timeline']),
+        error: () => this.router.navigate([`organizations/${this.organizationId}/timeline`]),
       })
     }
   }
@@ -157,13 +157,14 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
     if (!this.editMode) {
       this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
-        next: () => this.router.navigate(['timeline']),
+        next: () => this.router.navigate([`organizations/${this.organizationId}/timeline`]),
         error: (error) => this.error = error.message
       })
     }
     else {
+      console.log(`organization/${this.organizationId}/events/${this.eventId}`)
       this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
-        next: () => this.router.navigate(['timeline']),
+        next: () => this.router.navigate([`organizations/${this.organizationId}/events/${this.eventId}`]),
         error: (error) => this.error = error.message
       })
     }

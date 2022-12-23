@@ -74,14 +74,14 @@
                     registerForm.get('password')?.touched
                 }" />
 
-              <div class="input-group-append">
+              <div class="input-group-append" (click)="showPasswordToggle()">
                 <span class="input-group-text" style="border-radius: 0px; cursor: pointer" [ngClass]="{
                     'is-invalid-eye':
                       registerForm.get('password')?.invalid &&
                       registerForm.get('password')?.touched
                   }">
-                  <i *ngIf="showPassword" (click)="showPasswordToggle()" class="bi bi-eye-slash"></i>
-                  <i *ngIf="!showPassword" (click)="showPasswordToggle()" class="bi bi-eye"></i>
+                  <i *ngIf="showPassword" class="bi bi-eye-slash"></i>
+                  <i *ngIf="!showPassword" class="bi bi-eye"></i>
                 </span>
               </div>
 
@@ -109,14 +109,14 @@
                     registerForm.get('confirmPassword')?.invalid &&
                     registerForm.get('confirmPassword')?.touched
                 }" />
-              <div class="input-group-append">
+              <div class="input-group-append" (click)="showConfirmPasswordToggle()">
                 <span class="input-group-text" style="border-radius: 0px; cursor: pointer" [ngClass]="{
                     'is-invalid-eye':
                       registerForm.get('confirmPassword')?.invalid &&
                       registerForm.get('confirmPassword')?.touched
                   }">
-                  <i *ngIf="showConfirmPassword" (click)="showConfirmPasswordToggle()" class="bi bi-eye-slash"></i>
-                  <i *ngIf="!showConfirmPassword" (click)="showConfirmPasswordToggle()" class="bi bi-eye"></i>
+                  <i *ngIf="showConfirmPassword" class="bi bi-eye-slash"></i>
+                  <i *ngIf="!showConfirmPassword" class="bi bi-eye"></i>
                 </span>
               </div>
               <span *ngIf="

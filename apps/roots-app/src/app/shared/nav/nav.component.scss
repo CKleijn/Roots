@@ -2,6 +2,10 @@ $primary-color: #9381ff;
 $secondary-color: #b8b8ff;
 $background-color: #9381ff;
 
+.gradient-custom {
+  background: black;
+}
+
 /* NAVIGATION */
 nav {
   margin: 0 auto;
@@ -29,7 +33,7 @@ nav ul li a {
   display: block;
   padding: 15px;
   text-decoration: none;
-  color: #ffffff;
+  color: $secondary-color;
   text-transform: uppercase;
   margin: 0 10px;
 }
@@ -41,7 +45,7 @@ nav ul li a:before {
 }
 
 nav ul li a:hover {
-  color: #ffffff;
+  color: $secondary-color;
 }
 
 nav.stroke ul li a {
@@ -57,7 +61,7 @@ nav.stroke ul li a:after {
   width: 0%;
   content: '.';
   color: transparent;
-  background: #ffffff;
+  background: $secondary-color;
   height: 1px;
 }
 

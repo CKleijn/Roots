@@ -27,7 +27,6 @@ import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
 import { AuthModule } from './pages/auth/auth.module';
 import { EventDetailComponent } from './pages/event/detail/detail.component';
-import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
 import { OrganizationModule } from './pages/organization/organization.module';
@@ -54,7 +53,6 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     AppComponent,
     NavComponent,
     TimelineComponent,
-    EventComponent,
     EventFormComponent,
     EventDetailComponent,
     OrganizationComponent,
