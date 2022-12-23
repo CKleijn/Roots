@@ -5,6 +5,7 @@
         <div class="d-flex justify-content-center">
           <h2>Inloggen</h2>
         </div>
+        <hr class="form-divider" />
         <form class="form-signin" [formGroup]="loginForm" (ngSubmit)="onSubmit()">
           <div class="form-group mt-4">
             <label for="inputEmailAddress">E-mailadres</label>
@@ -32,14 +33,14 @@
                     loginForm.get('password')?.touched
                 }" />
 
-              <div class="input-group-append">
+              <div class="input-group-append" (click)="showPasswordToggle()">
                 <span class="input-group-text" style="border-radius: 0px; cursor: pointer" [ngClass]="{
                     'is-invalid-eye':
                       loginForm.get('password')?.invalid &&
                       loginForm.get('password')?.touched
                   }">
-                  <i *ngIf="showPassword" (click)="showPasswordToggle()" class="bi bi-eye-slash"></i>
-                  <i *ngIf="!showPassword" (click)="showPasswordToggle()" class="bi bi-eye"></i>
+                  <i *ngIf="showPassword" class="bi bi-eye-slash"></i>
+                  <i *ngIf="!showPassword" class="bi bi-eye"></i>
                 </span>
                 <span *ngIf="
                     !loginForm.get('password')?.valid &&

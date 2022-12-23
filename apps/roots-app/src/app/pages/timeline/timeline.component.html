@@ -1,43 +1,45 @@
 <div class="search">
   <form class="search-form">
     <div class="search-form-container">
-
-      <input type="text" name="search" id="search" class="search-searchbar" 
-        #tagInput [formControl]="tagCtrl" 
-        [matChipInputFor]="chipGrid"
-        [matAutocomplete]="auto" [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-        (matChipInputTokenEnd)="add($event)" />
-      <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-        <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-          {{tag}}
-        </mat-option>
-      </mat-autocomplete>
-
-      <button type="submit" class="search-submit" (click)="searchOnTag()">
-        <svg fill="#FFF" class="search-submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-          <path
-            d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
-        </svg>
-      </button>
-
-      <mat-chip-grid #chipGrid aria-label="Tag selection" class="searchbar-chip-grid">
-        <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
-          {{tag}}
-          <button matChipRemove [attr.aria-label]="'remove ' + tag">
-            <mat-icon><i class="bi bi-x"></i></mat-icon>
+      <h1 class="search-title">Vind alles over uw organisatie</h1>
+      <div class="input-group mx-auto">
+        <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
+          [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)" />
+        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+            {{tag}}
+          </mat-option>
+        </mat-autocomplete>
+        <div class="input-group-prepend">
+          <button type="submit" class="search-submit" (click)="searchOnTag()">
+            <svg fill="#141414" class="search-submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
+              <path
+                d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
+            </svg>
           </button>
-        </mat-chip-row>
-      </mat-chip-grid>
-
+        </div>
+      </div>
+      <div class="input-group mx-auto mt-1 pl-2">
+        <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
+          <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
+            {{tag}}
+            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+              <mat-icon><i class="bi bi-x"></i></mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+      </div>
     </div>
   </form>
 </div>
 
 
-<div class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
+<div class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
+  (scrolled)="onScroll()">
 
   <div class="timeline-year">
-    <span class="timeline-year-content">2022</span>
+    <!-- <span class="timeline-year-content">2022</span> -->
   </div>
 
   <div *ngFor="let event of events let left = even; let right = odd" class="timeline-container"
@@ -60,7 +62,8 @@
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button class="btn" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}">Lees meer</button>
+        <button class="btn" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}">Lees
+          meer</button>
       </div>
     </div>
   </div>
