@@ -41,7 +41,24 @@ export class User implements IUser {
 }
 
 export class Organization implements IOrganization {
+  _id = new Types.ObjectId();
   name = '';
   emailDomain = '';
-  events = [];
+  events = [] as Event[];
+  tags = [] as Types.ObjectId[]
+}
+
+export class Event implements IEvent {
+  title= '';
+  description = '';
+  content = '';
+  eventDate = new Date();
+  _id = new Types.ObjectId();
+  tags = [] as Types.ObjectId[];
+}
+
+export class Tag implements ITag {
+  _id = new Types.ObjectId();
+  name = "";
+  organization = new Types.ObjectId();
 }

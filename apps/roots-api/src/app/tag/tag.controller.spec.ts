@@ -10,7 +10,7 @@ describe('Tag controller - Integration tests', () => {
     let app: TestingModule;
     let tagController: TagController;
     let tagService: TagService;
-    let fakeGuard: CanActivate = { canActivate: () => true };
+    const fakeGuard: CanActivate = { canActivate: () => true };
 
     const organizationId = new Types.ObjectId();
     const eventId = new Types.ObjectId();
@@ -91,7 +91,7 @@ describe('Tag controller - Integration tests', () => {
 
         expect(createTag).toBeCalledTimes(1);
         expect(result.message).toEqual('De tag is succesvol aangemaakt!');
-        expect(result.status).toEqual(200);
+        expect(result.status).toEqual(201);
     })
 
     it('should call createInOrganization on service', async () => {
@@ -107,7 +107,7 @@ describe('Tag controller - Integration tests', () => {
 
         expect(createTag).toBeCalledTimes(1);
         expect(result.message).toEqual('De tag is succesvol aangemaakt!');
-        expect(result.status).toEqual(200);
+        expect(result.status).toEqual(201);
     })
 
     it('should call update on service', async () => {
