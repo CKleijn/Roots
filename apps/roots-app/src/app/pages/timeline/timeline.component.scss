@@ -47,7 +47,7 @@ $background-color: #E8ECFF;
   width: 40% !important;
   height: 40px;
   font-size: 20px;
-  color: $secondary-color;
+  color: #000;
 
   //search bar on mouse focus
   &:focus {
@@ -293,5 +293,10 @@ $background-color: #E8ECFF;
       border-right: 15px solid #FFF;
       border-left: none;
     }
+  }
+
+  .timeline-year {
+    left: -35px;
+    transform: translateX(35px);
   }
 }
