@@ -18,7 +18,7 @@ export class EventService {
     private toastr: ToastrService
   ) {}
 
-  getAllEvents(): Observable<Event[]> {
+  getAllEvents(): Observable<any[]> {
     return this.httpClient.get(
       environment.SERVER_API_URL + '/events'
     ) as Observable<Event[]>;

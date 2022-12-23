@@ -1,5 +1,5 @@
 /* eslint-disable prefer-const */
-import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
+import { AfterContentChecked, AfterViewChecked, AfterViewInit, Component, ElementRef, OnInit, ViewChild } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
 import { map, Observable, startWith } from 'rxjs';
@@ -20,10 +20,10 @@ import { ToastrService } from 'ngx-toastr';
   templateUrl: './timeline.component.html',
   styleUrls: ['./timeline.component.scss'],
 })
-export class TimelineComponent implements OnInit, AfterViewChecked {
+export class TimelineComponent implements OnInit, AfterViewChecked, AfterContentChecked {
   events: any = [];
+  throttle = 20;
   standardEvents: any = [];
-  throttle = 0;
   distance = 2;
   old_records = 0;
   new_records = 5;
@@ -59,7 +59,6 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
           event.eventDate = new Date(event.eventDate);
         });
       });
-
     this.authService.getUserFromLocalStorage().subscribe((user) => this.loggedInUser = user);
 
     this.organizationId = this.loggedInUser.organization.toString();
@@ -70,6 +69,19 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
       );
     })
   }
+
+  ngAfterContentChecked(): void {
+    let currentYear = 0;
+    this.events.forEach((event: { eventDate: { getFullYear: () => number; }; _id: string; }) => {
+      if (event.eventDate.getFullYear() === currentYear) {
+        document
+          .getElementById('timeline-year-' + event._id)
+          ?.classList.add('d-none');
+      } else {
+        currentYear = event.eventDate.getFullYear();
+      }
+    });
+
 
   ngAfterViewChecked(): void {
     let observer = new IntersectionObserver((entries) => {
@@ -85,11 +97,9 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
     targetGetIn.forEach((element) => {
       observer.observe(element);
     });
-    return;
   }
 
   onScroll(): void {
-    console.log('scrolled');
     this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) =>
@@ -101,13 +111,13 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
         )
       )
       .subscribe((events) => {
-        console.log('Read another 5 events');
         this.old_records += this.new_records;
         events.forEach((event) => {
           event.eventDate = new Date(event.eventDate);
+          if (this.events.indexOf(event) === 1) {
+            this.events.push(event);
+          }
         });
-        this.events.push(...events);
-      });
   }
 
   add(event: MatChipInputEvent): void {
