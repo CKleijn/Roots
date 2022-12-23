@@ -4,9 +4,9 @@
 @import 'quill-emoji/dist/quill-emoji.css';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-$primary-color: #9381ff;
-$secondary-color: #b8b8ff;
-$background-color: #9381ff;
+$primary-color: #FBA92C;
+$secondary-color: #ffffff;
+$background-color: #e6e6e6;
 $white: #ffffff;
 $black: #000000;
 $error: #dc3545;
@@ -30,6 +30,14 @@ body {
     color: $primary-color;
   }
 
+  .p-0 > .ql-container > .ql-editor {
+    padding: 0px !important;
+  }
+
+  .pl-2 {
+    padding-left: 8px;
+  }
+
   .toast-container .ngx-toastr {
     margin-bottom: 15px;
   }
@@ -43,16 +51,17 @@ body {
     text-decoration: none;
 
     &:hover {
-      color: $secondary-color;
+      color: #fcc776;
     }
   }
 
   .form-divider {
-    background: $primary-color;
-    height: 2px;
+    background: $black;
+    height: 1px;
     position: relative;
     border: none;
     margin: 5px 0;
+    opacity: 0.6 !important;
   }
 
   #input-invalid {
@@ -74,8 +83,8 @@ body {
     border: 1px solid $primary-color;
 
     &:hover {
-      background-color: $secondary-color;
-      border-color: $secondary-color;
+      background-color: #fcc776;
+      border-color: #fcc776;
     }
   }
 
@@ -154,6 +163,11 @@ body {
 
   .ql-editor {
     min-height: 200px !important;
+  }
+
+  .ql-editor > p > a {
+    color: $primary-color !important;
+    text-decoration: none !important;
   }
 
   #tab-panel {
@@ -304,17 +318,7 @@ body {
     width: 100% !important;
   }
 
-  .searchbar-chip-grid {
-    width: 93% !important;
-    display: table;
-    margin: 0 auto;
-  }
-
-  .searchbar-chip-grid {
-    .mdc-evolution-chip-set__chips {
-      background-color: #b8b8ff;
-      border-radius: 10px;
-      margin-top: 10px;
-    }
+  .bi-info-circle::before {
+    color: $primary-color;
   }
 }

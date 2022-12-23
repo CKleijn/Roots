@@ -94,12 +94,14 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     }
     this.editSubscription = this.tagService.putTag(updateTag, this.editTagId).subscribe();
     this.modalService.dismissAll();
+
     this.ngOnInit();
   }
 
   deleteTag() {
     this.deleteSubscription = this.tagService.deleteTag(this.deleteTagId, this.loggedInUser.organization.toString()).subscribe();
     this.modalService.dismissAll();
+
     this.ngOnInit();
   }
 

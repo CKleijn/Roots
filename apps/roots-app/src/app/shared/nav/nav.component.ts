@@ -1,7 +1,7 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
-import { Observable } from 'rxjs';
+import { Observable, Subscription } from 'rxjs';
 import { AuthService } from '../../pages/auth/auth.service';
 import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
@@ -11,15 +11,15 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
   templateUrl: './nav.component.html',
   styleUrls: ['./nav.component.scss'],
 })
-export class NavComponent {
+export class NavComponent implements OnInit, OnDestroy {
   userAuthenticated!: boolean;
-  loggedInUser$!: Observable<User | undefined> 
-  currentUser!: User
+  userSubscription!: Subscription;
+  currentUser: User | undefined;
 
   constructor(private authService: AuthService, private modalService: NgbModal) {}
 
   ngOnInit(): void {
-    this.loggedInUser$ = this.authService.currentUser$;
+    this.userSubscription = this.authService.currentUser$.subscribe((user) => this.currentUser = user);
     this.authService.getUserFromLocalStorage().subscribe((user) => this.currentUser = user)
   }
 
@@ -31,4 +31,8 @@ export class NavComponent {
   open(content: any) {
 		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
 	}
+
+  ngOnDestroy(): void {
+    this.userSubscription.unsubscribe;
+  }
 }

@@ -1,42 +1,27 @@
-<div class="container" *ngIf="event">
-  <div class="detail-button-container row">
-    <div class="col-6">
-      <button class="btn detail-button" routerLink="/timeline">
-        <i class="bi bi-arrow-left"></i> Terug
-      </button>
-    </div>
-    <div class="col-6" align="end">
-      <button class="btn detail-edit-button" routerLink="./edit">
-        Bewerk gebeurtenis <i class="bi bi-pencil-square"></i>
-      </button>
-    </div>
-  </div>
-  <div>
-    <div class="detail-body">
-      <div class="row detail-header">
-        <h1 class="col-9 detail-title">{{ event.title }}</h1>
-        <div class="detail-date col-3">
-          <h4 class="">{{ event.eventDate | date : 'dd-MM-YYYY' }}</h4>
-        </div>
-      </div>
-      <div class="row detail-content">
-        <div class="col-8">
-          <quill-view-html [content]="event.content" class=""></quill-view-html>
-        </div>
-        <div class="col-2"></div>
-        <div class="tagslist col-2">
-          <div class="detail-label">
-            <label>Tags</label>
-          </div>
-          <div class="detail-tags" *ngIf="tags.length !== 0">
-            <ul *ngFor="let tag of tags">
-              <li>{{ tag.name }}</li>
-            </ul>
-          </div>
-          <div class="detail-tags" *ngIf="tags.length === 0">
-            <p>Er zijn nog geen tags gekoppeld aan deze gebeurtenis!</p>
-            <p>Voeg een tag toe door deze gebeurtenis te bewerken.</p>
-          </div>
+<div class="container my-4" *ngIf="event">
+  <div class="row d-flex justify-content-center align-items-center">
+    <div class="col-sm-12 col-md-8">
+      <div class="card shadow-lg">
+        <div class="card-body p-5">
+          <button class="btn" routerLink="/">
+            <i class="bi bi-arrow-left"></i> Terug
+          </button>
+          <button class="btn" style="float: right !important;" routerLink="./edit">
+            Bewerk gebeurtenis <i class="bi bi-pencil-square"></i>
+          </button>
+          <br><br>
+          <h1>{{ event.title }}</h1>
+          <i>{{ event.description }}</i>
+          <br><br>
+          <mat-chip-grid #chipGrid aria-label="Tag selection">
+            <mat-chip-row *ngFor="let tag of tags">
+              {{ tag.name }}
+            </mat-chip-row>
+          </mat-chip-grid>
+          <br>
+          <quill-view-html class="p-0" [content]="event.content"></quill-view-html>
+          <br>
+          <small><i>Gebeurtenis vond plaatst op <b>{{ event.eventDate | date : 'dd-MM-YYYY' }}</b></i></small>
         </div>
       </div>
     </div>
