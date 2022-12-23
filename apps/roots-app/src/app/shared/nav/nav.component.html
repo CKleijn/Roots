@@ -1,7 +1,7 @@
 <nav class="stroke gradient-custom w-100">
   <ul style="margin-bottom: 0">
     <li>
-      <a routerLink="/" *ngIf="(loggedInUser$ | async) !== undefined">Tijdlijn</a>
+      <a routerLink="organizations/{{currentUser.organization}}/timeline" *ngIf="(loggedInUser$ | async) !== undefined">Tijdlijn</a>
     </li>
     <li>
       <a routerLink="organizations/{{currentUser.organization}}/events/new"

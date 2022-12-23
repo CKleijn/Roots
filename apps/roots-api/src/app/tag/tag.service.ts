@@ -7,7 +7,6 @@ import { TagDto } from "./tag.dto";
 
 @Injectable()
 export class TagService {
-
     constructor(
         @InjectModel(Tag.name) private tagModel: Model<TagDocument>,
         @InjectModel(Organization.name) private organizationModel: Model<OrganizationDocument>
@@ -124,5 +123,31 @@ export class TagService {
         }
 
         return updatedTag;
+    }
+
+    async delete(tagId:string, organizationId:string) {
+        console.log(tagId)
+        console.log(organizationId)
+        const updatedOrganization = await this.organizationModel.findOneAndUpdate(
+            {
+                _id: new Types.ObjectId(organizationId)
+            },
+            {
+                $pull: { "tags": new Types.ObjectId(tagId), "events.$[].tags": new Types.ObjectId(tagId)}
+            },
+            {
+                new: true
+            }
+        );
+        
+        if (!updatedOrganization) {
+            throw new HttpException('Deze organisatie is niet gevonden', HttpStatus.NOT_FOUND);
+        } else {
+            const updateTags = await this.tagModel.deleteOne({_id:tagId});
+            
+            if (!updateTags) {
+                throw new HttpException('Tag niet gevonden', HttpStatus.NOT_FOUND)
+            }
+        }
     }
 }

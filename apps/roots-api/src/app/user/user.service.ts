@@ -66,9 +66,11 @@ export class UserService {
       );
     }
 
-    return await this.userModel.findOneAndUpdate({ _id: id }, [
-      { $set: { isActive: { $not: '$isActive' } } },
-    ]);
+    return await this.userModel.findOneAndUpdate(
+      { _id: id },
+      [{ $set: { isActive: { $not: '$isActive' } } }],
+      { new: true }
+    );
   }
 
   async validate(user) {

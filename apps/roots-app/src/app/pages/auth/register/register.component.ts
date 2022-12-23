@@ -87,7 +87,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
           if (organization) {
             this.authService.register(user).subscribe((user) => {
               if (user) {
-                this.router.navigate(['/']);
+                this.router.navigate([`/organizations/${user.organization}/timeline`]);
               }
             });
           }

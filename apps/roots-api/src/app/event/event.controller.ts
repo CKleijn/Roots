@@ -17,11 +17,10 @@ export class EventController {
     }
 
     @Public()
-    @Get('filter')
-    async getEventsPerPage(@Query() query): Promise<Event[]> {
-        Logger.log('Retrieving events per page (READ)');
-
-        return await this.eventService.getPerPage(query);
+    @Get(':id/filter')
+    async getEventsPerPage(@Param('id') organizationId: string, @Query() query): Promise<Event[]> {
+    Logger.log('Retrieving events per page (READ)');
+        return await this.eventService.getPerPage(query, organizationId);
     }
 
     @Public()

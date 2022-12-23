@@ -1,3 +1,5 @@
+/* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-var-requires */
 import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as QuillNamespace from 'quill';
 import { FormControl, FormGroup, Validators } from '@angular/forms';

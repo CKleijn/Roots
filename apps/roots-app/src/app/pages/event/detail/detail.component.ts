@@ -30,7 +30,7 @@ export class EventDetailComponent implements OnInit {
       )
       .subscribe((foundEvent) => {
         this.event = foundEvent;
-        this.tags = new Array<Tag>()
+        this.tags = new Array<Tag>
         foundEvent.tags.forEach((tag) => {
           this.tagService.getTagById(tag).subscribe((foundTag) => {
             this.tags.push(foundTag)

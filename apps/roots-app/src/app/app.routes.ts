@@ -3,24 +3,62 @@ import { LoggedInAuthGuard } from './pages/auth/auth.guards';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { EventDetailComponent } from './pages/event/detail/detail.component';
-import { EventComponent } from './pages/event/event.component';
 import { EventFormComponent } from './pages/event/form/form.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 
 export const appRoutes: Route[] = [
-  //TIMELINE
-  { path: 'timeline', component: TimelineComponent, pathMatch: 'full', canActivate: [LoggedInAuthGuard] },
   //AUTH
-  { path: 'login', component: LoginComponent, pathMatch: 'full' },
-  { path: 'register', component: RegisterComponent, pathMatch: 'full' },
+  {
+    path: 'login',
+    component: LoginComponent,
+    pathMatch: 'full',
+    title: 'Inloggen',
+  },
+  {
+    path: 'register',
+    component: RegisterComponent,
+    pathMatch: 'full',
+    title: 'Registreren',
+  },
+  //TIMELINE
+  {
+    path: 'organizations/:organizationId/timeline',
+    component: TimelineComponent,
+    pathMatch: 'full',
+    title: 'Tijdlijn',
+    canActivate: [LoggedInAuthGuard]
+  },
   // EVENTS
-  { path: 'organizations/:organizationId/events', pathMatch: 'full', component: EventComponent, canActivate: [LoggedInAuthGuard] },
-  { path: 'organizations/:organizationId/events/new', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
-  { path: 'organizations/:organizationId/events/:eventId', pathMatch: 'full', component: EventDetailComponent, canActivate: [LoggedInAuthGuard] },
-  { path: 'organizations/:organizationId/events/:eventId/edit', pathMatch: 'full', component: EventFormComponent, canActivate: [LoggedInAuthGuard] },
+  {
+    path: 'organizations/:organizationId/events/new',
+    pathMatch: 'full',
+    component: EventFormComponent,
+    title: 'Gebeurtenis aanmaken',
+    canActivate: [LoggedInAuthGuard],
+  },
+  {
+    path: 'organizations/:organizationId/events/:eventId',
+    pathMatch: 'full',
+    component: EventDetailComponent,
+    title: 'Gebeurtenis details',
+    canActivate: [LoggedInAuthGuard],
+  },
+  {
+    path: 'organizations/:organizationId/events/:eventId/edit',
+    pathMatch: 'full',
+    component: EventFormComponent,
+    title: 'Gebeurtenis bewerken',
+    canActivate: [LoggedInAuthGuard],
+  },
   // ORGANIZATION
-  { path: 'organizations/:organizationId', pathMatch: 'full', component: OrganizationComponent, canActivate: [LoggedInAuthGuard] },
+  {
+    path: 'organizations/:organizationId',
+    pathMatch: 'full',
+    component: OrganizationComponent,
+    title: 'Organisatie',
+    canActivate: [LoggedInAuthGuard],
+  },
   //FALLBACK
   { path: '**', redirectTo: 'login' },
 ];

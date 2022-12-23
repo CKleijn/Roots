@@ -28,7 +28,7 @@ export class LoginComponent implements OnInit, OnDestroy {
       .getUserFromLocalStorage()
       .subscribe((user: User) => {
         if (user) {
-          this.router.navigate(['/timeline']);
+          this.router.navigate([`/organizations/${user.organization}/timeline`]);
         }
       });
   }
@@ -47,7 +47,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       this.authService.login(emailAddress, password).subscribe((user) => {
         if (user) {
-          this.router.navigate(['/timeline']);
+          this.router.navigate([`/organizations/${user.organization}/timeline`]);
         }
         this.submitted = false;
       });
