@@ -3,6 +3,8 @@ import { AfterViewChecked, Component, ElementRef, OnInit, ViewChild } from '@ang
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
 import { map, Observable, startWith } from 'rxjs';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { EventService } from '../event/event.service';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
@@ -26,7 +28,6 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
   old_records = 0;
   new_records = 5;
   loggedInUser!: User;
-
   organizationId: string | undefined;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
@@ -36,18 +37,28 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
-  constructor(private eventService: EventService, private authService: AuthService, private tagService: TagService, private toastrService: ToastrService) { }
+  constructor(private eventService: EventService, private authService: AuthService, private route: ActivatedRoute, private tagService: TagService, private toastrService: ToastrService) { }
 
   ngOnInit(): void {
-    this.eventService.getEventsPerPage(this.old_records, this.new_records).subscribe((events) => {
-      console.log('Read the first 5 events')
-      this.events = events;
-      this.standardEvents = events;
+    this.route.paramMap
+      .pipe(
+        switchMap((params: ParamMap) =>
+          this.eventService.getEventsPerPage(
+            this.old_records,
+            this.new_records,
+            params.get('organizationId')!
+          )
+        )
+      )
+      .subscribe((events) => {
+        console.log('Read the first 5 events');
+        this.events = events;
+        this.standardEvents = events;
 
-      events.forEach((event) => {
-        event.eventDate = new Date(event.eventDate);
+        events.forEach((event) => {
+          event.eventDate = new Date(event.eventDate);
+        });
       });
-    });
 
     this.authService.getUserFromLocalStorage().subscribe((user) => this.loggedInUser = user);
 
@@ -79,14 +90,24 @@ export class TimelineComponent implements OnInit, AfterViewChecked {
 
   onScroll(): void {
     console.log('scrolled');
-    this.eventService.getEventsPerPage(this.old_records, this.new_records).subscribe((events) => {
-      console.log('Read another 5 events')
-      this.old_records += this.new_records;
-      events.forEach((event) => {
-        event.eventDate = new Date(event.eventDate);
+    this.route.paramMap
+      .pipe(
+        switchMap((params: ParamMap) =>
+          this.eventService.getEventsPerPage(
+            this.old_records,
+            this.new_records,
+            params.get('organizationId')!
+          )
+        )
+      )
+      .subscribe((events) => {
+        console.log('Read another 5 events');
+        this.old_records += this.new_records;
+        events.forEach((event) => {
+          event.eventDate = new Date(event.eventDate);
+        });
+        this.events.push(...events);
       });
-      this.events.push(...events);
-    });
   }
 
   add(event: MatChipInputEvent): void {
