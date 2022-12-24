@@ -7,6 +7,7 @@ import {
   Validators,
 } from '@angular/forms';
 import { Router } from '@angular/router';
+import { Types } from 'mongoose';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { OrganizationService } from '../../organization/organization.service';
@@ -67,9 +68,11 @@ export class RegisterComponent implements OnInit, OnDestroy {
     } else if (this.registerForm.valid && this.createOrganization) {
       //create organization object
       const organization = {
+        _id: new Types.ObjectId(),
         name: this.registerForm.value.organizationName,
         emailDomain: this.emailDomainInput,
         events: [],
+        tags: [],
       };
 
       //remove unneeded value, that's not needed for user object
@@ -87,7 +90,9 @@ export class RegisterComponent implements OnInit, OnDestroy {
           if (organization) {
             this.authService.register(user).subscribe((user) => {
               if (user) {
-                this.router.navigate([`/organizations/${user.organization}/timeline`]);
+                this.router.navigate([
+                  `/organizations/${user.organization}/timeline`,
+                ]);
               }
             });
           }
