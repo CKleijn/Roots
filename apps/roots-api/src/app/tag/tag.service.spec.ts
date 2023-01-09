@@ -210,8 +210,10 @@ describe('OrganizationService', () => {
         it('should delete a tag', async () => {
             try {
                 await service.delete(tagTwoId, organizationIdOne);
+                await service.getById(tagTwoId);
             } catch (err) {
                 expect(err.message).toEqual('Tag niet gevonden');
+                expect(err.status).toEqual(404);
             }
         });
     });
