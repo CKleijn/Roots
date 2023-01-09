@@ -153,6 +153,15 @@ describe('OrganizationService', () => {
             expect((results[0] as any).organisation).toEqual(new Types.ObjectId(organizationIdOne));
             expect((results[1] as any).organisation).toEqual(new Types.ObjectId(organizationIdOne));
         });
+
+        it('should throw exception when given non-existing organization', async () => {
+            try {
+                await service.getAllByOrganization('63bc6596a420d9a3128deb5c');
+            } catch (err) {
+                expect(err.message).toEqual('Organisatie niet gevonden');
+                expect(err.status).toEqual(404);
+            }
+        });
     });
 
     describe('getById', () => {
@@ -163,6 +172,15 @@ describe('OrganizationService', () => {
             expect((result as any)._id).toEqual(tagOneId);
             expect(result.name).toEqual('Tag1');
             expect(result.organization).toEqual(new Types.ObjectId(organizationIdOne));
+        });
+
+        it('should throw exception when given non-existing tag', async () => {
+            try {
+                await service.getById('63bc6596a420d9a3128deb5c');
+            } catch (err) {
+                expect(err.message).toEqual('Tag niet gevonden');
+                expect(err.status).toEqual(404);
+            }
         });
     });
 
@@ -177,6 +195,30 @@ describe('OrganizationService', () => {
             expect(result.name).toEqual('test');
             expect(result.organization).toEqual(new Types.ObjectId(organizationIdOne));
         });
+
+        it('should throw exception when given non-existing organization', async () => {
+            try {
+                const tag = new TagDto();
+                tag.name = 'test';
+
+                await service.createInEvent('63bc6596a420d9a3128deb5c', eventIdOne, tag);
+            } catch (err) {
+                expect(err.message).toEqual('Organisatie niet gevonden');
+                expect(err.status).toEqual(404);
+            }
+        });
+
+        it('should throw exception when given non-existing event', async () => {
+            try {
+                const tag = new TagDto();
+                tag.name = 'test';
+
+                await service.createInEvent(organizationIdOne, '63bc6596a420d9a3128deb5c', tag);
+            } catch (err) {
+                expect(err.message).toEqual(`Event niet gevonden van organisatie met id: ${organizationIdOne}`);
+                expect(err.status).toEqual(404);
+            }
+        });
     });
 
     describe('createInOrganization', () => {
@@ -189,6 +231,18 @@ describe('OrganizationService', () => {
             expect(result).toBeInstanceOf(Object);
             expect(result.name).toEqual('test');
             expect(result.organization).toEqual(new Types.ObjectId(organizationIdOne));
+        });
+
+        it('should throw exception when given non-existing organization', async () => {
+            try {
+                const tag = new TagDto();
+                tag.name = 'test';
+
+                await service.createInOrganization('63bc6596a420d9a3128deb5c', tag);
+            } catch (err) {
+                expect(err.message).toEqual('Organisatie niet gevonden');
+                expect(err.status).toEqual(404);
+            }
         });
     });
 
@@ -204,6 +258,18 @@ describe('OrganizationService', () => {
             expect(result.name).toEqual('test');
             expect(result.organization).toEqual(new Types.ObjectId(organizationIdTwo));
         });
+
+        it('should throw exception when given non-existing tag', async () => {
+            try {
+                const tag = new TagDto();
+                tag.name = 'test';
+
+                await service.update('63bc6596a420d9a3128deb5c', tag);
+            } catch (err) {
+                expect(err.message).toEqual('Deze tag bestaat niet');
+                expect(err.status).toEqual(404);
+            }
+        });
     });
 
     describe('delete', () => {
@@ -211,6 +277,24 @@ describe('OrganizationService', () => {
             try {
                 await service.delete(tagTwoId, organizationIdOne);
                 await service.getById(tagTwoId);
+            } catch (err) {
+                expect(err.message).toEqual('Tag niet gevonden');
+                expect(err.status).toEqual(404);
+            }
+        });
+
+        it('should throw exception when given non-existing organization', async () => {
+            try {
+                await service.delete(tagTwoId, '63bc6596a420d9a3128deb5c');
+            } catch (err) {
+                expect(err.message).toEqual('Deze organisatie is niet gevonden');
+                expect(err.status).toEqual(404);
+            }
+        });
+
+        it('should throw exception when given non-existing tag', async () => {
+            try {
+                await service.delete('63bc6596a420d9a3128deb5c', organizationIdOne);
             } catch (err) {
                 expect(err.message).toEqual('Tag niet gevonden');
                 expect(err.status).toEqual(404);
