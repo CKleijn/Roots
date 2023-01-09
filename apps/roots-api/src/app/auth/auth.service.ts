@@ -15,9 +15,7 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user: User = await this.userService.findByEmailAddress(username);
-    console.log(user && (await bcrypt.compareSync(pass, user.password)));
     if (user && (await bcrypt.compareSync(pass, user.password))) {
-      console.log(user.isActive);
       if (user.isActive === false) {
         throw new HttpException(
           `Jouw account is gedeactiveerd!`,
