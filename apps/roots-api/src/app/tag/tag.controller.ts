@@ -1,5 +1,16 @@
-import { Body, Controller, Delete, Get, HttpException, HttpStatus, Logger, Param, Post, Put } from '@nestjs/common';
-import { Organization } from '@roots/data';
+/* eslint-disable @typescript-eslint/ban-types */
+import {
+  Body,
+  Controller,
+  Delete,
+  Get,
+  HttpException,
+  HttpStatus,
+  Logger,
+  Param,
+  Post,
+  Put,
+} from '@nestjs/common';
 import { Public } from '../auth/auth.module';
 import { ParseObjectIdPipe } from '../shared/pipes/ParseObjectIdPipe';
 import { TagDto } from './tag.dto';
@@ -8,96 +19,115 @@ import { TagService } from './tag.service';
 
 @Controller('tags')
 export class TagController {
-    constructor(private readonly tagService: TagService) { }
+  constructor(private readonly tagService: TagService) {}
 
-    @Public()
-    @Get('organizations/:organizationId')
-    async getAllTagsByOrganization(@Param('organizationId', ParseObjectIdPipe) organizationId: string): Promise<Tag[]> {
-        Logger.log('Retrieving all tags by organization (READ)');
+  @Public()
+  @Get('organizations/:organizationId')
+  async getAllTagsByOrganization(
+    @Param('organizationId', ParseObjectIdPipe) organizationId: string
+  ): Promise<Tag[]> {
+    Logger.log('Retrieving all tags by organization (READ)');
 
-        return await this.tagService.getAllByOrganization(organizationId);
+    return await this.tagService.getAllByOrganization(organizationId);
+  }
+
+  @Public()
+  @Get(':tagId')
+  async getTagById(
+    @Param('tagId', ParseObjectIdPipe) tagId: string
+  ): Promise<Tag> {
+    try {
+      Logger.log(`Retrieve tag with id: ${tagId} (READ)`);
+
+      return await this.tagService.getById(tagId);
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
+  }
 
-    @Public()
-    @Get(':tagId')
-    async getTagById(@Param('tagId', ParseObjectIdPipe) tagId: string): Promise<Tag> {
-        try {
-            Logger.log(`Retrieve tag with id: ${tagId} (READ)`);
+  @Public()
+  @Post('new/organizations/:organizationId/events/:eventId')
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  async createTagInEvent(
+    @Param('organizationId', ParseObjectIdPipe) organizationId: string,
+    @Param('eventId', ParseObjectIdPipe) eventId: string,
+    @Body() tagDto: TagDto
+  ): Promise<Object> {
+    try {
+      Logger.log(`Create tag (POST)`);
 
-            return await this.tagService.getById(tagId);
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-        }
+      await this.tagService.createInEvent(organizationId, eventId, tagDto);
+
+      return {
+        status: 201,
+        message: 'De tag is succesvol aangemaakt!',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
+  }
 
-    @Public()
-    @Post('new/organizations/:organizationId/events/:eventId')
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    async createTagInEvent(@Param('organizationId', ParseObjectIdPipe) organizationId: string,@Param('eventId', ParseObjectIdPipe) eventId: string, @Body() tagDto: TagDto): Promise<Object> {
-        try {
-            Logger.log(`Create tag (POST)`);
+  @Public()
+  @Post('new/organizations/:organizationId')
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  async createTagInOrganization(
+    @Param('organizationId', ParseObjectIdPipe) organizationId: string,
+    @Body() tagDto: TagDto
+  ): Promise<Object> {
+    try {
+      Logger.log(`Create tag (POST)`);
+      const tag = await this.tagService.createInOrganization(
+        organizationId,
+        tagDto
+      );
 
-            const tag = await this.tagService.createInEvent(organizationId, eventId, tagDto);
-
-            return {
-                status: 201,
-                message: 'De tag is succesvol aangemaakt!'
-            }
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-        }
+      return {
+        status: 201,
+        message: 'De tag is succesvol aangemaakt!',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
+  }
 
-    @Public()
-    @Post('new/organizations/:organizationId')
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    async createTagInOrganization(@Param('organizationId', ParseObjectIdPipe) organizationId: string, @Body() tagDto: TagDto): Promise<Object> {
-        try {
-            Logger.log(`Create tag (POST)`);
-            console.log(tagDto, organizationId);
-            const tag = await this.tagService.createInOrganization(organizationId, tagDto);
+  @Public()
+  @Put(':tagId')
+  // eslint-disable-next-line @typescript-eslint/ban-types
+  async updateTag(
+    @Param('tagId', ParseObjectIdPipe) tagId: string,
+    @Body() tagDto: TagDto
+  ): Promise<Object> {
+    try {
+      Logger.log(`Update tag ${tagId} (PUT)`);
 
-            return {
-                status: 201,
-                message: 'De tag is succesvol aangemaakt!'
-            }
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-        }
+      const tag = await this.tagService.update(tagId, tagDto);
+
+      return {
+        status: 200,
+        message: 'De tag is succesvol aangepast!',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
     }
+  }
 
-    @Public()
-    @Put(':tagId')
-    // eslint-disable-next-line @typescript-eslint/ban-types
-    async updateTag(@Param('tagId', ParseObjectIdPipe) tagId: string, @Body() tagDto: TagDto): Promise<Object> {
-        try {
-            Logger.log(`Update tag ${tagId} (PUT)`);
+  @Public()
+  @Delete(':tagId/organization/:organizationId')
+  async deleteTag(
+    @Param('tagId', ParseObjectIdPipe) tagId: string,
+    @Param('organizationId', ParseObjectIdPipe) organizationId: string
+  ) {
+    try {
+      Logger.log(`Deleting tag with ${tagId} (DELETE)`);
 
-            const tag = await this.tagService.update(tagId, tagDto);
+      const tag = await this.tagService.delete(tagId, organizationId);
 
-            return {
-                status: 200,
-                message: 'De tag is succesvol aangepast!'
-            }
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED)
-        }
+      return {
+        status: 200,
+        message: 'De tag is successvol verwijdert!',
+      };
+    } catch (error) {
+      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
     }
-
-    @Public()
-    @Delete(':tagId/organization/:organizationId') 
-    async deleteTag(@Param('tagId', ParseObjectIdPipe) tagId:string, @Param('organizationId', ParseObjectIdPipe) organizationId:string) {
-        try { 
-            Logger.log(`Deleting tag with ${tagId} (DELETE)`);
-
-            const tag = await this.tagService.delete(tagId,organizationId);
-
-            return { 
-                status:200,
-                message: 'De tag is successvol verwijdert!'
-            }
-        } catch (error) {
-            throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-        }
-    }
+  }
 }

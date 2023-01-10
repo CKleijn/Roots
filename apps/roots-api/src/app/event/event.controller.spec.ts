@@ -9,6 +9,8 @@ import { EventDto } from './event.dto';
 import { Event } from './event.schema';
 import { EventService } from './event.service';
 
+jest.useRealTimers();
+
 describe('Event controller - Integration tests', () => {
   let app: TestingModule;
   let eventController: EventController;
@@ -45,6 +47,7 @@ describe('Event controller - Integration tests', () => {
         description: 'Event description 1',
         content: 'Event content 1',
         eventDate: new Date(),
+        isActive: true,
         tags: [new Types.ObjectId()],
       },
       {
@@ -52,6 +55,7 @@ describe('Event controller - Integration tests', () => {
         description: 'Event description 2',
         content: 'Event content 2',
         eventDate: new Date(),
+        isActive: true,
         tags: [new Types.ObjectId()],
       },
     ];
@@ -86,6 +90,7 @@ describe('Event controller - Integration tests', () => {
       description: 'Event description 1',
       content: 'Event content 1',
       eventDate: new Date(),
+      isActive: true,
       tags: [new Types.ObjectId()],
     };
 
@@ -110,6 +115,7 @@ describe('Event controller - Integration tests', () => {
       description: 'Event description 1',
       content: 'Event content 1',
       eventDate: new Date(),
+      isActive: true,
       tags: [new Types.ObjectId()],
     };
 
@@ -117,9 +123,10 @@ describe('Event controller - Integration tests', () => {
       .spyOn(eventService, 'create')
       .mockImplementation(async () => exampleEvent);
 
+    delete exampleEvent.isActive;
     delete exampleEvent.tags;
 
-    const eventDto: EventDto = { ...exampleEvent, tags: [] };
+    const eventDto: EventDto = { ...exampleEvent };
 
     const companyId = '63988b78e1b33b129a8b04c3';
 
@@ -136,6 +143,7 @@ describe('Event controller - Integration tests', () => {
       description: 'Event description 2',
       content: 'Event content 1',
       eventDate: new Date(),
+      isActive: true,
       tags: [new Types.ObjectId()],
     };
 
@@ -145,7 +153,7 @@ describe('Event controller - Integration tests', () => {
 
     delete exampleEvent.tags;
 
-    const eventDto: EventDto = { ...exampleEvent, tags: [] };
+    const eventDto: EventDto = { ...exampleEvent };
 
     const companyId = '63988b78e1b33b129a8b04c3';
     const eventId = '639a6d184362b5279e5094a0';

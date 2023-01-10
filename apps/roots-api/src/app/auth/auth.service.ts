@@ -1,7 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { CreateUserDto } from '../user/user.dto';
+import { UserDto } from '../user/user.dto';
 import { User } from '../user/user.schema';
 import { UserService } from '../user/user.service';
 import { jwtConstants } from './constants';
@@ -34,8 +34,8 @@ export class AuthService {
     );
   }
 
-  async register(createUserDto: CreateUserDto) {
-    const user: User = await this.userService.create(createUserDto);
+  async register(UserDto: UserDto) {
+    const user: User = await this.userService.create(UserDto);
     return this.login(user);
   }
 
