@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/mongoose';
 import * as bcrypt from 'bcryptjs';
 import { Model } from 'mongoose';
 import { OrganizationService } from '../organization/organization.service';
-import { CreateUserDto } from './user.dto';
+import { UserDto } from './user.dto';
 import { User, UserDocument } from './user.schema';
 
 @Injectable()
@@ -14,27 +14,37 @@ export class UserService {
   ) {}
 
   async findByEmailAddress(emailAddress: string): Promise<User> {
-    return await this.userModel.findOne({ emailAddress });
+    const user = await this.userModel.findOne({ emailAddress });
+
+    if (!user)
+      throw new HttpException('Gebruiker bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
   }
 
   async getById(_id: string): Promise<User> {
-    return await this.userModel.findOne({ _id });
+    const user = await this.userModel.findOne({ _id });
+
+    if (!user)
+      throw new HttpException('Gebruiker bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
   }
 
   async getAllParticipants(organizationId: string): Promise<User[]> {
     return await this.userModel.find({ organization: organizationId });
   }
 
-  async create(createUserDto: CreateUserDto): Promise<User> {
-    await this.validate(createUserDto);
+  async create(UserDto: UserDto): Promise<User> {
+    await this.validate(UserDto);
 
     const newUser = new this.userModel({
-      ...createUserDto,
-      password: await bcrypt.hashSync(createUserDto.password, 10),
+      ...UserDto,
+      password: await bcrypt.hashSync(UserDto.password, 10),
       isActive: true, //until email validation is implemented
       createdAt: new Date(),
       organization: await this.organizationService.getByEmailDomain(
-        createUserDto.emailAddress.split('@').at(1)
+        UserDto.emailAddress.split('@').at(1)
       ),
     });
 
@@ -42,9 +52,14 @@ export class UserService {
   }
 
   async setLastLoginTimeStamp(id: string) {
-    return await this.userModel.findOneAndUpdate({ _id: id }, [
+    const user = await this.userModel.findOneAndUpdate({ _id: id }, [
       { $set: { lastLoginTimestamp: new Date() } },
     ]);
+
+    if (!user)
+      throw new HttpException('Gebruiker bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
   }
 
   async status(id: string, req: any): Promise<User> {
@@ -80,17 +95,6 @@ export class UserService {
     ) {
       throw new HttpException(
         `Het e-mailadres is al in gebruik!`,
-        HttpStatus.BAD_REQUEST
-      );
-    }
-
-    if (
-      (await this.organizationService.getByEmailDomain(
-        user.emailAddress.split('@').at(1)
-      )) === null
-    ) {
-      throw new HttpException(
-        `Er bestaat geen bedrijf met het opgegeven email domein!`,
         HttpStatus.BAD_REQUEST
       );
     }

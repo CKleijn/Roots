@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
-import { map, Observable, startWith } from 'rxjs';
+import { lastValueFrom, map, Observable, of, startWith } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -20,7 +20,6 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { TagService } from '../tag/tag.service';
 import { Event } from '../event/event.model';
 import { Tag } from '../tag/tag.model';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'roots-timeline',
@@ -28,8 +27,7 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent
-  implements OnInit, AfterViewChecked, AfterContentChecked
-{
+  implements OnInit, AfterViewChecked, AfterContentChecked {
   events: any = [];
   standardEvents: any = [];
   throttle = 0;
@@ -43,6 +41,12 @@ export class TimelineComponent
   filteredTags: Observable<string[]> | undefined;
   tags: string[] = [];
   allTags: string[] = [];
+  fullTags: any[] = [];
+  fullSelectedTags: Tag[] = [];
+  newEvents: Event[] = [];
+  containsAllTags = true;
+  radioValue: string | undefined;
+  showArchivedEvents = false;
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -51,8 +55,7 @@ export class TimelineComponent
     private authService: AuthService,
     private route: ActivatedRoute,
     private tagService: TagService,
-    private toastrService: ToastrService
-  ) {}
+  ) { }
 
   ngOnInit(): void {
     this.route.paramMap
@@ -72,6 +75,7 @@ export class TimelineComponent
 
         events.forEach((event) => {
           event.eventDate = new Date(event.eventDate);
+          console.log(event)
         });
       });
 
@@ -88,6 +92,7 @@ export class TimelineComponent
         )
       );
     });
+    this.radioValue = 'and';
   }
 
   ngAfterViewChecked(): void {
@@ -146,8 +151,13 @@ export class TimelineComponent
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    if (value) {
-      this.tags.push(value);
+    if (this.allTags?.includes(value)) {
+      if (this.tags?.length > 0) {
+        if (!this.tags?.includes(value))
+          this.tags.push(value);
+      } else {
+        this.tags.push(value);
+      }
     }
 
     event.chipInput.clear();
@@ -158,18 +168,22 @@ export class TimelineComponent
   remove(tag: string): void {
     const index = this.tags.indexOf(tag);
 
-    if (index >= 0) {
+    if (index >= 0)
       this.tags.splice(index, 1);
-    }
+  }
+
+  reset(): void {
+    this.tags = [];
+    this.events = this.standardEvents;
+    this.radioValue = 'and';
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     if (!this.tags?.includes(event.option.viewValue)) {
       this.tags.push(event.option.viewValue);
 
-      if (this.tagInput) {
+      if (this.tagInput)
         this.tagInput.nativeElement.value = '';
-      }
 
       this.tagCtrl.setValue(null);
     }
@@ -178,75 +192,86 @@ export class TimelineComponent
   private _filter(value: string): string[] {
     const filterValue = value.toLowerCase();
 
-    return this.allTags.filter((tag) =>
-      tag.toLowerCase().includes(filterValue)
-    );
+    if (filterValue.length >= 3) {
+      return this.allTags.filter((tag) =>
+        tag.toLowerCase().includes(filterValue)
+      );
+    }
+
+    return [];
   }
 
   async getAllTags() {
+    // Get all tags from the organization if the organization exists
     if (this.organizationId) {
-      const tags = await this.tagService
-        .getAllTagsByOrganization(this.organizationId)
-        .toPromise();
+      const tags = await this.tagService.getAllTagsByOrganization(this.organizationId).toPromise();
       if (tags) {
+        // Push all tags into an array (single request)
         for await (const tag of tags) {
+          // Only tag names for dropdown
           this.allTags?.push(tag.name);
+          // Whole tag object for filter
+          this.fullTags?.push(tag);
         }
       }
     }
   }
 
   async searchOnTag() {
-    let fullSelectedTags: Tag[] = [];
-    let fullTags = await this.tagService
-      .getAllTagsByOrganization(this.organizationId as string)
-      .toPromise();
-
-    for await (const tag of this.tags) {
-      fullSelectedTags.push(fullTags?.filter((p) => p.name === tag).at(0));
-    }
-
-    const tempEvents = this.standardEvents as Event[];
-    let newEvents: Event[] = [];
-
+    // Clear array from previous search
+    this.fullSelectedTags = [];
+    this.newEvents = [];
+    // Push all tags which are selected in array
+    for await (const tag of this.tags)
+      this.fullSelectedTags.push(this.fullTags?.filter((p) => p.name === tag).at(0));
+    // If one tag is selected filter events only on one tag
     if (this.tags.length === 1) {
-      for await (const event of tempEvents) {
+      for await (const event of this.standardEvents as Event[]) {
         for await (const tag of event.tags) {
-          if (fullSelectedTags.filter((p) => p._id === tag).length > 0) {
-            newEvents.push(event);
-          }
+          if (this.fullSelectedTags.filter((p) => p._id === tag).length > 0)
+            this.newEvents.push(event);
         }
       }
     } else if (this.tags.length > 1) {
-      let containsAllTags = true;
-
-      for await (const event of tempEvents) {
-        for await (const fullSelectedTag of fullSelectedTags) {
-          if (
-            event.tags.filter((p) => p === fullSelectedTag._id).length === 0
-          ) {
-            containsAllTags = false;
+      // If more then one tag is selected filter events on all selected tags
+      // Event must have all selected tags for it to go through the filter
+      if (this.radioValue === 'and') {
+        for await (const event of this.standardEvents as Event[]) {
+          for await (const fullSelectedTag of this.fullSelectedTags) {
+            if (event.tags.filter((p) => p === fullSelectedTag._id).length === 0)
+              this.containsAllTags = false;
           }
+          this.containsAllTags ? this.newEvents.push(event) : (this.containsAllTags = true);
         }
-
-        if (containsAllTags) {
-          newEvents.push(event);
-        } else {
-          containsAllTags = true;
+      // Event must have only one selected tag for it to go through the filter
+      } else if (this.radioValue === 'or') {
+        for await (const event of this.standardEvents as Event[]) {
+          for await (const fullSelectedTag of this.fullSelectedTags) {
+            if (event.tags.filter((p) => p === fullSelectedTag._id).length > 0) {
+              if (this.newEvents.filter((e) => e === event).length === 0)
+                this.newEvents.push(event)
+            }
+          }
         }
       }
     }
-
-    if (newEvents.length === 0 && this.tags.length === 0) {
+    // If there are no selected tags and no events go through filter
+    if (this.newEvents.length === 0 && this.tags.length === 0) {
       this.events = this.standardEvents;
-    } else if (newEvents.length === 0) {
-      this.toastrService.error(
-        'Geen gebeurtenissen beschikken over deze tag(s)!',
-        'Filteren gefaald!'
-      );
-      this.events = this.standardEvents;
+      // If no events go through filter
+    } else if (this.newEvents.length === 0) {
+      this.events = [];
+      // If there are events after filter, so if filter succeeds
     } else {
-      this.events = newEvents;
+      this.events = this.newEvents;
+    }
+  }
+
+  toggleArchivedEvents(){
+    if (this.showArchivedEvents) {
+      this.showArchivedEvents = false;
+    } else {
+      this.showArchivedEvents = true;
     }
   }
 }
