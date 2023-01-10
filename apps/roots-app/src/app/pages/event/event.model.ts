@@ -4,4 +4,6 @@ export class Event {
     content = "";
     tags = [];
     eventDate: Date = <Date>{};
+    isActive!: boolean;
+    
 }

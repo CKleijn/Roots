@@ -1,9 +1,13 @@
+/* eslint-disable prefer-const */
 import { Test, TestingModule } from '@nestjs/testing';
 import { EventService } from "./event.service";
 import { EventController } from "./event.controller";
 import { Event } from './event.schema';
 import { CanActivate } from '@nestjs/common';
 import { Public } from '../auth/auth.module';
+import { ObjectId, Types } from 'mongoose';
+import { Type } from 'class-transformer';
+import { EventDto } from './event.dto';
 
 describe('Event controller - Integration tests', () => {
     let app: TestingModule;
@@ -32,18 +36,22 @@ describe('Event controller - Integration tests', () => {
     });
 
     it('should call getAll on the service', async () => {
+        const exampleTags: Types.ObjectId = new Types.ObjectId();
+
         const exampleEvents: Event[] = [
             {
                 title: 'Event title 1',
                 description: 'Event description 1',
                 content: 'Event content 1',
-                eventDate: new Date()
+                eventDate: new Date(),
+                tags: [exampleTags]
             },
             {
                 title: 'Event title 2',
                 description: 'Event description 2',
                 content: 'Event content 2',
-                eventDate: new Date()
+                eventDate: new Date(),
+                tags: [exampleTags]
             }
         ]
 
@@ -65,11 +73,14 @@ describe('Event controller - Integration tests', () => {
     });
 
     it('should call getById on the service', async () => {
+        const exampleTags: Types.ObjectId = new Types.ObjectId();
+
         const exampleEvent: Event = {
             title: 'Event title 1',
             description: 'Event description 1',
             content: 'Event content 1',
-            eventDate: new Date()
+            eventDate: new Date(),
+            tags: [exampleTags]
         }
 
         const getEventById = jest.spyOn(eventService, 'getById')
@@ -87,11 +98,13 @@ describe('Event controller - Integration tests', () => {
     });
 
     it('should call create on the service', async () => {
+        const exampleTags: Types.ObjectId = new Types.ObjectId();
         const exampleEvent: Event = {
             title: 'Event title 1',
             description: 'Event description 1',
             content: 'Event content 1',
-            eventDate: new Date()
+            eventDate: new Date(),
+            tags: [exampleTags]
         }
 
         const createEvent = jest.spyOn(eventService, 'create')
@@ -107,11 +120,13 @@ describe('Event controller - Integration tests', () => {
     });
 
     it('should call update on the service', async () => {
+        const exampleTags: Types.ObjectId = new Types.ObjectId();
         const exampleEvent: Event = {
             title: 'Event title 1',
             description: 'Event description 2',
             content: 'Event content 1',
-            eventDate: new Date()
+            eventDate: new Date(),
+            tags: [exampleTags]
         }
 
         const updateEvent = jest.spyOn(eventService, 'update')

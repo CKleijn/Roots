@@ -33,6 +33,11 @@ export class Event implements IEvent {
     type: [Types.ObjectId]
   })
   tags: [Types.ObjectId]
+
+  @Prop({
+    default:true
+  })
+  isActive: boolean;
 }
 
 export const EventSchema = SchemaFactory.createForClass(Event);
