@@ -43,6 +43,7 @@ export class TimelineComponent
   filteredTags: Observable<string[]> | undefined;
   tags: string[] = [];
   allTags: string[] = [];
+  showArchivedEvents = false;
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -248,6 +249,14 @@ export class TimelineComponent
       this.events = this.standardEvents;
     } else {
       this.events = newEvents;
+    }
+  }
+
+  toggleArchivedEvents(){
+    if (this.showArchivedEvents) {
+      this.showArchivedEvents = false;
+    } else {
+      this.showArchivedEvents = true;
     }
   }
 }
