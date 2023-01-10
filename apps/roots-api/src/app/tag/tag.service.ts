@@ -33,7 +33,7 @@ export class TagService {
 
     async getById(tagId: string): Promise<Tag> {
         const tag = await this.tagModel.findOne({_id: new Types.ObjectId(tagId)})
-        
+
         if (!tag) throw new HttpException('Tag niet gevonden', HttpStatus.NOT_FOUND);
         
         return tag;
@@ -41,7 +41,7 @@ export class TagService {
 
     async createInEvent(organizationId: string, eventId: string, tagDto: TagDto): Promise<Tag> {
         // validation
-        const organization = this.organizationModel.findOne({ _id: new Types.ObjectId(organizationId) });
+        const organization = await this.organizationModel.findOne({ _id: new Types.ObjectId(organizationId) });
         if (!organization) throw new HttpException('Organisatie niet gevonden', HttpStatus.NOT_FOUND);
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
