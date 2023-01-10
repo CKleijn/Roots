@@ -72,6 +72,7 @@ export class TimelineComponent
 
         events.forEach((event) => {
           event.eventDate = new Date(event.eventDate);
+          console.log(event)
         });
       });
 
