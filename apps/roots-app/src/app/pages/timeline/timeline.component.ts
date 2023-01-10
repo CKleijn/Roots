@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
-import { lastValueFrom, map, Observable, of, startWith } from 'rxjs';
+import { lastValueFrom, map, Observable, of, startWith, tap } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -169,6 +169,7 @@ export class TimelineComponent
     if (index >= 0)
       this.tags.splice(index, 1);
   }
+  
 
   reset(): void {
     this.tags = [];
@@ -179,6 +180,7 @@ export class TimelineComponent
   selected(event: MatAutocompleteSelectedEvent): void {
     if (!this.tags?.includes(event.option.viewValue)) {
       this.tags.push(event.option.viewValue);
+      this.filteredTags = this.filteredTags?.pipe(map(tags => tags.filter(tag => tag !== event.option.viewValue)))
 
       if (this.tagInput)
         this.tagInput.nativeElement.value = '';
