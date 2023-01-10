@@ -20,7 +20,13 @@
           </button>
         </div>
       </div>
-      <div class="input-group mx-auto mt-1 pl-2">
+      <div class="input-group mx-auto">
+        <mat-radio-group [(ngModel)]="radioValue" name="radioValue" >
+          <mat-radio-button value="and">En</mat-radio-button>
+          <mat-radio-button value="or">Of</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="input-group mx-auto pl-2">
         <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
             {{tag}}
@@ -33,7 +39,6 @@
     </div>
   </form>
 </div>
-
 
 <div *ngIf="events.length > 0" class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
   (scrolled)="onScroll()">

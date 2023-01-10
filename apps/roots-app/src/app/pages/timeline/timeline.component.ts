@@ -45,6 +45,7 @@ export class TimelineComponent
   fullSelectedTags: Tag[] = [];
   newEvents: Event[] = [];
   containsAllTags: boolean = true;
+  radioValue: string | undefined;
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -89,6 +90,7 @@ export class TimelineComponent
         )
       );
     });
+    this.radioValue = 'and';
   }
 
   ngAfterViewChecked(): void {
@@ -171,6 +173,7 @@ export class TimelineComponent
   reset(): void {
     this.tags = [];
     this.events = this.standardEvents;
+    this.radioValue = 'and';
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -230,12 +233,24 @@ export class TimelineComponent
     } else if (this.tags.length > 1) {
       // If more then one tag is selected filter events on all selected tags
       // Event must have all selected tags for it to go through the filter
-      for await (const event of this.standardEvents as Event[]) {
-        for await (const fullSelectedTag of this.fullSelectedTags) {
-          if (event.tags.filter((p) => p === fullSelectedTag._id).length === 0)
-            this.containsAllTags = false;
+      if (this.radioValue === 'and') {
+        for await (const event of this.standardEvents as Event[]) {
+          for await (const fullSelectedTag of this.fullSelectedTags) {
+            if (event.tags.filter((p) => p === fullSelectedTag._id).length === 0)
+              this.containsAllTags = false;
+          }
+          this.containsAllTags ? this.newEvents.push(event) : (this.containsAllTags = true);
         }
-        this.containsAllTags ? this.newEvents.push(event) : (this.containsAllTags = true);
+      // Event must have only one selected tag for it to go through the filter
+      } else if (this.radioValue === 'or') {
+        for await (const event of this.standardEvents as Event[]) {
+          for await (const fullSelectedTag of this.fullSelectedTags) {
+            if (event.tags.filter((p) => p === fullSelectedTag._id).length > 0) {
+              if (this.newEvents.filter((e) => e === event).length === 0)
+                this.newEvents.push(event)
+            }
+          }
+        }
       }
     }
     // If there are no selected tags and no events go through filter
