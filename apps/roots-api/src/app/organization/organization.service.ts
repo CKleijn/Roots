@@ -41,7 +41,7 @@ export class OrganizationService {
     return await this.organizationModel.find();
   }
 
-  async create(createOrganizationDTO: CreateOrganizationDTO) {
+  async create(createOrganizationDTO : CreateOrganizationDTO): Promise<Organization> {
     await this.validate(createOrganizationDTO);
 
     const newOrganization = new this.organizationModel({
