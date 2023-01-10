@@ -1,7 +1,9 @@
+/* eslint-disable prefer-const */
 import { CanActivate } from '@nestjs/common';
 import { Test, TestingModule } from '@nestjs/testing';
 import { Types } from 'mongoose';
 import { Public } from '../auth/auth.module';
+
 import { EventController } from './event.controller';
 import { EventDto } from './event.dto';
 import { Event } from './event.schema';

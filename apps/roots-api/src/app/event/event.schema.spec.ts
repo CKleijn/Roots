@@ -37,7 +37,7 @@ describe('Event schema - Unit tests', () => {
         const model = new eventModel();
 
         const err = model.validateSync();
-
+        console.log(err)
         expect(err.errors.title).toBeInstanceOf(Error);
         expect(err.errors.title.message).toEqual('Titel is verplicht!');
         expect(err.errors.title).toBeTruthy();

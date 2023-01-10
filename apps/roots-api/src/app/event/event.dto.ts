@@ -1,5 +1,6 @@
 import { IEvent } from '@roots/data';
 import { ArrayNotEmpty, IsDefined, IsNotEmpty, IsString, MaxLength } from 'class-validator';
+import { Types } from 'mongoose';
 import { Tag } from '../tag/tag.schema';
 
 export class EventDto implements IEvent {
@@ -20,5 +21,7 @@ export class EventDto implements IEvent {
   @IsDefined({ message: 'Gebeurtenisdatum is verplicht!' })
   eventDate: Date;
 
-  tags: Tag[];
+  tags: [Types.ObjectId];
+
+  isActive:boolean;
 }
