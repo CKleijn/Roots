@@ -86,7 +86,7 @@ export class TimelineComponent
       this.filteredTags = this.tagCtrl.valueChanges.pipe(
         startWith(null),
         map((tag: string | null) =>
-          tag ? this._filter(tag) : this.allTags.slice()
+          tag ? this._filter(tag).sort() : this.allTags.slice().sort()
         )
       );
     });
@@ -168,13 +168,13 @@ export class TimelineComponent
 
     if (index >= 0)
       this.tags.splice(index, 1);
-
-    this.filteredTags = this.filteredTags?.pipe(map(tags => tags.concat(tag)));
+      this.filteredTags = this.filteredTags?.pipe(map(tags => tags.concat(tag)), map(tags => tags?.sort()));
   }
 
   reset(): void {
     this.tags = [];
     this.events = this.standardEvents;
+    this.filteredTags = of(this.allTags);
     this.radioValue = 'and';
   }
 
