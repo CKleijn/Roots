@@ -6,7 +6,7 @@ import { disconnect, Model, Types } from 'mongoose';
 
 import { Tag, TagDocument, TagSchema } from "./tag.schema";
 
-describe('User Schema Tests', () => {
+describe('Tag Schema Tests', () => {
     let mongod: MongoMemoryServer;
     let tagModel: Model<TagDocument>;
 
@@ -53,7 +53,7 @@ describe('User Schema Tests', () => {
     });
 
     describe('Check name input is unique', () => {
-        it('has a unique emailAddress', async () => {
+        it('has unique name', async () => {
             const original = new tagModel({ _id: new Types.ObjectId(), name: 'TestU', organization: new Types.ObjectId()});
             const duplicate = new tagModel({ _id: new Types.ObjectId(), name: 'Hello', organization: new Types.ObjectId()});
             
