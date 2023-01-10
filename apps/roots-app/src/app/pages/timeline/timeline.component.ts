@@ -44,8 +44,9 @@ export class TimelineComponent
   fullTags: any[] = [];
   fullSelectedTags: Tag[] = [];
   newEvents: Event[] = [];
-  containsAllTags: boolean = true;
+  containsAllTags = true;
   radioValue: string | undefined;
+  showArchivedEvents = false;
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -74,6 +75,7 @@ export class TimelineComponent
 
         events.forEach((event) => {
           event.eventDate = new Date(event.eventDate);
+          console.log(event)
         });
       });
 
@@ -262,6 +264,14 @@ export class TimelineComponent
       // If there are events after filter, so if filter succeeds
     } else {
       this.events = this.newEvents;
+    }
+  }
+
+  toggleArchivedEvents(){
+    if (this.showArchivedEvents) {
+      this.showArchivedEvents = false;
+    } else {
+      this.showArchivedEvents = true;
     }
   }
 }

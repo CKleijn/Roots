@@ -3,12 +3,24 @@
     <div class="search-form-container">
       <h1 class="search-title">Vind alles over uw organisatie</h1>
       <div class="input-group mx-auto">
-        <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
-          [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)" />
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        <input
+          type="text"
+          name="search"
+          id="search"
+          class="form-control search-searchbar"
+          #tagInput
+          [formControl]="tagCtrl"
+          [matChipInputFor]="chipGrid"
+          [matAutocomplete]="auto"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selected($event)"
+        >
           <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-            {{tag}}
+            {{ tag }}
           </mat-option>
         </mat-autocomplete>
         <div class="input-group-prepend">
@@ -26,10 +38,24 @@
           <mat-radio-button value="or">Of</mat-radio-button>
         </mat-radio-group>
       </div>
+      <div class="input-group mx-auto">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input opacity-10 bg-dark border border-dark"
+            type="checkbox"
+            role="switch"
+            id="archivedEventsSwitch"
+            (click)="toggleArchivedEvents()"
+          />
+          <label class="form-check-label" for="archivedEventsSwitch"
+            >Toon gearchiveerde gebeurtenissen</label
+          >
+        </div>
+      </div>
       <div class="input-group mx-auto pl-2">
         <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
-            {{tag}}
+            {{ tag }}
             <button matChipRemove [attr.aria-label]="'remove ' + tag">
               <mat-icon><i class="bi bi-x"></i></mat-icon>
             </button>
@@ -40,33 +66,61 @@
   </form>
 </div>
 
-<div *ngIf="events.length > 0" class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
-  (scrolled)="onScroll()">
-  <div *ngFor="let event of events let left = even; let right = odd" class="timeline-container"
-    [ngClass]="{ right: right, left: left }">
-    <div class="timeline-year" id="timeline-year-{{event._id}}">
-      <span class="timeline-year-content">{{event.eventDate.getFullYear()}}</span>
+<div
+  *ngIf="events.length > 0"
+  class="timeline"
+  infinite-scroll
+  [infiniteScrollDistance]="distance"
+  [infiniteScrollThrottle]="throttle"
+  (scrolled)="onScroll()"
+>
+  <div
+    *ngFor="let event of events; let left = even; let right = odd"
+    [ngClass]="
+      !event.isActive && !showArchivedEvents
+        ? 'd-none'
+        : { right: right, left: left }
+    "
+    class="timeline-container"
+  >
+    <div class="timeline-year" id="timeline-year-{{ event._id }}">
+      <span class="timeline-year-content">{{
+        event.eventDate.getFullYear()
+      }}</span>
     </div>
     <div class="timeline-icon">
       <div class="timeline-icon-content">
         <span class="timeline-icon-content-day">
-          {{event.eventDate.getDate()}}
+          {{ event.eventDate.getDate() }}
         </span>
         <span class="timeline-icon-content-month">
-          {{event.eventDate.toLocaleString('default', { month: 'short' })}}
+          {{ event.eventDate.toLocaleString('default', { month: 'short' }) }}
         </span>
       </div>
     </div>
-    <div class="timeline-textbox">
-
-      <h2>{{event.title}}</h2>
+    <div
+      [ngClass]="
+        !event.isActive && !showArchivedEvents
+          ? 'd-none'
+          : !event.isActive
+          ? 'timeline-textbox-archived'
+          : 'timeline-textbox'
+      "
+    >
+      <h2>{{ event.title }}</h2>
       <p>
-        {{event.description.slice(0, 150)}}
+        {{ event.description.slice(0, 150) }}
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button class="btn" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}">Lees
-          meer</button>
+        <button
+          class="btn"
+          routerLink="/organizations/{{ loggedInUser.organization }}/events/{{
+            event._id
+          }}"
+        >
+          Lees meer
+        </button>
       </div>
     </div>
   </div>
