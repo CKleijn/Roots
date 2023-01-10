@@ -14,11 +14,21 @@ export class UserService {
   ) {}
 
   async findByEmailAddress(emailAddress: string): Promise<User> {
-    return await this.userModel.findOne({ emailAddress });
+    const user = await this.userModel.findOne({ emailAddress });
+
+    if (!user)
+      throw new HttpException('User bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
   }
 
   async getById(_id: string): Promise<User> {
-    return await this.userModel.findOne({ _id });
+    const user = await this.userModel.findOne({ _id });
+
+    if (!user)
+      throw new HttpException('User bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
   }
 
   async getAllParticipants(organizationId: string): Promise<User[]> {
