@@ -20,7 +20,6 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { TagService } from '../tag/tag.service';
 import { Event } from '../event/event.model';
 import { Tag } from '../tag/tag.model';
-import { ToastrService } from 'ngx-toastr';
 
 @Component({
   selector: 'roots-timeline',
@@ -148,8 +147,14 @@ export class TimelineComponent
   add(event: MatChipInputEvent): void {
     const value = (event.value || '').trim();
 
-    if (value)
-      this.tags.push(value);
+    if (this.allTags?.includes(value)) {
+      if (this.tags?.length > 0) {
+        if (!this.tags?.includes(value))
+          this.tags.push(value);
+      } else {
+        this.tags.push(value);
+      }
+    }
 
     event.chipInput.clear();
 
@@ -161,6 +166,11 @@ export class TimelineComponent
 
     if (index >= 0)
       this.tags.splice(index, 1);
+  }
+
+  reset(): void {
+    this.tags = [];
+    this.events = this.standardEvents;
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -203,7 +213,9 @@ export class TimelineComponent
   }
 
   async searchOnTag() {
-    console.log(this.tagCtrl.value)
+    // Clear array from previous search
+    this.fullSelectedTags = [];
+    this.newEvents = [];
     // Push all tags which are selected in array
     for await (const tag of this.tags)
       this.fullSelectedTags.push(this.fullTags?.filter((p) => p.name === tag).at(0));
@@ -227,8 +239,14 @@ export class TimelineComponent
       }
     }
     // If there are no selected tags and no events go through filter
-    // If no tags go through filter
-    // If there are events after filter, so if filter succeeds
-    ((this.newEvents.length === 0 && this.tags.length === 0) || (this.newEvents.length === 0)) ? (this.events = this.standardEvents) : (this.events = this.newEvents);
+    if (this.newEvents.length === 0 && this.tags.length === 0) {
+      this.events = this.standardEvents;
+      // If no events go through filter
+    } else if (this.newEvents.length === 0) {
+      this.events = [];
+      // If there are events after filter, so if filter succeeds
+    } else {
+      this.events = this.newEvents;
+    }
   }
 }

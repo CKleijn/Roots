@@ -12,11 +12,11 @@
           </mat-option>
         </mat-autocomplete>
         <div class="input-group-prepend">
+          <button type="submit" class="search-submit" (click)="reset()">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
           <button type="submit" class="search-submit" (click)="searchOnTag()">
-            <svg fill="#141414" class="search-submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path
-                d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
-            </svg>
+            <i class="bi bi-search"></i>
           </button>
         </div>
       </div>
@@ -35,7 +35,7 @@
 </div>
 
 
-<div class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
+<div *ngIf="events.length > 0" class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
   (scrolled)="onScroll()">
   <div *ngFor="let event of events let left = even; let right = odd" class="timeline-container"
     [ngClass]="{ right: right, left: left }">
@@ -62,6 +62,28 @@
       <div class="detail-button-container">
         <button class="btn" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}">Lees
           meer</button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="this.events.length === 0 && this.tags.length > 0" style="padding: 20px">
+  <div class="row">
+    <div class=" col-sm-12 col-md-6 offset-3">
+      <div class="timeline-textbox">
+        <h2>Oeps!</h2>
+        <p>Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de toegepaste filter(s)!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="this.events.length === 0 && this.tags.length === 0">
+  <div class="row">
+    <div class=" col-sm-12 col-md-6 offset-3">
+      <div class="timeline-textbox">
+        <h2>Oeps!</h2>
+        <p>Er zijn op het moment geen gebeurtenissen aanwezig voor deze organisatie!</p>
       </div>
     </div>
   </div>
