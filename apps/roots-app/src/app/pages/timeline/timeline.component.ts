@@ -168,8 +168,9 @@ export class TimelineComponent
 
     if (index >= 0)
       this.tags.splice(index, 1);
+
+    this.filteredTags = this.filteredTags?.pipe(map(tags => tags.concat(tag)));
   }
-  
 
   reset(): void {
     this.tags = [];
