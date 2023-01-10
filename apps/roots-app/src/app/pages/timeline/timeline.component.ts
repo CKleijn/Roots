@@ -43,6 +43,8 @@ export class TimelineComponent
   filteredTags: Observable<string[]> | undefined;
   tags: string[] = [];
   allTags: string[] = [];
+  organizationIdFromParamMap =
+    this.route.snapshot.paramMap.get('organizationId');
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -55,16 +57,12 @@ export class TimelineComponent
   ) {}
 
   ngOnInit(): void {
-    this.route.paramMap
-      .pipe(
-        switchMap((params: ParamMap) =>
-          this.eventService.getEventsPerPage(
-            this.old_records,
-            this.new_records,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            params.get('organizationId')!
-          )
-        )
+    this.eventService
+      .getEventsPerPage(
+        this.old_records,
+        this.new_records,
+        // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+        this.organizationIdFromParamMap!
       )
       .subscribe((events) => {
         this.events = events;
