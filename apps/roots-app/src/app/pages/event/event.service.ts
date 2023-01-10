@@ -12,6 +12,7 @@ import { ToastrService } from 'ngx-toastr';
   providedIn: 'root',
 })
 export class EventService {
+
   constructor(
     private httpClient: HttpClient,
     private authService: AuthService,
@@ -84,4 +85,34 @@ export class EventService {
         // eslint-disable-next-line @typescript-eslint/ban-types
       ) as Observable<Object>;
   }
+  
+  archiveEvent(isActive: boolean, eventId: string, companyId: string): Observable<any> {
+    return this.httpClient
+      .put(
+        environment.SERVER_API_URL +
+          '/events/' +
+          companyId +
+          '/' +
+          eventId +
+          '/archive?isActive=' +
+          isActive,
+          
+        this.authService.getHttpOptions()
+      )
+      .pipe(
+        map((event) => {
+          this.toastr.success(
+            'Gebeurtenis is succesvol ' + (!isActive ? 'gearchiveerd!' : 'geactiveerd!')
+          );
+          return event;
+        }),
+        catchError((err: any) => {
+          window.scroll(0, 0);
+          this.toastr.error(err.error.message, 'Gebeurtenis niet ' + (!isActive ? 'gearchiveerd!' : 'geactiveerd!'));
+          return of(undefined);
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-types
+      ) as Observable<Object>;
+  }
+
 }

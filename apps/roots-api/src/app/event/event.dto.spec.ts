@@ -10,7 +10,8 @@ describe('Event DTO - Unit tests', () => {
             description:'Test',
             content:'Test',
             eventDate: new Date(),
-            tags:[]
+            tags:[],
+            isActive:true
         }
 
         const eventDto = plainToInstance(EventDto, bodyDto);
@@ -127,6 +128,23 @@ describe('Event DTO - Unit tests', () => {
 
         expect(err.length).not.toBe(0);
         expect(JSON.stringify(err)).toContain('Inhoud moet van het type string zijn!');
+    });
+
+    it('Content is not valid String', async () => {
+        const bodyDto = {
+            title:'Test',
+            description:'Test',
+            content:0,
+            eventDate: new Date(),
+            tags:[],
+            isActive:''
+        }
+
+        const eventDto = plainToInstance(EventDto, bodyDto);
+        const err = await validate(eventDto);
+
+        expect(err.length).not.toBe(0);
+        expect(JSON.stringify(err)).toContain('IsActive moet van het type boolean');
     });
   
     // MAX LENGTH
