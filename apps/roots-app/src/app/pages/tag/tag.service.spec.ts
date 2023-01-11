@@ -39,7 +39,8 @@ fdescribe('TagService', () => {
                     tagIdOne,
                     tagIdTwo
                 ],
-                eventDate: new Date()
+                eventDate: new Date(),
+                isActive: true
             }
         ]
 
