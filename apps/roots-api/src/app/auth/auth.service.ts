@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { CreateUserDto } from '../user/user.dto';
+import { UserDto } from '../user/user.dto';
 import { User } from '../user/user.schema';
 import { UserService } from '../user/user.service';
+import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
@@ -14,7 +15,6 @@ export class AuthService {
 
   async validateUser(username: string, pass: string): Promise<any> {
     const user: User = await this.userService.findByEmailAddress(username);
-
     if (user && (await bcrypt.compareSync(pass, user.password))) {
       if (user.isActive === false) {
         throw new HttpException(
@@ -34,8 +34,8 @@ export class AuthService {
     );
   }
 
-  async register(createUserDto: CreateUserDto) {
-    const user: User = await this.userService.create(createUserDto);
+  async register(UserDto: UserDto) {
+    const user: User = await this.userService.create(UserDto);
     return this.login(user);
   }
 
@@ -52,7 +52,7 @@ export class AuthService {
       lastname: loggedInUser.lastname,
       emailAddress: loggedInUser.emailAddress,
       organization: loggedInUser.organization,
-      access_token: this.jwtService.sign(payload),
+      access_token: this.jwtService.sign(payload, jwtConstants),
     };
   }
 }

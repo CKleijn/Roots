@@ -9,7 +9,7 @@ import {
 } from '@nestjs/common';
 import { Public } from '../auth/auth.module';
 import { ParseObjectIdPipe } from '../shared/pipes/ParseObjectIdPipe';
-import { CreateUserDto } from './user.dto';
+import { UserDto } from './user.dto';
 import { User } from './user.schema';
 import { UserService } from './user.service';
 
@@ -36,10 +36,10 @@ export class UserController {
   }
 
   @Post('users/new')
-  async create(@Body() createUserDto: CreateUserDto): Promise<User> {
+  async create(@Body() UserDto: UserDto): Promise<User> {
     Logger.log(`Creating user (CREATE)`);
 
-    return await this.userService.create(createUserDto);
+    return await this.userService.create(UserDto);
   }
 
   @Post('users/:id/status')
