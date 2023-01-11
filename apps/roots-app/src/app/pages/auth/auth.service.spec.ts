@@ -59,7 +59,8 @@ describe('AuthenticationService', () => {
       setItem: jest.fn(),
       clear: jest.fn(),
     };
-    global.localStorage = localStorageMock;
+
+    localStorage = localStorageMock;
 
     localStorage.clear();
 
