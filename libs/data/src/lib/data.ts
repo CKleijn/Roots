@@ -21,6 +21,7 @@ export interface IEvent {
   description: string;
   content: string;
   eventDate: Date;
+  isActive: boolean;
 }
 
 export interface ITag {
@@ -55,6 +56,7 @@ export class Event implements IEvent {
   eventDate = new Date();
   _id = new Types.ObjectId();
   tags = [] as Types.ObjectId[];
+  isActive = true;
 }
 
 export class Tag implements ITag {

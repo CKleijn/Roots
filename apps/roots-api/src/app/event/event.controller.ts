@@ -71,4 +71,18 @@ export class EventController {
             throw new HttpException(error.message, HttpStatus.NOT_MODIFIED)
         }
     }
+
+    @Public()
+    @Put(':companyId/:eventId/archive')
+    async archiveEvent(@Param('companyId') companyId: string, @Param('eventId') eventId: string, @Query('isActive') isActive: boolean): Promise<Event> {
+        try {
+            Logger.log (isActive ? 'Archiveren' : 'Activeren' + ` event  from ${eventId} from company ${companyId}`);
+
+            return await this.eventService.archive(eventId,isActive);
+
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
+        }
+    }
+
 }

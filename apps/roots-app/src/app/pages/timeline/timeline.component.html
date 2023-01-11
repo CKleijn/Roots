@@ -3,27 +3,59 @@
     <div class="search-form-container">
       <h1 class="search-title">Vind alles over uw organisatie</h1>
       <div class="input-group mx-auto">
-        <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
-          [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)" />
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+        <input
+          type="text"
+          name="search"
+          id="search"
+          class="form-control search-searchbar"
+          #tagInput
+          [formControl]="tagCtrl"
+          [matChipInputFor]="chipGrid"
+          [matAutocomplete]="auto"
+          [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+          (matChipInputTokenEnd)="add($event)"
+        />
+        <mat-autocomplete
+          #auto="matAutocomplete"
+          (optionSelected)="selected($event)"
+        >
           <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-            {{tag}}
+            {{ tag }}
           </mat-option>
         </mat-autocomplete>
         <div class="input-group-prepend">
+          <button type="submit" class="search-submit" (click)="reset()">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
           <button type="submit" class="search-submit" (click)="searchOnTag()">
-            <svg fill="#141414" class="search-submit-icon" xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512">
-              <path
-                d="M416 208c0 45.9-14.9 88.3-40 122.7L502.6 457.4c12.5 12.5 12.5 32.8 0 45.3s-32.8 12.5-45.3 0L330.7 376c-34.4 25.2-76.8 40-122.7 40C93.1 416 0 322.9 0 208S93.1 0 208 0S416 93.1 416 208zM208 352c79.5 0 144-64.5 144-144s-64.5-144-144-144S64 128.5 64 208s64.5 144 144 144z" />
-            </svg>
+            <i class="bi bi-search"></i>
           </button>
         </div>
       </div>
-      <div class="input-group mx-auto mt-1 pl-2">
+      <div class="input-group mx-auto">
+        <mat-radio-group [(ngModel)]="radioValue" name="radioValue" >
+          <mat-radio-button value="and">En</mat-radio-button>
+          <mat-radio-button value="or">Of</mat-radio-button>
+        </mat-radio-group>
+      </div>
+      <div class="input-group mx-auto">
+        <div class="form-check form-switch">
+          <input
+            class="form-check-input opacity-10 bg-dark border border-dark"
+            type="checkbox"
+            role="switch"
+            id="archivedEventsSwitch"
+            (click)="toggleArchivedEvents()"
+          />
+          <label class="form-check-label" for="archivedEventsSwitch"
+            >Toon gearchiveerde gebeurtenissen</label
+          >
+        </div>
+      </div>
+      <div class="input-group mx-auto pl-2">
         <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
-            {{tag}}
+            {{ tag }}
             <button matChipRemove [attr.aria-label]="'remove ' + tag">
               <mat-icon><i class="bi bi-x"></i></mat-icon>
             </button>
@@ -34,34 +66,83 @@
   </form>
 </div>
 
-
-<div class="timeline" infinite-scroll [infiniteScrollDistance]="distance" [infiniteScrollThrottle]="throttle"
-  (scrolled)="onScroll()">
-  <div *ngFor="let event of events let left = even; let right = odd" class="timeline-container"
-    [ngClass]="{ right: right, left: left }">
-    <div class="timeline-year" id="timeline-year-{{event._id}}">
-      <span class="timeline-year-content">{{event.eventDate.getFullYear()}}</span>
+<div
+  *ngIf="events.length > 0"
+  class="timeline"
+  infinite-scroll
+  [infiniteScrollDistance]="distance"
+  [infiniteScrollThrottle]="throttle"
+  (scrolled)="onScroll()"
+>
+  <div
+    *ngFor="let event of events; let left = even; let right = odd"
+    [ngClass]="
+      !event.isActive && !showArchivedEvents
+        ? 'd-none'
+        : { right: right, left: left }
+    "
+    class="timeline-container"
+  >
+    <div class="timeline-year" id="timeline-year-{{ event._id }}">
+      <span class="timeline-year-content">{{
+        event.eventDate.getFullYear()
+      }}</span>
     </div>
     <div class="timeline-icon">
       <div class="timeline-icon-content">
         <span class="timeline-icon-content-day">
-          {{event.eventDate.getDate()}}
+          {{ event.eventDate.getDate() }}
         </span>
         <span class="timeline-icon-content-month">
-          {{event.eventDate.toLocaleString('default', { month: 'short' })}}
+          {{ event.eventDate.toLocaleString('default', { month: 'short' }) }}
         </span>
       </div>
     </div>
-    <div class="timeline-textbox">
-
-      <h2>{{event.title}}</h2>
+    <div
+      [ngClass]="
+        !event.isActive && !showArchivedEvents
+          ? 'd-none'
+          : !event.isActive
+          ? 'timeline-textbox-archived'
+          : 'timeline-textbox'
+      "
+    >
+      <h2>{{ event.title }}</h2>
       <p>
-        {{event.description.slice(0, 150)}}
+        {{ event.description.slice(0, 150) }}
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button class="btn" routerLink="/organizations/{{loggedInUser.organization}}/events/{{event._id}}">Lees
-          meer</button>
+        <button
+          class="btn"
+          routerLink="/organizations/{{ loggedInUser.organization }}/events/{{
+            event._id
+          }}"
+        >
+          Lees meer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="this.events.length === 0 && this.tags.length > 0" style="padding: 20px">
+  <div class="row">
+    <div class=" col-sm-12 col-md-6 offset-3">
+      <div class="timeline-textbox">
+        <h2>Oeps!</h2>
+        <p>Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de toegepaste filter(s)!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="this.events.length === 0 && this.tags.length === 0" style="padding: 20px">
+  <div class="row">
+    <div class=" col-sm-12 col-md-6 offset-3">
+      <div class="timeline-textbox">
+        <h2>Oeps!</h2>
+        <p>Er zijn op het moment geen gebeurtenissen aanwezig voor deze organisatie!</p>
       </div>
     </div>
   </div>
