@@ -14,23 +14,35 @@
           [matAutocomplete]="auto"
           [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
           (matChipInputTokenEnd)="add($event)"
+          [(ngModel)]="searchterm"
         />
-        <mat-autocomplete
+          <mat-autocomplete
           #auto="matAutocomplete"
           (optionSelected)="selected($event)"
         >
+        <div *ngIf="searchType === 'tags'">
           <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
             {{ tag }}
           </mat-option>
+        </div>
         </mat-autocomplete>
         <div class="input-group-prepend">
           <button type="submit" class="search-submit" (click)="reset()">
             <i class="bi bi-arrow-clockwise"></i>
           </button>
-          <button type="submit" class="search-submit" (click)="searchOnTag()">
+          <button *ngIf="searchType === 'tags'" type="submit" class="search-submit" (click)="searchOnTag()">
+            <i class="bi bi-search"></i>
+          </button>
+          <button *ngIf="searchType === 'terms'" type="submit" class="search-submit" (click)="searchOnTerm()">
             <i class="bi bi-search"></i>
           </button>
         </div>
+      </div>
+      <div class="input-group mx-auto">
+        <mat-radio-group [(ngModel)]="searchType" name="searchType" >
+          <mat-radio-button value="terms">termen</mat-radio-button>
+          <mat-radio-button value="tags">tags</mat-radio-button>
+        </mat-radio-group>
       </div>
       <div class="input-group mx-auto">
         <mat-radio-group [(ngModel)]="radioValue" name="radioValue" >

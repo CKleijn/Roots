@@ -19,7 +19,7 @@ export class EventController {
     @Public()
     @Get(':id/filter')
     async getEventsPerPage(@Param('id') organizationId: string, @Query() query): Promise<Event[]> {
-    Logger.log('Retrieving events per page (READ)');
+    Logger.log('Retrieving events with filter (READ)');
         return await this.eventService.getPerPage(query, organizationId);
     }
 
