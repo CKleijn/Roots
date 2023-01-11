@@ -100,7 +100,7 @@
         event.eventDate.getFullYear()
       }}</span>
     </div>
-    <div class="timeline-icon">
+    <div [ngClass]="!event.isActive ? 'timeline-icon-archived' : 'timeline-icon'">
       <div class="timeline-icon-content">
         <span class="timeline-icon-content-day">
           {{ event.eventDate.getDate() }}
