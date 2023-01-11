@@ -223,7 +223,7 @@ describe('AuthenticationService', () => {
         expect(JSON.stringify(result)).toEqual(JSON.stringify({ headers: new HttpHeaders({
             'Content-Type': 'application/json',
             Authorization: 'Bearer ' + 'token',
-        })}));
+          })}));
     });
   });
 });
