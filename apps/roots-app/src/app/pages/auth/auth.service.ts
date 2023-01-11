@@ -90,7 +90,7 @@ export class AuthService {
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + userData.access_token,
+        Authorization: 'Bearer ' + userData?.access_token,
       }),
     };
     return this.http.get<any>(url, httpOptions).pipe(
@@ -119,7 +119,7 @@ export class AuthService {
     return of(localUser);
   }
 
-  private saveUserToLocalStorage(user: User): void {
+  saveUserToLocalStorage(user: User): void {
     localStorage.setItem(this.CURRENT_USER, JSON.stringify(user));
   }
 

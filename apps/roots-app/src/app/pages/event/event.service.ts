@@ -102,13 +102,13 @@ export class EventService {
       .pipe(
         map((event) => {
           this.toastr.success(
-            'Gebeurtenis is succesvol ' + (!isActive ? 'gearchiveerd!' : 'geactiveerd!')
+            'Gebeurtenis is succesvol ' + (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!')
           );
           return event;
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          this.toastr.error(err.error.message, 'Gebeurtenis niet ' + (!isActive ? 'gearchiveerd!' : 'geactiveerd!'));
+          this.toastr.error(err.error.message, 'Gebeurtenis niet ' + (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!'));
           return of(undefined);
         })
         // eslint-disable-next-line @typescript-eslint/ban-types

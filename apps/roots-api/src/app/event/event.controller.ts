@@ -76,7 +76,7 @@ export class EventController {
     @Put(':companyId/:eventId/archive')
     async archiveEvent(@Param('companyId') companyId: string, @Param('eventId') eventId: string, @Query('isActive') isActive: boolean): Promise<Event> {
         try {
-            Logger.log (isActive ? 'Archiveren' : 'Activeren' + ` event  from ${eventId} from company ${companyId}`);
+            Logger.log (isActive ? 'Archiveren' : 'Dearchiveren' + ` event  from ${eventId} from company ${companyId}`);
 
             return await this.eventService.archive(eventId,isActive);
 
