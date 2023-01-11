@@ -1,3 +1,4 @@
+import { MailerModule } from '@nestjs-modules/mailer';
 import { Module } from '@nestjs/common';
 import { APP_GUARD } from '@nestjs/core';
 import { MongooseModule } from '@nestjs/mongoose';
@@ -18,7 +19,16 @@ import { UserModule } from './user/user.module';
     OrganizationModule,
     EventModule,
     AuthModule,
-    TagModule
+    TagModule,
+    MailerModule.forRoot({
+      transport: {
+        host: 'smtp.sendgrid.net',
+        auth: {
+          user: 'apikey',
+          pass: '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',
+        },
+      },
+    }),
   ],
   controllers: [AppController],
   providers: [
