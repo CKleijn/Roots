@@ -73,6 +73,7 @@
     "mongoose": "^6.8.0",
     "ngx-infinite-scroll": "^15.0.0",
     "ngx-quill": "^20.0.1",
+    "ngx-quill-upload": "^2.0.0",
     "ngx-toastr": "^16.0.1",
     "passport": "^0.6.0",
     "passport-jwt": "^4.0.0",

@@ -9,18 +9,20 @@ import { map, Observable, startWith, Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Event } from '../event.model';
 import { EventService } from '../event.service';
-import { Tag } from '../../tag/tag.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipEditedEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { User } from '@roots/data';
 import { TagService } from '../../tag/tag.service';
+import { VideoHandler, Options } from 'ngx-quill-upload';
+import { ToastrService } from 'ngx-toastr';
 
 let Quill: any = QuillNamespace;
 const ImageResize = require('quill-image-resize-module');
 const Emoji = require('quill-emoji');
 Quill.register('modules/imageResize', ImageResize.default);
 Quill.register("modules/emoji", Emoji.default);
+Quill.register('modules/videoHandler', VideoHandler);
 
 @Component({
   selector: 'roots-event-form',
@@ -35,7 +37,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
   updateSubscription: Subscription | undefined;
   getAllTagsSubscription: Subscription | undefined;
   loggedInUserSubscription: Subscription | undefined;
-
+  eventVideoSize: number | undefined = 0;
   loggedInUser$!: Observable<User | undefined>
   eventId: string | undefined;
   organizationId: string | undefined;
@@ -62,6 +64,31 @@ export class EventFormComponent implements OnInit, OnDestroy {
     imageResize: {
       modules: ['Resize', 'DisplaySize']
     },
+    videoHandler: {
+      upload: (file: any) => {
+        return new Promise((resolve, reject) => {
+          if (file.type === 'video/mpeg' || file.type === 'video/mp4') {
+            this.eventVideoSize += file.size;
+            if (this.eventVideoSize! < 10000000) {
+              resolve(file);
+            } else {
+              this.toastrService.error(
+                `De video overschreid de maximale uploadgrootte van 10 MB!`,
+                'Video uploaden mislukt!'
+              );
+              reject(`De video overschreid de maximale uploadgrootte van 10 MB!`);
+            }
+          } else {
+            this.toastrService.error(
+              `Deze video type wordt niet ondersteund!`,
+              'Video uploaden mislukt!'
+            );
+            reject('Deze video type wordt niet ondersteund!');
+          }
+        });
+      },
+      accepts: ['mpeg', 'mp4']
+    } as Options,
     'emoji-toolbar': true,
   }
 
@@ -83,6 +110,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private dateAdapter: DateAdapter<Date>,
     private tagService: TagService,
+    private toastrService: ToastrService
   ) {
     this.dateAdapter.setLocale('nl-NL');
   }
