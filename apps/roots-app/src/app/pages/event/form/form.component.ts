@@ -52,7 +52,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     toolbar: [
       ['bold', 'italic', 'underline'],
       [{ 'list': 'ordered' }, { 'list': 'bullet' }],
-      [{ 'indent': '-1'}, { 'indent': '+1' }], 
+      [{ 'indent': '-1' }, { 'indent': '+1' }],
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
@@ -96,8 +96,13 @@ export class EventFormComponent implements OnInit, OnDestroy {
     });
 
     this.getAllTags().then(() => {
-        this.filteredTags = this.tagCtrl.valueChanges.pipe(startWith(null), map((tag: string | null) => (tag ? this._filter(tag) : this.allTags?.slice())));
-      }
+      this.filteredTags = this.tagCtrl.valueChanges.pipe(
+        startWith(null),
+        map((tag: string | null) =>
+          tag ? this._filter(tag)?.sort() : this.allTags?.slice().sort()
+        )
+      );
+    }
     );
 
     this.eventForm = new FormGroup({
@@ -162,7 +167,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
       })
     }
     else {
-      console.log(`organization/${this.organizationId}/events/${this.eventId}`)
       this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
         next: () => this.router.navigate([`organizations/${this.organizationId}/events/${this.eventId}`]),
         error: (error) => this.error = error.message
@@ -197,12 +201,16 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
     if (index > -1) {
       this.tags?.splice(index, 1);
+      if (this.allTags?.includes(tag)) {
+        this.filteredTags = this.filteredTags?.pipe(map(tags => tags?.concat(tag)), map(tags => tags?.sort()));
+      }
     }
   }
 
-  selected(tag: MatAutocompleteSelectedEvent): void {
-    if (!this.tags?.includes(tag.option.viewValue)) {
-      this.tags?.push(tag.option.viewValue);
+  selected(event: MatAutocompleteSelectedEvent): void {
+    if (!this.tags?.includes(event.option.viewValue)) {
+      this.tags?.push(event.option.viewValue);
+      this.filteredTags = this.filteredTags?.pipe(map(tags => tags?.filter(tag => tag !== event.option.viewValue)))
 
       if (this.tagInput) {
         this.tagInput.nativeElement.value = '';

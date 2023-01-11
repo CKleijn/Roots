@@ -9,7 +9,11 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
+<<<<<<< HEAD
 import { lastValueFrom, map, Observable, of, startWith } from 'rxjs';
+=======
+import { lastValueFrom, map, Observable, of, startWith, tap } from 'rxjs';
+>>>>>>> 356a2f95a5994feaff0c79ee80c62db2e951d9c6
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -88,7 +92,7 @@ export class TimelineComponent
       this.filteredTags = this.tagCtrl.valueChanges.pipe(
         startWith(null),
         map((tag: string | null) =>
-          tag ? this._filter(tag) : this.allTags.slice()
+          tag ? this._filter(tag).sort() : this.allTags.slice().sort()
         )
       );
     });
@@ -170,17 +174,26 @@ export class TimelineComponent
 
     if (index >= 0)
       this.tags.splice(index, 1);
+<<<<<<< HEAD
+=======
+      this.filteredTags = this.filteredTags?.pipe(map(tags => tags.concat(tag)), map(tags => tags?.sort()));
+>>>>>>> 356a2f95a5994feaff0c79ee80c62db2e951d9c6
   }
 
   reset(): void {
     this.tags = [];
     this.events = this.standardEvents;
+<<<<<<< HEAD
+=======
+    this.filteredTags = of(this.allTags);
+>>>>>>> 356a2f95a5994feaff0c79ee80c62db2e951d9c6
     this.radioValue = 'and';
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     if (!this.tags?.includes(event.option.viewValue)) {
       this.tags.push(event.option.viewValue);
+      this.filteredTags = this.filteredTags?.pipe(map(tags => tags.filter(tag => tag !== event.option.viewValue)))
 
       if (this.tagInput)
         this.tagInput.nativeElement.value = '';
