@@ -51,6 +51,9 @@ export class EventService {
               isActive: {
                 $first: "$events.isActive",
               },
+              tags: {
+                $first: "$events.tags"
+              }
             },
           },
         },
@@ -113,6 +116,9 @@ export class EventService {
               isActive: {
                 $first: "$events.isActive",
               },
+              tags: {
+                $first: "$events.tags"
+              }
             },
           },
         },

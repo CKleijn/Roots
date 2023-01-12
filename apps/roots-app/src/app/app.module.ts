@@ -35,6 +35,7 @@ import { OrganizationModule } from './pages/organization/organization.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
 import { FilterComponent } from './pages/timeline/filter/filter.component';
+
 registerLocaleData(nl);
 
 @Injectable({ providedIn: 'root' })

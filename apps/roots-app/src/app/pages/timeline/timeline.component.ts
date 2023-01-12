@@ -22,6 +22,7 @@ import { Event } from '../event/event.model';
 import { Tag } from '../tag/tag.model';
 import { MatDialog } from '@angular/material/dialog';
 import { FilterComponent } from './filter/filter.component';
+// import { FilterComponent } from './filter/filter.component';
 
 @Component({
   selector: 'roots-timeline',

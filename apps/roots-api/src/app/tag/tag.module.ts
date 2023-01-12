@@ -1,5 +1,6 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
+import { EventSchema } from '../event/event.schema';
 import {
   Organization,
   OrganizationSchema,

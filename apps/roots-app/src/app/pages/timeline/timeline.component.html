@@ -19,13 +19,7 @@
 
         <div class="input-group-prepend">
 
-
-          <!-- <select class="bbb">
-            <option class="ccc" [selected]="searchType === 'terms'" value="termen">Termen</option>
-            <option class="ccc" [selected]="searchType === 'tags'" value="tags">Tags</option>
-          </select> -->
-
-          <button class="search-submit-dropdown">
+          <button class="search-submit-dropdown" style="position: relative; bottom: 1px;">
             <ul class="aa">
               <li class="qq">
                 <span *ngIf="searchType === 'terms'">Termen</span>
@@ -40,7 +34,7 @@
               </li>
             </ul>
           </button>
-          
+
 
           <button type="submit" class="search-submit" (click)="reset()">
             <i class="bi bi-arrow-clockwise"></i>
@@ -58,13 +52,6 @@
         </div>
 
       </div>
-
-      <!-- <div class="input-group mx-auto">
-        <mat-radio-group [(ngModel)]="searchType" name="searchType">
-          <mat-radio-button value="terms">termen</mat-radio-button>
-          <mat-radio-button value="tags">tags</mat-radio-button>
-        </mat-radio-group>
-      </div> -->
 
       <div class="input-group mx-auto pl-2">
         <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
@@ -93,7 +80,7 @@
     <div class="timeline-year" id="timeline-year-{{ event._id }}">
       <span class="timeline-year-content">{{
         event.eventDate.getFullYear()
-      }}</span>
+        }}</span>
     </div>
     <div [ngClass]="!event.isActive ? 'timeline-icon-archived' : 'timeline-icon'">
       <div class="timeline-icon-content">
