@@ -13,6 +13,7 @@ import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatTableModule } from '@angular/material/table';
+import { MatDialogModule } from '@angular/material/dialog';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
@@ -33,6 +34,7 @@ import { OrganizationComponent } from './pages/organization/organization.compone
 import { OrganizationModule } from './pages/organization/organization.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
+import { FilterComponent } from './pages/timeline/filter/filter.component';
 registerLocaleData(nl);
 
 @Injectable({ providedIn: 'root' })
@@ -57,6 +59,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     EventFormComponent,
     EventDetailComponent,
     OrganizationComponent,
+    FilterComponent,
   ],
   imports: [
     BrowserModule,
@@ -73,6 +76,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     AuthModule,
     ReactiveFormsModule,
     MatTableModule,
+    MatDialogModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
@@ -96,4 +100,4 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
   bootstrap: [AppComponent],
   exports: [NavComponent],
 })
-export class AppModule { }
+export class AppModule {}
