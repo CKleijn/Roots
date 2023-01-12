@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
-import { filter, lastValueFrom, map, Observable, of, startWith } from 'rxjs';
+import { map, Observable, of, startWith } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -20,6 +20,8 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { TagService } from '../tag/tag.service';
 import { Event } from '../event/event.model';
 import { Tag } from '../tag/tag.model';
+import { MatDialog } from '@angular/material/dialog';
+import { FilterComponent } from './filter/filter.component';
 
 @Component({
   selector: 'roots-timeline',
@@ -58,7 +60,8 @@ export class TimelineComponent
     private eventService: EventService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private tagService: TagService
+    private tagService: TagService,
+    private dialog: MatDialog
   ) {}
 
   ngOnInit(): void {
@@ -171,9 +174,11 @@ export class TimelineComponent
   remove(tag: string): void {
     const index = this.tags.indexOf(tag);
 
-    if (index >= 0)
-      this.tags.splice(index, 1);
-      this.filteredTags = this.filteredTags?.pipe(map(tags => tags.concat(tag)), map(tags => tags?.sort()));
+    if (index >= 0) this.tags.splice(index, 1);
+    this.filteredTags = this.filteredTags?.pipe(
+      map((tags) => tags.concat(tag)),
+      map((tags) => tags?.sort())
+    );
   }
 
   reset(): void {
@@ -182,12 +187,15 @@ export class TimelineComponent
     this.filteredTags = of(this.allTags);
     this.radioValue = 'and';
     this.searchType = 'terms';
+    this.showArchivedEvents = false;
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
     if (!this.tags?.includes(event.option.viewValue)) {
       this.tags.push(event.option.viewValue);
-      this.filteredTags = this.filteredTags?.pipe(map(tags => tags.filter(tag => tag !== event.option.viewValue)))
+      this.filteredTags = this.filteredTags?.pipe(
+        map((tags) => tags.filter((tag) => tag !== event.option.viewValue))
+      );
 
       if (this.tagInput) this.tagInput.nativeElement.value = '';
 
@@ -286,25 +294,38 @@ export class TimelineComponent
   //searching on a term
   searchOnTerm() {
     //if there is an organizationId -> get events by term
-    if(this.organizationId) {
-      this.eventService.getEventsByTerm(this.searchterm, this.organizationId).subscribe((events) => {
-        //retrieve the filter events
-        let filterEvents = events;
-        //assign dates to the events
-        filterEvents.forEach((event: { eventDate: string | number | Date; }) => {
-          event.eventDate = new Date(event.eventDate);
+    if (this.organizationId) {
+      this.eventService
+        .getEventsByTerm(this.searchterm, this.organizationId)
+        .subscribe((events) => {
+          //retrieve the filter events
+          let filterEvents = events;
+          //assign dates to the events
+          filterEvents.forEach(
+            (event: { eventDate: string | number | Date }) => {
+              event.eventDate = new Date(event.eventDate);
+            }
+          );
+          //assign filterevents to the eventlist
+          this.events = filterEvents;
         });
-        //assign filterevents to the eventlist
-        this.events = filterEvents
-      })
     }
   }
+  
+  switchSearchType(type: string) {
+    this.searchType = type;
+  }
 
-  toggleArchivedEvents() {
-    if (this.showArchivedEvents) {
-      this.showArchivedEvents = false;
-    } else {
-      this.showArchivedEvents = true;
-    }
+  openFilter() {
+    const dialogref = this.dialog.open(FilterComponent, {
+      data: {
+        showArchivedEvents: this.showArchivedEvents,
+        radioValue: this.radioValue,
+      },
+    });
+    dialogref.afterClosed().subscribe((data) => {
+      this.showArchivedEvents = data.showArchivedEvents;
+      this.radioValue = data.radioValue;
+    });
   }
 }
