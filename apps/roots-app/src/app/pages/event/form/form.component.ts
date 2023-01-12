@@ -58,7 +58,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
       [{ 'font': [] }],
       [{ 'align': [] }],
       ['emoji'],
-      ['link', 'image', 'video', 'video'],
+      ['link', 'image', 'video'],
     ],
     imageResize: {
       modules: ['Resize', 'DisplaySize']
