@@ -1,10 +1,10 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { ActivatedRoute } from '@angular/router';
+import { ActivatedRoute, Router } from '@angular/router';
 import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { NgxSpinnerService } from 'ngx-spinner';
-import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
+import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'roots-app-verification',
@@ -33,9 +33,10 @@ export class VerificationComponent implements OnInit, OnDestroy {
   paramSubscription: any;
 
   constructor(
-    private toastr: ToastrService,
     private route: ActivatedRoute,
-    private spinner: NgxSpinnerService
+    private router: Router,
+    private spinner: NgxSpinnerService,
+    private authService: AuthService
   ) {}
 
   ngOnInit(): void {
@@ -72,12 +73,16 @@ export class VerificationComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    console.log(this.code);
-    console.log(this.userId);
-    console.log(this.emailAddress);
+    this.spinner.show();
 
-    // if(this.code){
-
-    // }
+    this.authService
+      .verifyAccount({
+        userId: this.userId,
+        verificationCode: this.code,
+      })
+      .subscribe(() => {
+        this.spinner.hide();
+        this.router.navigate([`/`]);
+      });
   }
 }

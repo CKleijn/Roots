@@ -63,6 +63,17 @@ export class UserService {
     return user;
   }
 
+  async verifyAccount(userId: string) {
+    const user = await this.userModel.findOneAndUpdate({ _id: userId }, [
+      { $set: { isVerified: true } },
+    ]);
+
+    if (!user)
+      throw new HttpException('Gebruiker bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
+  }
+
   async status(id: string, req: any): Promise<User> {
     const targetUser = await this.getById(id);
 

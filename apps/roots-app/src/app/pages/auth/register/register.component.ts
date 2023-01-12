@@ -8,6 +8,7 @@ import {
 } from '@angular/forms';
 import { Router } from '@angular/router';
 import { Types } from 'mongoose';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { OrganizationService } from '../../organization/organization.service';
@@ -30,7 +31,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private router: Router,
     private organizationService: OrganizationService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private spinner: NgxSpinnerService
   ) {}
 
   ngOnInit(): void {
@@ -59,8 +61,10 @@ export class RegisterComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
+    this.spinner.show();
     if (this.registerForm.valid && !this.createOrganization) {
       this.authService.register(this.registerForm.value).subscribe((user) => {
+        this.spinner.hide();
         if (user) {
           this.router.navigate([`/verification`], {
             queryParams: {
@@ -94,6 +98,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         .subscribe((organization) => {
           if (organization) {
             this.authService.register(user).subscribe((user) => {
+              this.spinner.hide();
               if (user) {
                 this.router.navigate([`/verification`], {
                   queryParams: {

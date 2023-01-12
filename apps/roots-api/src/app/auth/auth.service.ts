@@ -2,6 +2,7 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { MailService } from '../providers/email/email.service';
+import { ParseObjectIdPipe } from '../shared/pipes/ParseObjectIdPipe';
 import { Token } from '../token/token.schema';
 import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/user.dto';
@@ -56,6 +57,42 @@ export class AuthService {
     );
 
     return user;
+  }
+
+  async verify(req: any) {
+    //check if object id is valid
+    if (!ParseObjectIdPipe.isValidObjectId(req.userId)) {
+      throw new HttpException('Id is niet geldig!', HttpStatus.BAD_REQUEST);
+    }
+
+    //check if user exists (validation is elsewhere)
+    const user = await this.userService.getById(req.userId);
+
+    //retrieve existing token
+    const token = await this.tokenService.getByUserId(req.userId);
+
+    //check if token is correct + not expired
+    if (
+      token.verificationCode === req.verificationCode &&
+      token.expirationDate > new Date()
+    ) {
+      //delete used token
+      await this.tokenService.delete(req.userId);
+
+      //change isVerified to true
+      await this.userService.verifyAccount(req.userId);
+
+      //set first login timestamp
+      await this.userService.setLastLoginTimeStamp(req.userId);
+
+      //login automatically
+      return await this.login({
+        username: user.emailAddress,
+        password: user.password,
+      });
+    } else {
+      throw new HttpException('Token is niet geldig!', HttpStatus.BAD_REQUEST);
+    }
   }
 
   async login(user: any) {
