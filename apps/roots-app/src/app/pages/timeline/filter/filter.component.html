@@ -1,0 +1,41 @@
+<div class="filter-outline">
+  <div class="filter-top-button-container">
+    <input class="filter-x-button" type="button" value="x" (click)="closeDialog()">
+  </div>
+  <div class="filter-container">
+    <div class="filter-content">
+      <div class="filter-row">
+        <h2 class="filter-title">Filter de tijdlijn</h2>
+      </div>
+      <div class="filter-row">
+        <div class="filter-text-container">
+          <h5 class="filter-subtitle">Hoe worden de tags gebruikt?</h5>
+          <p class="filter-subtext">Een gebeurtenis moet...</p>
+        </div>
+        <div class="filter-data">
+          <mat-radio-group class="filter-data-radio" [(ngModel)]="radioValue" name="radioValue">
+            <mat-radio-button value="and">alle tags bevatten</mat-radio-button>
+            <mat-radio-button value="or">één van de tags bevatten</mat-radio-button>
+          </mat-radio-group>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-text-container">
+          <h5 class="filter-subtitle">Welke gebeurtenissen worden weergegeven?</h5>
+        </div>
+        <div class="filter-data">
+          <div class="filter-data-switch">
+            <label class="filter-data-switch-label">
+              <input type="checkbox" (click)="toggleArchivedEvents()" [checked]="showArchivedEvents" />
+              Toon gearchiveerde gebeurtenissen</label>
+          </div>
+        </div>
+      </div>
+      <div class="filter-row">
+        <div class="filter-button-container">
+          <input class="filter-button-submit btn" type="button" value="Pas filters toe" (click)="filterSubmit()">
+        </div>
+      </div>
+    </div>
+  </div>
+</div>
