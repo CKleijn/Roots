@@ -181,8 +181,9 @@ body {
 
   .ql-tooltip {
     top: 0% !important;
-    left: 52% !important;
+    left: 38% !important;
     right: 1% !important;
+    text-align: center;
   }
 
   .ql-tooltip[data-mode='video']::before {
@@ -231,6 +232,10 @@ body {
 
   .ql-tooltip > input::placeholder {
     color: $white !important;
+  }
+
+  .quill-upload-progress {
+    opacity: 1 !important;
   }
 
   //Checkbox

@@ -57,7 +57,7 @@ fdescribe('TagService', () => {
                 _id: new Types.ObjectId(organizationId),
                 name:'Mock Name Organization',
                 emailDomain:'organization.mock',
-                events: dummyEvents,
+                events: [dummyEvents[0]._id],
                 tags: [dummyTags[0]._id,dummyTags[1]._id]
             }
         ]

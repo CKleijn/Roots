@@ -79,13 +79,8 @@
                     <ng-container matColumnDef="change">
                       <th mat-header-cell *matHeaderCellDef></th>
                       <td mat-cell *matCellDef="let tag">
-                        <button class="btn" (click)="editModal(contentEdit, tag._id, tag.name)">
+                        <button class="btn" style="width: 100%" (click)="editModal(contentEdit, tag._id, tag.name)">
                           <i class="bi bi-pencil"></i>
-                        </button>
-                        <button class="btn" (click)="
-                            deleteModal(contentDelete, tag._id, tag.name)
-                          " disabled>
-                          <i class="bi bi-trash3"></i>
                         </button>
                       </td>
                     </ng-container>
@@ -121,42 +116,23 @@
     </div>
   </ng-template>
 
-  <ng-template #contentDelete let-modal>
+  <ng-template #content let-modal>
     <div class="modal-header">
-      <h4 class="modal-title" id="modal-tag-delete">Verwijderen</h4>
+      <h4 class="modal-title" id="modal-basic-title">
+        {{ selectedUser.isActive ? 'Deactiveren' : 'Activeren' }}
+      </h4>
       <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
     </div>
     <div class="modal-body">
-      <span>Weet u zeker dat u de tag {{ deleteTagName }} wilt verwijderen?</span>
+      <span>Weet je zeker dat je dit account wilt
+        {{ selectedUser.isActive ? 'deactiveren' : 'activeren' }}?</span>
     </div>
     <div class="modal-footer">
       <button type="button" class="btn" (click)="modal.dismiss()">
         Annuleren
       </button>
-      <button type="button" class="btn" (click)="deleteTag()">
-        Bevestigen
+      <button type="button" class="btn" (click)="changeStatus(selectedUser._id.toString())">
+        {{ selectedUser.isActive ? 'Deactiveren' : 'Activeren' }}
       </button>
     </div>
   </ng-template>
-</div>
-
-<ng-template #content let-modal>
-  <div class="modal-header">
-    <h4 class="modal-title" id="modal-basic-title">
-      {{ selectedUser.isActive ? 'Deactiveren' : 'Activeren' }}
-    </h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
-  </div>
-  <div class="modal-body">
-    <span>Weet je zeker dat je dit account wilt
-      {{ selectedUser.isActive ? 'deactiveren' : 'activeren' }}?</span>
-  </div>
-  <div class="modal-footer">
-    <button type="button" class="btn" (click)="modal.dismiss()">
-      Annuleren
-    </button>
-    <button type="button" class="btn" (click)="changeStatus(selectedUser._id.toString())">
-      {{ selectedUser.isActive ? 'Deactiveren' : 'Activeren' }}
-    </button>
-  </div>
-</ng-template>

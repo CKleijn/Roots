@@ -14,16 +14,53 @@ export class EventService {
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(Organization.name)
     private organizationModel: Model<OrganizationDocument>
-  ) {}
+  ) { }
 
   async getAll(): Promise<Event[]> {
     const events = await this.organizationModel.aggregate([
+      {
+        $unwind: {
+          path: "$events",
+        },
+      },
+      {
+        $lookup: {
+          from: "events",
+          localField: "events",
+          foreignField: "_id",
+          as: "events",
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          events: {
+            $push: {
+              _id: {
+                $first: "$events._id",
+              },
+              title: {
+                $first: "$events.title",
+              },
+              description: {
+                $first: "$events.description",
+              },
+              eventDate: {
+                $first: "$events.eventDate",
+              },
+              isActive: {
+                $first: "$events.isActive",
+              },
+            },
+          },
+        },
+      },
       {
         $project: {
           _id: 0,
           events: {
             $sortArray: {
-              input: '$events',
+              input: "$events",
               sortBy: {
                 eventDate: -1,
               },
@@ -40,7 +77,44 @@ export class EventService {
     const events = await this.organizationModel.aggregate([
       {
         $match: {
-          _id: new mongoose.Types.ObjectId(organizationId),
+          _id: new Types.ObjectId(organizationId),
+        },
+      },
+      {
+        $unwind: {
+          path: "$events",
+        },
+      },
+      {
+        $lookup: {
+          from: "events",
+          localField: "events",
+          foreignField: "_id",
+          as: "events",
+        },
+      },
+      {
+        $group: {
+          _id: null,
+          events: {
+            $push: {
+              _id: {
+                $first: "$events._id",
+              },
+              title: {
+                $first: "$events.title",
+              },
+              description: {
+                $first: "$events.description",
+              },
+              eventDate: {
+                $first: "$events.eventDate",
+              },
+              isActive: {
+                $first: "$events.isActive",
+              },
+            },
+          },
         },
       },
       {
@@ -48,7 +122,7 @@ export class EventService {
           _id: 0,
           events: {
             $sortArray: {
-              input: '$events',
+              input: "$events",
               sortBy: {
                 eventDate: -1,
               },
@@ -74,19 +148,26 @@ export class EventService {
   async getById(id: string): Promise<Event> {
     const event = await this.organizationModel.aggregate([
       {
-        $unwind: {
-          path: '$events',
-        },
+        '$unwind': {
+          'path': '$events'
+        }
+      }, {
+        '$lookup': {
+          'from': 'events',
+          'localField': 'events',
+          'foreignField': '_id',
+          'as': 'events'
+        }
       },
       {
-        $match: {
+        '$match': {
           'events._id': new mongoose.Types.ObjectId(id),
         },
       },
       {
-        $project: {
-          _id: 0,
-          events: 1,
+        '$project': {
+          '_id': 0,
+          'events': 1,
         },
       },
     ]);
@@ -96,16 +177,16 @@ export class EventService {
         `Deze gebeurtenis bestaat niet!`,
         HttpStatus.NOT_FOUND
       );
-      console.log('event', event) 
-    return event[0]?.events;
+    return event[0]?.events[0];
   }
 
   async create(organizationId: string, eventDto: EventDto): Promise<any> {
-    const event = new this.eventModel(eventDto);
+    const event = await this.eventModel.create(eventDto);
+
     const updatedOrganizationEvents =
       await this.organizationModel.findOneAndUpdate(
         { _id: organizationId },
-        { $push: { events: event } },
+        { $push: { events: event._id } },
         {
           new: true,
           runValidators: true,
@@ -123,15 +204,15 @@ export class EventService {
 
   async update(eventId: string, eventDto: EventDto): Promise<any> {
     const updatedEventFromOrganization =
-      await this.organizationModel.findOneAndUpdate(
-        { 'events._id': eventId },
+      await this.eventModel.findOneAndUpdate(
+        { '_id': eventId },
         {
           $set: {
-            'events.$.title': eventDto?.title,
-            'events.$.description': eventDto?.description,
-            'events.$.content': eventDto?.content,
-            'events.$.tags': eventDto?.tags,
-            'events.$.eventDate': eventDto?.eventDate,
+            'title': eventDto?.title,
+            'description': eventDto?.description,
+            'content': eventDto?.content,
+            'tags': eventDto?.tags,
+            'eventDate': eventDto?.eventDate,
           },
         },
         {
@@ -151,11 +232,11 @@ export class EventService {
 
   async archive(eventId: string, isActive: boolean): Promise<any> {
 
-    const updatedArchive = await this.organizationModel.findOneAndUpdate(
-      { 'events._id': new Types.ObjectId(eventId) },
+    const updatedArchive = await this.eventModel.findOneAndUpdate(
+      { '_id': new Types.ObjectId(eventId) },
       {
         $set: {
-          'events.$.isActive': isActive,
+          'isActive': isActive,
         },
       },
       {
