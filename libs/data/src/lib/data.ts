@@ -28,6 +28,11 @@ export interface ITag {
   name: string;
 }
 
+export interface IToken {
+  type: string;
+  expirationDate: Date;
+}
+
 // CLASSES
 export class User implements IUser {
   _id = new Types.ObjectId();
@@ -46,11 +51,11 @@ export class Organization implements IOrganization {
   name = '';
   emailDomain = '';
   events = [] as Event[];
-  tags = [] as Types.ObjectId[]
+  tags = [] as Types.ObjectId[];
 }
 
 export class Event implements IEvent {
-  title= '';
+  title = '';
   description = '';
   content = '';
   eventDate = new Date();
@@ -61,6 +66,6 @@ export class Event implements IEvent {
 
 export class Tag implements ITag {
   _id = new Types.ObjectId();
-  name = "";
+  name = '';
   organization = new Types.ObjectId();
 }
