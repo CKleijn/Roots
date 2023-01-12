@@ -2,6 +2,7 @@ import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute } from '@angular/router';
 import { NgxOtpInputConfig } from 'ngx-otp-input';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 
@@ -31,7 +32,11 @@ export class VerificationComponent implements OnInit, OnDestroy {
   };
   paramSubscription: any;
 
-  constructor(private toastr: ToastrService, private route: ActivatedRoute) {}
+  constructor(
+    private toastr: ToastrService,
+    private route: ActivatedRoute,
+    private spinner: NgxSpinnerService
+  ) {}
 
   ngOnInit(): void {
     this.route.queryParams.subscribe((params) => {
@@ -47,6 +52,17 @@ export class VerificationComponent implements OnInit, OnDestroy {
   handleFillEvent(value: any): void {
     this.code = value;
     this.validInput = true;
+  }
+
+  resendEmail() {
+    console.log(this.emailAddress);
+
+    this.spinner.show();
+
+    setTimeout(() => {
+      console.log('this is the first message');
+      this.spinner.hide();
+    }, 5000);
   }
 
   ngOnDestroy(): void {

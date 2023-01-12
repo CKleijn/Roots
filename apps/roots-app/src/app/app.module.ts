@@ -1,7 +1,12 @@
 import { registerLocaleData } from '@angular/common';
 import { HttpClientModule } from '@angular/common/http';
 import nl from '@angular/common/locales/nl';
-import { Injectable, LOCALE_ID, NgModule } from '@angular/core';
+import {
+  CUSTOM_ELEMENTS_SCHEMA,
+  Injectable,
+  LOCALE_ID,
+  NgModule,
+} from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
@@ -23,6 +28,7 @@ import {
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
 import { QuillModule } from 'ngx-quill';
+import { NgxSpinnerModule } from 'ngx-spinner';
 import { ToastrModule } from 'ngx-toastr';
 import { AppComponent } from './app.component';
 import { appRoutes } from './app.routes';
@@ -33,6 +39,7 @@ import { OrganizationComponent } from './pages/organization/organization.compone
 import { OrganizationModule } from './pages/organization/organization.module';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
+
 registerLocaleData(nl);
 
 @Injectable({ providedIn: 'root' })
@@ -85,6 +92,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     MatAutocompleteModule,
     OrganizationModule,
     InfiniteScrollModule,
+    NgxSpinnerModule,
   ],
   providers: [
     {
@@ -94,6 +102,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     { provide: TitleStrategy, useClass: TemplatePageTitleStrategy },
   ],
   bootstrap: [AppComponent],
-  exports: [NavComponent],
+  exports: [NavComponent, NgxSpinnerModule],
+  schemas: [CUSTOM_ELEMENTS_SCHEMA],
 })
 export class AppModule {}
