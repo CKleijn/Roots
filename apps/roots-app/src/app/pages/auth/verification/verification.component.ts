@@ -1,10 +1,9 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { FormGroup } from '@angular/forms';
-import { Router } from '@angular/router';
+import { ActivatedRoute } from '@angular/router';
+import { NgxOtpInputConfig } from 'ngx-otp-input';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
-import { OrganizationService } from '../../organization/organization.service';
-import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'roots-app-verification',
@@ -14,16 +13,40 @@ import { AuthService } from '../auth.service';
 export class VerificationComponent implements OnInit, OnDestroy {
   registerForm: FormGroup = new FormGroup({});
   subs: Subscription = new Subscription();
+  code = 0;
+  validInput = false;
+  userId: string | undefined;
+  emailAddress: string | undefined;
+  otpInputConfig: NgxOtpInputConfig = {
+    otpLength: 6,
+    autofocus: true,
+    classList: {
+      inputBox: 'my-super-box-class',
+      input: 'my-super-class',
+      inputFilled: 'my-super-filled-class',
+      inputDisabled: 'my-super-disable-class',
+      inputSuccess: 'my-super-succes-class',
+      inputError: 'my-super-error-class',
+    },
+  };
+  paramSubscription: any;
 
-  constructor(
-    private authService: AuthService,
-    private router: Router,
-    private organizationService: OrganizationService,
-    private toastr: ToastrService
-  ) {}
+  constructor(private toastr: ToastrService, private route: ActivatedRoute) {}
 
   ngOnInit(): void {
-    console.log('ngoninit');
+    this.route.queryParams.subscribe((params) => {
+      this.userId = params['userId'];
+      this.emailAddress = params['emailAddress'];
+    });
+  }
+
+  handleOtpChange(value: any): void {
+    this.validInput = false;
+  }
+
+  handleFillEvent(value: any): void {
+    this.code = value;
+    this.validInput = true;
   }
 
   ngOnDestroy(): void {
@@ -33,6 +56,12 @@ export class VerificationComponent implements OnInit, OnDestroy {
   }
 
   onSubmit(): void {
-    console.log('onsubmit');
+    console.log(this.code);
+    console.log(this.userId);
+    console.log(this.emailAddress);
+
+    // if(this.code){
+
+    // }
   }
 }

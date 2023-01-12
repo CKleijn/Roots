@@ -49,7 +49,12 @@ export class LoginComponent implements OnInit, OnDestroy {
 
       this.authService.login(emailAddress, password).subscribe((user) => {
         if (user && !user.isVerified) {
-          this.router.navigate([`/verification/${user._id.toString()}`]);
+          this.router.navigate([`/verification`], {
+            queryParams: {
+              emailAddress: user.emailAddress,
+              userId: user._id.toString(),
+            },
+          });
         } else if (user) {
           this.router.navigate([
             `/organizations/${user.organization}/timeline`,

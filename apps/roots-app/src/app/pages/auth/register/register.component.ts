@@ -62,7 +62,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
     if (this.registerForm.valid && !this.createOrganization) {
       this.authService.register(this.registerForm.value).subscribe((user) => {
         if (user) {
-          this.router.navigate([`/verification/${user._id.toString()}`]);
+          this.router.navigate([`/verification`], {
+            queryParams: {
+              emailAddress: user.emailAddress,
+              userId: user._id.toString(),
+            },
+          });
         }
       });
     } else if (this.registerForm.valid && this.createOrganization) {
@@ -90,7 +95,12 @@ export class RegisterComponent implements OnInit, OnDestroy {
           if (organization) {
             this.authService.register(user).subscribe((user) => {
               if (user) {
-                this.router.navigate([`/verification/${user._id.toString()}`]);
+                this.router.navigate([`/verification`], {
+                  queryParams: {
+                    emailAddress: user.emailAddress,
+                    userId: user._id.toString(),
+                  },
+                });
               }
             });
           }

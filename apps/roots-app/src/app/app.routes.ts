@@ -23,7 +23,7 @@ export const appRoutes: Route[] = [
     title: 'Registreren',
   },
   {
-    path: 'verification/:userId',
+    path: 'verification',
     component: VerificationComponent,
     pathMatch: 'full',
     title: 'Account verifiëren',
