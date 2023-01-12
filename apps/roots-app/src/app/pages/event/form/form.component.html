@@ -30,11 +30,11 @@
                                 </div>
                                 <div class="form-outline mt-4">
                                     <label for="description" class="form-label">Beschrijving</label>
-                                    <input type="text" class="form-control" required maxlength="150"
+                                    <textarea type="text" class="form-control" required maxlength="150"
                                         formControlName="description" id="description" [ngClass]="{
                                             'is-invalid':
                                             eventForm.get('description')?.invalid && eventForm.get('description')?.touched
-                                        }">
+                                        }"></textarea>
                                     <small class="charCount mt-1">{{eventForm.value?.description?.length || 0}}/150</small>
                                 </div>
                                 <div *ngIf="eventForm.get('description')?.invalid && eventForm.get('description')?.touched"
@@ -56,8 +56,11 @@
                                 </div>
                                 <div *ngIf="eventForm.get('content')?.invalid && eventForm.get('content')?.touched"
                                     class="invalid-feeback">
-                                    <div *ngIf="eventForm.get('content')?.errors?.['required']">
+                                    <div *ngIf="eventForm.get('content')?.errors?.['needContext']">
                                         Inhoud moet tekst bevatten!
+                                    </div>
+                                    <div *ngIf="eventForm.get('content')?.errors?.['required'] && !eventForm.get('content')?.errors?.['needContext']">
+                                        Inhoud is verplicht!
                                     </div>
                                 </div>
 

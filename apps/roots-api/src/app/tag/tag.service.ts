@@ -7,13 +7,17 @@ import {
 } from '../organization/organization.schema';
 import { TagDto } from './tag.dto';
 import { Tag, TagDocument } from './tag.schema';
+import { Event, EventDocument } from '../event/event.schema';
 
 @Injectable()
 export class TagService {
   constructor(
-    @InjectModel(Tag.name) private tagModel: Model<TagDocument>,
+    @InjectModel(Tag.name) 
+    private tagModel: Model<TagDocument>,
     @InjectModel(Organization.name)
-    private organizationModel: Model<OrganizationDocument>
+    private organizationModel: Model<OrganizationDocument>,
+    @InjectModel(Event.name)
+    private eventModel: Model<EventDocument>
   ) {}
 
   async getAllByOrganization(organizationId: string): Promise<Tag[]> {
@@ -106,12 +110,11 @@ export class TagService {
     );
 
     // push to event
-    await this.organizationModel.updateOne(
+    await this.eventModel.updateOne(
       {
-        _id: new Types.ObjectId(organizationId),
-        'events._id': new Types.ObjectId(eventId),
+        _id: new Types.ObjectId(eventId)
       },
-      { $push: { 'events.$.tags': new Types.ObjectId(tag._id) } },
+      { $push: { 'tags': new Types.ObjectId(tag._id) } },
       { new: true }
     );
 
@@ -179,35 +182,5 @@ export class TagService {
     }
 
     return updatedTag;
-  }
-
-  async delete(tagId: string, organizationId: string) {
-    const updatedOrganization = await this.organizationModel.findOneAndUpdate(
-      {
-        _id: new Types.ObjectId(organizationId),
-      },
-      {
-        $pull: {
-          tags: new Types.ObjectId(tagId),
-          'events.$[].tags': new Types.ObjectId(tagId),
-        },
-      },
-      {
-        new: true,
-      }
-    );
-
-    if (!updatedOrganization) {
-      throw new HttpException(
-        'Deze organisatie is niet gevonden',
-        HttpStatus.NOT_FOUND
-      );
-    } else {
-      const updateTags = await this.tagModel.deleteOne({ _id: tagId });
-
-      if (!updateTags) {
-        throw new HttpException('Tag niet gevonden', HttpStatus.NOT_FOUND);
-      }
-    }
   }
 }

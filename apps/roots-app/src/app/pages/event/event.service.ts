@@ -50,7 +50,11 @@ export class EventService {
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          this.toastr.error(err.error.message, 'Gebeurtenis niet aangemaakt!');
+          if(err.error.message === `The value of \"offset\" is out of range. It must be >= 0 && <= 17825792. Received 17825794`) {
+            this.toastr.error('De inhoud van deze gebeurtenis overschreid de maximale grootte van 15 MB!', 'Gebeurtenis niet aangemaakt!');
+          } else {
+            this.toastr.error(err.error.message, 'Gebeurtenis niet aangemaakt!');
+          }
           return of(undefined);
         })
         // eslint-disable-next-line @typescript-eslint/ban-types
@@ -79,7 +83,11 @@ export class EventService {
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          this.toastr.error(err.error.message, 'Gebeurtenis niet aangepast!');
+          if(err.error.message === `The value of \"offset\" is out of range. It must be >= 0 && <= 17825792. Received 17825794`) {
+            this.toastr.error('De inhoud van deze gebeurtenis overschreid de maximale grootte van 15 MB!', 'Gebeurtenis niet aangemaakt!');
+          } else {
+            this.toastr.error(err.error.message, 'Gebeurtenis niet aangemaakt!');
+          }
           return of(undefined);
         })
         // eslint-disable-next-line @typescript-eslint/ban-types

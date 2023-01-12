@@ -13,7 +13,7 @@ export interface IUser {
 export interface IOrganization {
   name: string;
   emailDomain: string;
-  events: IEvent[];
+  events: Types.ObjectId[];
 }
 
 export interface IEvent {
@@ -45,7 +45,7 @@ export class Organization implements IOrganization {
   _id = new Types.ObjectId();
   name = '';
   emailDomain = '';
-  events = [] as Event[];
+  events = [] as Types.ObjectId[];
   tags = [] as Types.ObjectId[]
 }
 

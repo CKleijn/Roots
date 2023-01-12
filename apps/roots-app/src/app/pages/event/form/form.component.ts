@@ -37,7 +37,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
   updateSubscription: Subscription | undefined;
   getAllTagsSubscription: Subscription | undefined;
   loggedInUserSubscription: Subscription | undefined;
-  eventVideoSize: number | undefined = 0;
   loggedInUser$!: Observable<User | undefined>
   eventId: string | undefined;
   organizationId: string | undefined;
@@ -58,8 +57,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
-      ['link', 'image', 'video'],
       ['emoji'],
+      ['link', 'image', 'video', 'video'],
     ],
     imageResize: {
       modules: ['Resize', 'DisplaySize']
@@ -68,15 +67,15 @@ export class EventFormComponent implements OnInit, OnDestroy {
       upload: (file: any) => {
         return new Promise((resolve, reject) => {
           if (file.type === 'video/mpeg' || file.type === 'video/mp4') {
-            this.eventVideoSize += file.size;
-            if (this.eventVideoSize! < 10000000) {
+            if (file.size < 15000000) {
+              this.eventForm.controls['content'].setErrors({ needContext: true })
               resolve(file);
             } else {
               this.toastrService.error(
-                `De video overschreid de maximale uploadgrootte van 10 MB!`,
+                `Deze video overschreid de maximale uploadgrootte van 15 MB!`,
                 'Video uploaden mislukt!'
               );
-              reject(`De video overschreid de maximale uploadgrootte van 10 MB!`);
+              reject(`Deze video overschreid de maximale uploadgrootte van 15 MB!`);
             }
           } else {
             this.toastrService.error(
@@ -123,16 +122,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
       this.organizationIdString = p?.organization.toString();
     });
 
-    this.getAllTags().then(() => {
-      this.filteredTags = this.tagCtrl.valueChanges.pipe(
-        startWith(null),
-        map((tag: string | null) =>
-          tag ? this._filter(tag)?.sort() : this.allTags?.slice().sort()
-        )
-      );
-    }
-    );
-
     this.eventForm = new FormGroup({
       title: new FormControl(null, [Validators.required]),
       description: new FormControl(null, [Validators.required]),
@@ -144,14 +133,30 @@ export class EventFormComponent implements OnInit, OnDestroy {
     if (this.eventId)
       this.editMode = true;
 
+    this.getAllTags().then(() => {
+      this.filteredTags = this.tagCtrl.valueChanges.pipe(
+        startWith(null),
+        map((tag: string | null) => {
+          return tag ? this._filter(tag)?.sort() : this.allTags?.slice().sort()
+        }
+        )
+      );
+    });
+
     if (this.editMode) {
       this.eventSubscription = this.eventService.getEventById(this.eventId as string).subscribe({
-        next: (event) => {
+        next: async (event) => {
           this.event = {
             ...event
           }
 
-          this.getCurrentTags();
+          await this.getCurrentTags();
+
+          for await (const tag of this.allTags) {
+            if (this.tags.includes(tag)) {
+              this.filteredTags = this.filteredTags?.pipe(map(tags => tags?.filter(t => t !== tag)))
+            }
+          }
 
           this.eventForm.patchValue({
             title: this.event.title,
@@ -190,7 +195,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
     if (!this.editMode) {
       this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
-        next: () => this.router.navigate([`organizations/${this.organizationId}/timeline`]),
+        next: () => {this.router.navigate([`organizations/${this.organizationId}/timeline`])},
         error: (error) => this.error = error.message
       })
     }
@@ -215,8 +220,11 @@ export class EventFormComponent implements OnInit, OnDestroy {
   add(tag: MatChipInputEvent): void {
     const value = (tag.value || '').trim();
 
-    if (value) {
-      this.tags?.push(value);
+    if (this.tags?.length > 0) {
+      if (!this.tags?.includes(value))
+        this.tags.push(value);
+    } else {
+      this.tags.push(value);
     }
 
     tag.chipInput.clear();
