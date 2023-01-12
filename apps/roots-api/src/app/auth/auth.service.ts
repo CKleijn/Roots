@@ -1,6 +1,7 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
+import { MailService } from '../providers/email/email.service';
 import { UserDto } from '../user/user.dto';
 import { User } from '../user/user.schema';
 import { UserService } from '../user/user.service';
@@ -10,7 +11,8 @@ import { jwtConstants } from './constants';
 export class AuthService {
   constructor(
     private userService: UserService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailService: MailService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {

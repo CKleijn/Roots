@@ -132,10 +132,17 @@ export class EventService {
       },
     ]);
 
-    return events[0]?.events.slice(
-      Number(query.old_records),
-      Number(query.new_records) + Number(query.old_records)
-    );
+    if(query.old_records && query.new_records) {
+      return events[0]?.events.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
+    } else {
+      const matchingEvents: any[] = [];
+      events[0].events.forEach(event => {
+        if(event.title.includes(query.term)) {
+          matchingEvents.push(event);
+        }
+      });
+      return matchingEvents;
+    }
   }
 
   async getById(id: string): Promise<Event> {

@@ -1,7 +1,9 @@
 import { Module } from '@nestjs/common';
 import { MongooseModule } from '@nestjs/mongoose';
-import { Event, EventSchema } from '../event/event.schema';
-import { Organization, OrganizationSchema } from '../organization/organization.schema';
+import {
+  Organization,
+  OrganizationSchema,
+} from '../organization/organization.schema';
 import { TagController } from './tag.controller';
 import { Tag, TagSchema } from './tag.schema';
 import { TagService } from './tag.service';

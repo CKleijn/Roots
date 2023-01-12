@@ -9,7 +9,7 @@ import {
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
 import { User } from '@roots/data';
-import { lastValueFrom, map, Observable, of, startWith, tap } from 'rxjs';
+import { filter, lastValueFrom, map, Observable, of, startWith } from 'rxjs';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -27,7 +27,8 @@ import { Tag } from '../tag/tag.model';
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent
-  implements OnInit, AfterViewChecked, AfterContentChecked {
+  implements OnInit, AfterViewChecked, AfterContentChecked
+{
   events: any = [];
   standardEvents: any = [];
   throttle = 0;
@@ -47,6 +48,9 @@ export class TimelineComponent
   containsAllTags = true;
   radioValue: string | undefined;
   showArchivedEvents = false;
+  searchType: string | undefined;
+  searchterm = '';
+  allEvents: Event[] = [];
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -54,8 +58,8 @@ export class TimelineComponent
     private eventService: EventService,
     private authService: AuthService,
     private route: ActivatedRoute,
-    private tagService: TagService,
-  ) { }
+    private tagService: TagService
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap
@@ -75,7 +79,6 @@ export class TimelineComponent
 
         events.forEach((event) => {
           event.eventDate = new Date(event.eventDate);
-          console.log(event)
         });
       });
 
@@ -93,6 +96,7 @@ export class TimelineComponent
       );
     });
     this.radioValue = 'and';
+    this.searchType = 'terms';
   }
 
   ngAfterViewChecked(): void {
@@ -153,8 +157,7 @@ export class TimelineComponent
 
     if (this.allTags?.includes(value)) {
       if (this.tags?.length > 0) {
-        if (!this.tags?.includes(value))
-          this.tags.push(value);
+        if (!this.tags?.includes(value)) this.tags.push(value);
       } else {
         this.tags.push(value);
       }
@@ -178,6 +181,7 @@ export class TimelineComponent
     this.events = this.standardEvents;
     this.filteredTags = of(this.allTags);
     this.radioValue = 'and';
+    this.searchType = 'terms';
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -185,8 +189,7 @@ export class TimelineComponent
       this.tags.push(event.option.viewValue);
       this.filteredTags = this.filteredTags?.pipe(map(tags => tags.filter(tag => tag !== event.option.viewValue)))
 
-      if (this.tagInput)
-        this.tagInput.nativeElement.value = '';
+      if (this.tagInput) this.tagInput.nativeElement.value = '';
 
       this.tagCtrl.setValue(null);
     }
@@ -207,7 +210,9 @@ export class TimelineComponent
   async getAllTags() {
     // Get all tags from the organization if the organization exists
     if (this.organizationId) {
-      const tags = await this.tagService.getAllTagsByOrganization(this.organizationId).toPromise();
+      const tags = await this.tagService
+        .getAllTagsByOrganization(this.organizationId)
+        .toPromise();
       if (tags) {
         // Push all tags into an array (single request)
         for await (const tag of tags) {
@@ -226,7 +231,9 @@ export class TimelineComponent
     this.newEvents = [];
     // Push all tags which are selected in array
     for await (const tag of this.tags)
-      this.fullSelectedTags.push(this.fullTags?.filter((p) => p.name === tag).at(0));
+      this.fullSelectedTags.push(
+        this.fullTags?.filter((p) => p.name === tag).at(0)
+      );
     // If one tag is selected filter events only on one tag
     if (this.tags.length === 1) {
       for await (const event of this.standardEvents as Event[]) {
@@ -241,18 +248,24 @@ export class TimelineComponent
       if (this.radioValue === 'and') {
         for await (const event of this.standardEvents as Event[]) {
           for await (const fullSelectedTag of this.fullSelectedTags) {
-            if (event.tags.filter((p) => p === fullSelectedTag._id).length === 0)
+            if (
+              event.tags.filter((p) => p === fullSelectedTag._id).length === 0
+            )
               this.containsAllTags = false;
           }
-          this.containsAllTags ? this.newEvents.push(event) : (this.containsAllTags = true);
+          this.containsAllTags
+            ? this.newEvents.push(event)
+            : (this.containsAllTags = true);
         }
-      // Event must have only one selected tag for it to go through the filter
+        // Event must have only one selected tag for it to go through the filter
       } else if (this.radioValue === 'or') {
         for await (const event of this.standardEvents as Event[]) {
           for await (const fullSelectedTag of this.fullSelectedTags) {
-            if (event.tags.filter((p) => p === fullSelectedTag._id).length > 0) {
+            if (
+              event.tags.filter((p) => p === fullSelectedTag._id).length > 0
+            ) {
               if (this.newEvents.filter((e) => e === event).length === 0)
-                this.newEvents.push(event)
+                this.newEvents.push(event);
             }
           }
         }
@@ -270,7 +283,24 @@ export class TimelineComponent
     }
   }
 
-  toggleArchivedEvents(){
+  //searching on a term
+  searchOnTerm() {
+    //if there is an organizationId -> get events by term
+    if(this.organizationId) {
+      this.eventService.getEventsByTerm(this.searchterm, this.organizationId).subscribe((events) => {
+        //retrieve the filter events
+        let filterEvents = events;
+        //assign dates to the events
+        filterEvents.forEach((event: { eventDate: string | number | Date; }) => {
+          event.eventDate = new Date(event.eventDate);
+        });
+        //assign filterevents to the eventlist
+        this.events = filterEvents
+      })
+    }
+  }
+
+  toggleArchivedEvents() {
     if (this.showArchivedEvents) {
       this.showArchivedEvents = false;
     } else {
