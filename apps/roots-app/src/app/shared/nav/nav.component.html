@@ -9,7 +9,7 @@
       aria-expanded="false"
       aria-label="Toggle navigation"
     >
-      <span class="navbar-toggler-icon "></span>
+      <span class="navbar-toggler-icon"></span>
     </button>
 
     <div class="collapse navbar-collapse" id="navbarNav">
@@ -17,40 +17,42 @@
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}/timeline"
-            *ngIf="currentUser !== undefined"
+            *ngIf="currentUser !== undefined && currentUser !== null"
             >Tijdlijn</a
           >
         </li>
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}/events/new"
-            *ngIf="currentUser !== undefined"
+            *ngIf="currentUser !== undefined && currentUser !== null"
             >Gebeurtenis toevoegen</a
           >
         </li>
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}"
-            *ngIf="currentUser !== undefined"
+            *ngIf="currentUser !== undefined && currentUser !== null"
             >Organisatie</a
           >
         </li>
         <li>
-          <a routerLink="/login" *ngIf="currentUser === undefined"
+          <a
+            routerLink="/login"
+            *ngIf="currentUser === undefined || currentUser === null"
             >Inloggen</a
           >
         </li>
         <li>
           <a
             routerLink="/register"
-            *ngIf="currentUser === undefined"
+            *ngIf="currentUser === undefined || currentUser === null"
             >Registreren</a
           >
         </li>
         <li>
           <a
             class="logout-button"
-            *ngIf="currentUser !== undefined"
+            *ngIf="currentUser !== undefined && currentUser !== null"
             (click)="open(content)"
             >Uitloggen</a
           >

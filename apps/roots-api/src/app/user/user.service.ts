@@ -41,7 +41,8 @@ export class UserService {
     const newUser = new this.userModel({
       ...UserDto,
       password: await bcrypt.hashSync(UserDto.password, 10),
-      isActive: true, //until email validation is implemented
+      isActive: true,
+      isVerified: false,
       createdAt: new Date(),
       organization: await this.organizationService.getByEmailDomain(
         UserDto.emailAddress.split('@').at(1)

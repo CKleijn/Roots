@@ -54,6 +54,9 @@ export class User implements IUser {
   isActive: boolean;
 
   @Prop()
+  isVerified: boolean;
+
+  @Prop()
   createdAt: Date;
 
   @Prop()

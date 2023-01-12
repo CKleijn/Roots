@@ -45,13 +45,17 @@ export class AuthService {
       )
       .pipe(
         map((user) => {
-          this.saveUserToLocalStorage(user);
-          this.currentUser$.next(user);
+          console.log(user);
 
-          this.toastr.success(
-            'Je bent succesvol ingelogd!',
-            'Inloggen succesvol!'
-          );
+          if (user.isVerified) {
+            this.saveUserToLocalStorage(user);
+            this.currentUser$.next(user);
+
+            this.toastr.success(
+              'Je bent succesvol ingelogd!',
+              'Inloggen succesvol!'
+            );
+          }
 
           return user;
         }),
@@ -70,10 +74,8 @@ export class AuthService {
       })
       .pipe(
         map((user) => {
-          this.saveUserToLocalStorage(user);
-          this.currentUser$.next(user);
           this.toastr.success(
-            'Je bent succesvol geregistreerd!',
+            'Controleer je mailbox voor de verificatiecode!',
             'Registratie succesvol!'
           );
           return user;
@@ -116,6 +118,7 @@ export class AuthService {
   getUserFromLocalStorage(): Observable<User> {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const localUser = JSON.parse(localStorage.getItem(this.CURRENT_USER)!);
+
     return of(localUser);
   }
 

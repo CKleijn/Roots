@@ -2,6 +2,8 @@ import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
 import { MailService } from '../providers/email/email.service';
+import { Token } from '../token/token.schema';
+import { TokenService } from '../token/token.service';
 import { UserDto } from '../user/user.dto';
 import { User } from '../user/user.schema';
 import { UserService } from '../user/user.service';
@@ -12,7 +14,8 @@ export class AuthService {
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
-    private mailService: MailService
+    private mailService: MailService,
+    private tokenService: TokenService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -25,7 +28,9 @@ export class AuthService {
         );
       }
 
-      await this.userService.setLastLoginTimeStamp(user._id.toString());
+      if (user.isVerified) {
+        await this.userService.setLastLoginTimeStamp(user._id.toString());
+      }
 
       return user;
     }
@@ -38,7 +43,19 @@ export class AuthService {
 
   async register(UserDto: UserDto) {
     const user: User = await this.userService.create(UserDto);
-    return this.login(user);
+
+    const token: Token = await this.tokenService.create(
+      'verification',
+      user._id.toString()
+    );
+
+    await this.mailService.SendVerificationMail(
+      user.emailAddress,
+      user.firstname,
+      token.verificationCode
+    );
+
+    return user;
   }
 
   async login(user: any) {
@@ -53,6 +70,7 @@ export class AuthService {
       firstname: loggedInUser.firstname,
       lastname: loggedInUser.lastname,
       emailAddress: loggedInUser.emailAddress,
+      isVerified: loggedInUser.isVerified,
       organization: loggedInUser.organization,
       access_token: this.jwtService.sign(payload, jwtConstants),
     };
