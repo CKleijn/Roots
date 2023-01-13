@@ -40,9 +40,10 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
       this.spinner.show();
       const emailAddress = this.forgotPasswordForm.value.emailAddress;
 
-      console.log(emailAddress);
-
-      this.spinner.hide();
+      this.authService.sendForgotPasswordMail(emailAddress).subscribe(() => {
+        this.spinner.hide();
+        this.router.navigate(['/confirmation']);
+      });
     }
   }
 

@@ -159,13 +159,17 @@ export class AuthService {
     //delete previous tokens (if there are any)
     await this.tokenService.delete(token.userId.toString(), 'password_reset');
 
-    //reset password
-    await this.userService.setPassword(token.userId.toString(), password);
+    if (token.expirationDate > new Date()) {
+      //reset password
+      await this.userService.setPassword(token.userId.toString(), password);
 
-    return {
-      status: 200,
-      message: 'Password has been reset!',
-    };
+      return {
+        status: 200,
+        message: 'Password has been reset!',
+      };
+    } else {
+      throw new HttpException('Token is ongeldig!', HttpStatus.BAD_REQUEST);
+    }
   }
 
   async login(user: any) {

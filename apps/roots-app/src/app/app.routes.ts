@@ -1,8 +1,10 @@
 import { Route } from '@angular/router';
 import { LoggedInAuthGuard } from './pages/auth/auth.guards';
+import { ConfirmationComponent } from './pages/auth/confirmation/confirmation.component';
 import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
+import { ResetPasswordComponent } from './pages/auth/reset-password/reset-password.component';
 import { VerificationComponent } from './pages/auth/verification/verification.component';
 import { EventDetailComponent } from './pages/event/detail/detail.component';
 import { EventFormComponent } from './pages/event/form/form.component';
@@ -35,12 +37,19 @@ export const appRoutes: Route[] = [
     pathMatch: 'full',
     title: 'Wachtwoord vergeten',
   },
-  // {
-  //   path: 'password_reset/:tokenId',
-  //   component: ,
-  //   pathMatch: 'full',
-  //   title: 'Wachtwoord instellen',
-  // },
+  {
+    path: 'password_reset/:tokenId',
+    component: ResetPasswordComponent,
+    pathMatch: 'full',
+    title: 'Wachtwoord instellen',
+  },
+
+  {
+    path: 'confirmation',
+    component: ConfirmationComponent,
+    pathMatch: 'full',
+    title: 'Email is verstuurd',
+  },
 
   //TIMELINE
   {
