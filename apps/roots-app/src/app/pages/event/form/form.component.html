@@ -49,7 +49,7 @@
                                 <div class="form-outline mt-4">
                                     <label for="content" class="form-label">Inhoud</label>
                                     <quill-editor [style]="editorStyle" [modules]="config" formControlName="content"
-                                        id="content" [required]="true" placeholder="&nbsp;" [ngClass]="{
+                                        id="content" [required]="true" placeholder="&nbsp;" (ngModelChange)="onChange($event)" [ngClass]="{
                                             'is-invalid':
                                             eventForm.get('content')?.invalid && eventForm.get('content')?.touched
                                         }"></quill-editor>
@@ -57,7 +57,7 @@
                                 <div *ngIf="eventForm.get('content')?.invalid && eventForm.get('content')?.touched"
                                     class="invalid-feeback">
                                     <div *ngIf="eventForm.get('content')?.errors?.['needContext']">
-                                        Inhoud moet tekst bevatten!
+                                        De video moet een omschrijving bevatten!
                                     </div>
                                     <div *ngIf="eventForm.get('content')?.errors?.['required'] && !eventForm.get('content')?.errors?.['needContext']">
                                         Inhoud is verplicht!
@@ -89,8 +89,6 @@
                                         </mat-autocomplete>
                                       </mat-form-field>
                                 </div>
-                                
-                                
 
                                 <div class="form-outline mt-4">
                                     <label for="eventDate" class="form-label">Gebeurtenisdatum</label>
