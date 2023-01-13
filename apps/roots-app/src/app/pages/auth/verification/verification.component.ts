@@ -17,6 +17,8 @@ export class VerificationComponent implements OnInit, OnDestroy {
   code = 0;
   validInput = false;
   userId: string | undefined;
+  canResendEmail = true;
+  secondsUntilResend = 0;
   emailAddress: string | undefined;
   otpInputConfig: NgxOtpInputConfig = {
     otpLength: 6,
@@ -56,14 +58,28 @@ export class VerificationComponent implements OnInit, OnDestroy {
   }
 
   resendEmail() {
-    console.log(this.emailAddress);
-
     this.spinner.show();
 
-    setTimeout(() => {
-      console.log('this is the first message');
-      this.spinner.hide();
-    }, 5000);
+    this.authService
+      .resendVerificationMail(this.emailAddress as string)
+      .subscribe(() => {
+        this.spinner.hide();
+        this.countdown(30);
+      });
+  }
+
+  countdown(sec: number) {
+    sec--;
+    const timer = setTimeout(() => {
+      this.canResendEmail = false;
+      this.secondsUntilResend = sec;
+      this.countdown(sec);
+    }, 1000);
+
+    if (sec < 0) {
+      clearTimeout(timer);
+      this.canResendEmail = true;
+    }
   }
 
   ngOnDestroy(): void {

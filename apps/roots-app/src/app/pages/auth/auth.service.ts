@@ -95,7 +95,7 @@ export class AuthService {
           this.saveUserToLocalStorage(user);
           this.currentUser$.next(user);
           this.toastr.success(
-            'Je hebt succesvol je account geverifieerd!',
+            'Je hebt je account succesvol geverifieerd!',
             'Verificatie succesvol!'
           );
         }),
@@ -107,8 +107,30 @@ export class AuthService {
   }
 
   //TODO: create resend mail functionality
-  resendVerificationMail() {
-    console.log('resend mail');
+  resendVerificationMail(emailAddress: string) {
+    return this.http
+      .post<User>(
+        `${environment.SERVER_API_URL}/auth/resend`,
+        { emailAddress },
+        {
+          headers: this.headers,
+        }
+      )
+      .pipe(
+        map(() => {
+          this.toastr.success(
+            'Bekijk je mailbox voor de nieuwe verificatiecode!',
+            'Verificatiecode opnieuw gestuurd!'
+          );
+        }),
+        catchError((err: any) => {
+          this.toastr.error(
+            err.error.message,
+            'Verificatiemail versturen gefaald!'
+          );
+          return of(undefined);
+        })
+      );
   }
 
   validateToken(userData: User): Observable<User | undefined> {

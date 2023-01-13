@@ -91,8 +91,37 @@ export class AuthService {
         password: user.password,
       });
     } else {
-      throw new HttpException('Token is niet geldig!', HttpStatus.BAD_REQUEST);
+      throw new HttpException(
+        'De verificatiecode is ongeldig!',
+        HttpStatus.BAD_REQUEST
+      );
     }
+  }
+
+  async resendVerificationMail(emailAddress: string) {
+    //retrieve user + check if exists
+    const user = await this.userService.findByEmailAddress(emailAddress);
+
+    //delete previous token
+    await this.tokenService.delete(user._id.toString());
+
+    //create new token
+    const token = await this.tokenService.create(
+      'verification',
+      user._id.toString()
+    );
+
+    //send email with new verificationcode
+    await this.mailService.SendVerificationMail(
+      user.emailAddress,
+      user.firstname,
+      token.verificationCode
+    );
+
+    return {
+      status: 200,
+      message: 'Verification Email has been sent!',
+    };
   }
 
   async login(user: any) {

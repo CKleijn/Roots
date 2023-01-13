@@ -44,9 +44,29 @@
           </button>
         </form>
 
-        <p class="mt-2" style="font-size: 14px; cursor: pointer">
+        <p class="mt-2" style="font-size: 12px">
           Heb je geen email ontvangen?
-          <a (click)="resendEmail()" class="text-link">Opnieuw verzenden</a>!
+          <a
+            *ngIf="canResendEmail"
+            (click)="resendEmail()"
+            class="text-link"
+            style="cursor: pointer"
+            >Opnieuw verzenden</a
+          >
+          <a
+            *ngIf="!canResendEmail"
+            style="pointer-events: none; cursor: default; opacity: 0.5"
+            class="text-link"
+            >Opnieuw verzenden</a
+          >
+
+          <span *ngIf="secondsUntilResend !== 0">
+            mogelijk in
+            {{ secondsUntilResend }} seconde<span
+              *ngIf="secondsUntilResend !== 1"
+              >n</span
+            ></span
+          >.
         </p>
       </div>
     </div>
