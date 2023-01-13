@@ -30,7 +30,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent
-  implements OnInit, AfterViewChecked, AfterContentChecked {
+  implements OnInit, AfterViewChecked, AfterContentChecked
+{
   events: any[] = [];
   standardEvents: any = [];
   throttle = 0;
@@ -42,6 +43,7 @@ export class TimelineComponent
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
   filteredTags: Observable<string[]> | undefined;
+  termCtrl = new FormControl('');
   tags: string[] = [];
   allTags: string[] = [];
   fullTags: any[] = [];
@@ -53,7 +55,8 @@ export class TimelineComponent
   searchType: string | undefined;
   searchterm = '';
   allEvents: Event[] = [];
-  filtered: boolean = false;
+  filtered = false;
+  eventTitleOptions: string[] = [];
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -64,7 +67,7 @@ export class TimelineComponent
     private tagService: TagService,
     private dialog: MatDialog,
     private toastr: ToastrService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap
@@ -86,28 +89,30 @@ export class TimelineComponent
           event.eventDate = new Date(event.eventDate);
         });
       });
-    // Get all events
-    this.eventService.getAllEvents().subscribe((events) => {
-      this.allEvents = events;
 
-      events.forEach((event) => {
-        event.eventDate = new Date(event.eventDate);
-      });
-    })
+    this.getAllEvents();
+
+    this.termCtrl.valueChanges.subscribe(() => {
+      this.searchterm.length > 1
+        ? this.searchOnTermFilter()
+        : (this.eventTitleOptions = []);
+    });
 
     this.authService
       .getUserFromLocalStorage()
       .subscribe((user) => (this.loggedInUser = user));
 
     this.organizationId = this.loggedInUser.organization.toString();
-    this.getAllTags().then(() => {
-      this.filteredTags = this.tagCtrl.valueChanges.pipe(
-        startWith(null),
-        map((tag: string | null) =>
-          tag ? this._filter(tag).sort() : this.allTags.slice().sort()
-        )
-      );
-    });
+
+    this.getAllTags();
+
+    this.filteredTags = this.tagCtrl.valueChanges.pipe(
+      startWith(null),
+      map((tag: string | null) =>
+        tag ? this._filter(tag).sort() : this.allTags.slice().sort()
+      )
+    );
+
     // Add default filter values
     this.radioValue = 'and';
     this.searchType = 'terms';
@@ -132,18 +137,16 @@ export class TimelineComponent
 
   ngAfterContentChecked(): void {
     let currentYear = 0;
-    this.events.forEach(
-      (event: { eventDate: Date, _id: string }) => {
-        const date = new Date(event.eventDate);
-        if (date.getFullYear() === currentYear) {
-          document
-            .getElementById('timeline-year-' + event._id)
-            ?.classList.add('d-none');
-        } else {
-          currentYear = date.getFullYear();
-        }
+    this.events.forEach((event: { eventDate: Date; _id: string }) => {
+      const date = new Date(event.eventDate);
+      if (date.getFullYear() === currentYear) {
+        document
+          .getElementById('timeline-year-' + event._id)
+          ?.classList.add('d-none');
+      } else {
+        currentYear = date.getFullYear();
       }
-    );
+    });
   }
 
   onScroll(): void {
@@ -176,6 +179,17 @@ export class TimelineComponent
           });
         }
       });
+  }
+
+  getAllEvents() {
+    // Get all events
+    this.eventService.getAllEvents().subscribe((events) => {
+      this.allEvents = events;
+
+      events.forEach((event) => {
+        event.eventDate = new Date(event.eventDate);
+      });
+    });
   }
 
   add(event: MatChipInputEvent): void {
@@ -212,7 +226,7 @@ export class TimelineComponent
     this.searchType = 'terms';
     this.searchterm = '';
     this.showArchivedEvents = false;
-    this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!')
+    this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!');
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -320,9 +334,25 @@ export class TimelineComponent
     }
     // Show alert with total count of the results found
     const totalResults = this.events.length;
-    (totalResults === 1) ?
-      this.toastr.success(`Er is ${this.events.length} resultaat gevonden!`, 'Tijdlijn gefiltert!') :
-      this.toastr.success(`Er zijn ${this.events.length} resultaten gevonden!`, 'Tijdlijn gefiltert!');
+    totalResults === 1
+      ? this.toastr.success(
+          `Er is ${this.events.length} resultaat gevonden!`,
+          'Tijdlijn gefiltert!'
+        )
+      : this.toastr.success(
+          `Er zijn ${this.events.length} resultaten gevonden!`,
+          'Tijdlijn gefiltert!'
+        );
+  }
+
+  searchOnTermFilter() {
+    this.eventTitleOptions = [];
+    this.allEvents.forEach((event: { title: string; isActive: boolean }) => {
+      ((!this.showArchivedEvents && event.isActive) ||
+        this.showArchivedEvents) &&
+        event.title.includes(this.searchterm) &&
+        this.eventTitleOptions.push(event.title);
+    });
   }
 
   //searching on a term
@@ -346,9 +376,15 @@ export class TimelineComponent
           this.filtered = true;
           // Show alert with total count of the results found
           const totalResults = this.events.length;
-          (totalResults === 1) ?
-            this.toastr.success(`Er is ${this.events.length} resultaat gevonden!`, 'Tijdlijn gefiltert!') :
-            this.toastr.success(`Er zijn ${this.events.length} resultaten gevonden!`, 'Tijdlijn gefiltert!');
+          totalResults === 1
+            ? this.toastr.success(
+                `Er is ${this.events.length} resultaat gevonden!`,
+                'Tijdlijn gefiltert!'
+              )
+            : this.toastr.success(
+                `Er zijn ${this.events.length} resultaten gevonden!`,
+                'Tijdlijn gefiltert!'
+              );
         });
     }
   }
@@ -368,8 +404,7 @@ export class TimelineComponent
       if (data?.showArchivedEvents)
         this.showArchivedEvents = data.showArchivedEvents;
 
-      if (data?.radioValue)
-        this.radioValue = data.radioValue;
+      if (data?.radioValue) this.radioValue = data.radioValue;
     });
   }
 }
