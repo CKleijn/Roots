@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { disconnect, Model } from 'mongoose';
+import { EventSchema } from '../event/event.schema';
 import { CreateOrganizationDTO } from './organization.dto';
 import {
   Organization,

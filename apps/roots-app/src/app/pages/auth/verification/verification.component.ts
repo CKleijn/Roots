@@ -1,7 +1,7 @@
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { ActivatedRoute, Router } from '@angular/router';
-import { NgxOtpInputConfig } from 'ngx-otp-input';
+import { NgxOtpInputComponent, NgxOtpInputConfig } from 'ngx-otp-input';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth.service';
@@ -12,6 +12,7 @@ import { AuthService } from '../auth.service';
   styleUrls: ['./verification.component.scss'],
 })
 export class VerificationComponent implements OnInit, OnDestroy {
+  @ViewChild('ngxotp') ngxOtp: NgxOtpInputComponent | undefined;
   registerForm: FormGroup = new FormGroup({});
   subs: Subscription = new Subscription();
   code = 0;
@@ -96,9 +97,14 @@ export class VerificationComponent implements OnInit, OnDestroy {
         userId: this.userId,
         verificationCode: this.code,
       })
-      .subscribe(() => {
+      .subscribe((user) => {
         this.spinner.hide();
-        this.router.navigate([`/`]);
+
+        if (user) {
+          this.router.navigate([`/`]);
+        } else {
+          this.ngxOtp?.clear();
+        }
       });
   }
 }

@@ -110,24 +110,4 @@ export class TagController {
       throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
     }
   }
-
-  @Public()
-  @Delete(':tagId/organization/:organizationId')
-  async deleteTag(
-    @Param('tagId', ParseObjectIdPipe) tagId: string,
-    @Param('organizationId', ParseObjectIdPipe) organizationId: string
-  ) {
-    try {
-      Logger.log(`Deleting tag with ${tagId} (DELETE)`);
-
-      const tag = await this.tagService.delete(tagId, organizationId);
-
-      return {
-        status: 200,
-        message: 'De tag is successvol verwijdert!',
-      };
-    } catch (error) {
-      throw new HttpException(error.message, HttpStatus.NOT_FOUND);
-    }
-  }
 }

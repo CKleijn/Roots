@@ -106,7 +106,6 @@ export class AuthService {
       );
   }
 
-  //TODO: create resend mail functionality
   resendVerificationMail(emailAddress: string) {
     return this.http
       .post<User>(

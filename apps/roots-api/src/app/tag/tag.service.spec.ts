@@ -3,6 +3,7 @@ import { Test } from '@nestjs/testing';
 import { MongoClient } from 'mongodb';
 import { MongoMemoryServer } from 'mongodb-memory-server';
 import { disconnect, Model, Types } from 'mongoose';
+import { EventSchema } from '../event/event.schema';
 import {
   Organization,
   OrganizationDocument,
@@ -52,6 +53,7 @@ describe('OrganizationService', () => {
         }),
         MongooseModule.forFeature([
           { name: Organization.name, schema: OrganizationSchema },
+          { name: Event.name, schema: EventSchema },
         ]),
       ],
       providers: [TagService],
@@ -292,36 +294,6 @@ describe('OrganizationService', () => {
         await service.update('63bc6596a420d9a3128deb5c', tag);
       } catch (err) {
         expect(err.message).toEqual('Deze tag bestaat niet');
-        expect(err.status).toEqual(404);
-      }
-    });
-  });
-
-  describe('delete', () => {
-    it('should delete a tag', async () => {
-      try {
-        await service.delete(tagTwoId, organizationIdOne);
-        await service.getById(tagTwoId);
-      } catch (err) {
-        expect(err.message).toEqual('Tag niet gevonden');
-        expect(err.status).toEqual(404);
-      }
-    });
-
-    it('should throw exception when given non-existing organization', async () => {
-      try {
-        await service.delete(tagTwoId, '63bc6596a420d9a3128deb5c');
-      } catch (err) {
-        expect(err.message).toEqual('Deze organisatie is niet gevonden');
-        expect(err.status).toEqual(404);
-      }
-    });
-
-    it('should throw exception when given non-existing tag', async () => {
-      try {
-        await service.delete('63bc6596a420d9a3128deb5c', organizationIdOne);
-      } catch (err) {
-        expect(err.message).toEqual('Tag niet gevonden');
         expect(err.status).toEqual(404);
       }
     });

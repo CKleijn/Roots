@@ -5,13 +5,14 @@ import {
   CUSTOM_ELEMENTS_SCHEMA,
   Injectable,
   LOCALE_ID,
-  NgModule,
+  NgModule
 } from '@angular/core';
 import { FormsModule, ReactiveFormsModule } from '@angular/forms';
 import { MatAutocompleteModule } from '@angular/material/autocomplete';
 import { MatChipsModule } from '@angular/material/chips';
 import { MatNativeDateModule } from '@angular/material/core';
 import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatDialogModule } from '@angular/material/dialog';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
@@ -23,7 +24,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   RouterModule,
   RouterStateSnapshot,
-  TitleStrategy,
+  TitleStrategy
 } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { InfiniteScrollModule } from 'ngx-infinite-scroll';
@@ -37,6 +38,7 @@ import { EventDetailComponent } from './pages/event/detail/detail.component';
 import { EventFormComponent } from './pages/event/form/form.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
 import { OrganizationModule } from './pages/organization/organization.module';
+import { FilterComponent } from './pages/timeline/filter/filter.component';
 import { TimelineComponent } from './pages/timeline/timeline.component';
 import { NavComponent } from './shared/nav/nav.component';
 
@@ -64,6 +66,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     EventFormComponent,
     EventDetailComponent,
     OrganizationComponent,
+    FilterComponent,
   ],
   imports: [
     BrowserModule,
@@ -80,6 +83,7 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     AuthModule,
     ReactiveFormsModule,
     MatTableModule,
+    MatDialogModule,
     MatDatepickerModule,
     MatFormFieldModule,
     MatInputModule,
