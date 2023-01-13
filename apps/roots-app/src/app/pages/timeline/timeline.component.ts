@@ -42,6 +42,7 @@ export class TimelineComponent
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
   filteredTags: Observable<string[]> | undefined;
+  termCtrl = new FormControl('');
   tags: string[] = [];
   allTags: string[] = [];
   fullTags: any[] = [];
@@ -52,8 +53,11 @@ export class TimelineComponent
   showArchivedEvents = false;
   searchType: string | undefined;
   searchterm = '';
+  searchRequest = false;
   allEvents: Event[] = [];
   filtered = false;
+  eventTitleOptions: string[] = [];
+  currentYear = 0;
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -74,25 +78,25 @@ export class TimelineComponent
             this.old_records,
             this.new_records,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            params.get('organizationId')!
+            params.get('organizationId')!,
+            this.showArchivedEvents
           )
         )
       )
       .subscribe((events) => {
         this.events = events;
         this.standardEvents = events;
-
         events.forEach((event) => {
           event.eventDate = new Date(event.eventDate);
         });
       });
-    // Get all events
-    this.eventService.getAllEvents().subscribe((events) => {
-      this.allEvents = events;
 
-      events.forEach((event) => {
-        event.eventDate = new Date(event.eventDate);
-      });
+    this.getAllEvents();
+
+    this.termCtrl.valueChanges.subscribe(() => {
+      this.searchterm.length > 1
+        ? this.searchOnTermFilter()
+        : (this.eventTitleOptions = []);
     });
 
     this.authService
@@ -100,14 +104,14 @@ export class TimelineComponent
       .subscribe((user) => (this.loggedInUser = user));
 
     this.organizationId = this.loggedInUser.organization.toString();
-    this.getAllTags().then(() => {
-      this.filteredTags = this.tagCtrl.valueChanges.pipe(
-        startWith(null),
-        map((tag: string | null) =>
-          tag ? this._filter(tag).sort() : this.allTags?.slice().sort()
-        )
-      );
-    });
+    this.getAllTags();
+
+    this.filteredTags = this.tagCtrl.valueChanges.pipe(
+      startWith(null),
+      map((tag: string | null) =>
+        tag ? this._filter(tag).sort() : this.allTags.slice().sort()
+      )
+    );
     // Add default filter values
     this.radioValue = 'and';
     this.searchType = 'terms';
@@ -131,21 +135,22 @@ export class TimelineComponent
   }
 
   ngAfterContentChecked(): void {
-    let currentYear = 0;
-    this.events?.forEach((event: { eventDate: Date; _id: string }) => {
+
+    this.events.forEach((event: { eventDate: Date; _id: string }) => {
       const date = new Date(event.eventDate);
-      if (date.getFullYear() === currentYear) {
+      if (date.getFullYear() === this.currentYear) {
         document
           .getElementById('timeline-year-' + event._id)
           ?.classList.add('d-none');
       } else {
-        currentYear = date.getFullYear();
+
+        this.currentYear = date.getFullYear();
       }
     });
   }
 
   onScroll(): void {
-    this.old_records = this.old_records + this.new_records;
+    this.old_records += this.new_records;
     this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) =>
@@ -153,7 +158,8 @@ export class TimelineComponent
             this.old_records,
             this.new_records,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            params.get('organizationId')!
+            params.get('organizationId')!,
+            this.showArchivedEvents
           )
         )
       )
@@ -174,6 +180,24 @@ export class TimelineComponent
           });
         }
       });
+  }
+
+  getAllEvents(): Event[] {
+    // Get all events
+    this.allEvents = [];
+    this.eventService.getAllEvents().subscribe((events) => {
+      events.forEach((event) => {
+        if (
+          this.showArchivedEvents ||
+          (!this.showArchivedEvents && event.isActive)
+        ) {
+          event.eventDate = new Date(event.eventDate);
+          this.allEvents.push(event);
+        }
+      });
+      return events;
+    });
+    return this.allEvents;
   }
 
   add(event: MatChipInputEvent): void {
@@ -316,6 +340,8 @@ export class TimelineComponent
       // Tell onScroll that filter is used
       this.filtered = true;
     }
+    // Tell HTML this is a searchrequest
+    this.searchRequest = true;
     // Show alert with total count of the results found
     const totalResults = this.events.length;
     totalResults === 1
@@ -327,6 +353,17 @@ export class TimelineComponent
           `Er zijn ${this.events.length} resultaten gevonden!`,
           'Tijdlijn gefiltert!'
         );
+
+  }
+
+  searchOnTermFilter() {
+    this.eventTitleOptions = [];
+    this.allEvents.forEach((event: { title: string; isActive: boolean }) => {
+      ((!this.showArchivedEvents && event.isActive) ||
+        this.showArchivedEvents) &&
+        event.title.includes(this.searchterm) &&
+        this.eventTitleOptions.push(event.title);
+    });
   }
 
   //searching on a term
@@ -334,7 +371,11 @@ export class TimelineComponent
     //if there is an organizationId -> get events by term
     if (this.organizationId) {
       this.eventService
-        .getEventsByTerm(this.searchterm, this.organizationId)
+        .getEventsByTerm(
+          this.searchterm,
+          this.organizationId,
+          this.showArchivedEvents
+        )
         .subscribe((events) => {
           //retrieve the filter events
           let filterEvents = events;
@@ -348,6 +389,8 @@ export class TimelineComponent
           this.events = filterEvents;
           // Tell onScroll that filter is used
           this.filtered = true;
+          // Tell HTML this is a searchrequest
+          this.searchRequest = true;
           // Show alert with total count of the results found
           const totalResults = this.events.length;
           totalResults === 1
@@ -375,10 +418,11 @@ export class TimelineComponent
       },
     });
     dialogref.afterClosed().subscribe((data) => {
-      if (data?.showArchivedEvents)
-        this.showArchivedEvents = data.showArchivedEvents;
+      (data.showArchivedEvents === false || data.showArchivedEvents === true) &&
+        (this.showArchivedEvents = data.showArchivedEvents);
 
-      if (data?.radioValue) this.radioValue = data.radioValue;
+      data.radioValue && (this.radioValue = data.radioValue);
+      this.events = this.getAllEvents();
     });
   }
 }
