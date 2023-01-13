@@ -1,4 +1,5 @@
 /* eslint-disable prefer-const */
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   AfterContentChecked,
   AfterViewChecked,
@@ -8,21 +9,19 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { User } from '@roots/data';
-import { map, Observable, of, startWith } from 'rxjs';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
-import { EventService } from '../event/event.service';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { TagService } from '../tag/tag.service';
-import { Event } from '../event/event.model';
-import { Tag } from '../tag/tag.model';
 import { MatDialog } from '@angular/material/dialog';
-import { FilterComponent } from './filter/filter.component';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
+import { map, Observable, of, startWith, switchMap } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { Event } from '../event/event.model';
+import { EventService } from '../event/event.service';
+import { Tag } from '../tag/tag.model';
+import { TagService } from '../tag/tag.service';
+import { FilterComponent } from './filter/filter.component';
 
 @Component({
   selector: 'roots-timeline',
@@ -30,7 +29,8 @@ import { ToastrService } from 'ngx-toastr';
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent
-  implements OnInit, AfterViewChecked, AfterContentChecked {
+  implements OnInit, AfterViewChecked, AfterContentChecked
+{
   events: any[] = [];
   standardEvents: any = [];
   throttle = 0;
@@ -53,7 +53,7 @@ export class TimelineComponent
   searchType: string | undefined;
   searchterm = '';
   allEvents: Event[] = [];
-  filtered: boolean = false;
+  filtered = false;
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -64,7 +64,7 @@ export class TimelineComponent
     private tagService: TagService,
     private dialog: MatDialog,
     private toastr: ToastrService
-  ) { }
+  ) {}
 
   ngOnInit(): void {
     this.route.paramMap
@@ -93,7 +93,7 @@ export class TimelineComponent
       events.forEach((event) => {
         event.eventDate = new Date(event.eventDate);
       });
-    })
+    });
 
     this.authService
       .getUserFromLocalStorage()
@@ -104,7 +104,7 @@ export class TimelineComponent
       this.filteredTags = this.tagCtrl.valueChanges.pipe(
         startWith(null),
         map((tag: string | null) =>
-          tag ? this._filter(tag).sort() : this.allTags.slice().sort()
+          tag ? this._filter(tag).sort() : this.allTags?.slice().sort()
         )
       );
     });
@@ -132,18 +132,16 @@ export class TimelineComponent
 
   ngAfterContentChecked(): void {
     let currentYear = 0;
-    this.events.forEach(
-      (event: { eventDate: Date, _id: string }) => {
-        const date = new Date(event.eventDate);
-        if (date.getFullYear() === currentYear) {
-          document
-            .getElementById('timeline-year-' + event._id)
-            ?.classList.add('d-none');
-        } else {
-          currentYear = date.getFullYear();
-        }
+    this.events?.forEach((event: { eventDate: Date; _id: string }) => {
+      const date = new Date(event.eventDate);
+      if (date.getFullYear() === currentYear) {
+        document
+          .getElementById('timeline-year-' + event._id)
+          ?.classList.add('d-none');
+      } else {
+        currentYear = date.getFullYear();
       }
-    );
+    });
   }
 
   onScroll(): void {
@@ -212,7 +210,7 @@ export class TimelineComponent
     this.searchType = 'terms';
     this.searchterm = '';
     this.showArchivedEvents = false;
-    this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!')
+    this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!');
   }
 
   selected(event: MatAutocompleteSelectedEvent): void {
@@ -320,9 +318,15 @@ export class TimelineComponent
     }
     // Show alert with total count of the results found
     const totalResults = this.events.length;
-    (totalResults === 1) ?
-      this.toastr.success(`Er is ${this.events.length} resultaat gevonden!`, 'Tijdlijn gefiltert!') :
-      this.toastr.success(`Er zijn ${this.events.length} resultaten gevonden!`, 'Tijdlijn gefiltert!');
+    totalResults === 1
+      ? this.toastr.success(
+          `Er is ${this.events.length} resultaat gevonden!`,
+          'Tijdlijn gefiltert!'
+        )
+      : this.toastr.success(
+          `Er zijn ${this.events.length} resultaten gevonden!`,
+          'Tijdlijn gefiltert!'
+        );
   }
 
   //searching on a term
@@ -346,9 +350,15 @@ export class TimelineComponent
           this.filtered = true;
           // Show alert with total count of the results found
           const totalResults = this.events.length;
-          (totalResults === 1) ?
-            this.toastr.success(`Er is ${this.events.length} resultaat gevonden!`, 'Tijdlijn gefiltert!') :
-            this.toastr.success(`Er zijn ${this.events.length} resultaten gevonden!`, 'Tijdlijn gefiltert!');
+          totalResults === 1
+            ? this.toastr.success(
+                `Er is ${this.events.length} resultaat gevonden!`,
+                'Tijdlijn gefiltert!'
+              )
+            : this.toastr.success(
+                `Er zijn ${this.events.length} resultaten gevonden!`,
+                'Tijdlijn gefiltert!'
+              );
         });
     }
   }
@@ -368,8 +378,7 @@ export class TimelineComponent
       if (data?.showArchivedEvents)
         this.showArchivedEvents = data.showArchivedEvents;
 
-      if (data?.radioValue)
-        this.radioValue = data.radioValue;
+      if (data?.radioValue) this.radioValue = data.radioValue;
     });
   }
 }
