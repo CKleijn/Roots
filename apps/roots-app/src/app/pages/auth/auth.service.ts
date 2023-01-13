@@ -98,6 +98,7 @@ export class AuthService {
             'Je hebt je account succesvol geverifieerd!',
             'Verificatie succesvol!'
           );
+          return user;
         }),
         catchError((err: any) => {
           this.toastr.error(err.error.message, 'Verificatie gefaald!');

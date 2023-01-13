@@ -69,7 +69,10 @@ export class AuthService {
     const user = await this.userService.getById(req.userId);
 
     //retrieve existing token
-    const token = await this.tokenService.getByUserId(req.userId);
+    const token = await this.tokenService.getByUserId(
+      req.userId,
+      'verification'
+    );
 
     //check if token is correct + not expired
     if (
@@ -77,7 +80,7 @@ export class AuthService {
       token.expirationDate > new Date()
     ) {
       //delete used token
-      await this.tokenService.delete(req.userId);
+      await this.tokenService.delete(req.userId, 'verification');
 
       //change isVerified to true
       await this.userService.verifyAccount(req.userId);
@@ -103,7 +106,7 @@ export class AuthService {
     const user = await this.userService.findByEmailAddress(emailAddress);
 
     //delete previous token
-    await this.tokenService.delete(user._id.toString());
+    await this.tokenService.delete(user._id.toString(), 'verification');
 
     //create new token
     const token = await this.tokenService.create(
