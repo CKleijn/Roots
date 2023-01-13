@@ -1,0 +1,31 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-10 col-md-8 col-lg-6 my-5">
+      <div class="card card-auth shadow-lg p-3 px-md-5 py-md-4">
+        <div class="d-flex justify-content-center">
+          <h2>Email is verstuurd</h2>
+        </div>
+        <hr class="form-divider" />
+
+        <p style="margin-top: 15px">
+          Bekijk je mailbox voor het opnieuw instellen van je wachtwoord.
+        </p>
+
+        <p style="margin-bottom: 0; font-size: 14px">
+          <i
+            ><b>Let op:</b><br />De link in de mail is maar 24 uur te
+            gebruiken.</i
+          >
+        </p>
+
+        <div class="form-group">
+          <form (ngSubmit)="onSubmit()">
+            <button class="btn btn-100" type="submit" style="margin-top: 15px">
+              Begrepen
+            </button>
+          </form>
+        </div>
+      </div>
+    </div>
+  </div>
+</div>

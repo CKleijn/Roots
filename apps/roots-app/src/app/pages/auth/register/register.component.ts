@@ -108,6 +108,8 @@ export class RegisterComponent implements OnInit, OnDestroy {
                 });
               }
             });
+          } else {
+            this.spinner.hide();
           }
         });
     }

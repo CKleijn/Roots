@@ -1,4 +1,5 @@
 /* eslint-disable prefer-const */
+import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   AfterContentChecked,
   AfterViewChecked,
@@ -8,21 +9,19 @@ import {
   ViewChild,
 } from '@angular/core';
 import { FormControl } from '@angular/forms';
-import { User } from '@roots/data';
-import { map, Observable, of, startWith } from 'rxjs';
-import { ActivatedRoute, ParamMap } from '@angular/router';
-import { switchMap } from 'rxjs';
-import { AuthService } from '../auth/auth.service';
-import { EventService } from '../event/event.service';
-import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
-import { TagService } from '../tag/tag.service';
-import { Event } from '../event/event.model';
-import { Tag } from '../tag/tag.model';
 import { MatDialog } from '@angular/material/dialog';
-import { FilterComponent } from './filter/filter.component';
+import { ActivatedRoute, ParamMap } from '@angular/router';
+import { User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
+import { map, Observable, of, startWith, switchMap } from 'rxjs';
+import { AuthService } from '../auth/auth.service';
+import { Event } from '../event/event.model';
+import { EventService } from '../event/event.service';
+import { Tag } from '../tag/tag.model';
+import { TagService } from '../tag/tag.service';
+import { FilterComponent } from './filter/filter.component';
 
 @Component({
   selector: 'roots-timeline',
@@ -105,7 +104,6 @@ export class TimelineComponent
       .subscribe((user) => (this.loggedInUser = user));
 
     this.organizationId = this.loggedInUser.organization.toString();
-
     this.getAllTags();
 
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
@@ -114,7 +112,6 @@ export class TimelineComponent
         tag ? this._filter(tag).sort() : this.allTags.slice().sort()
       )
     );
-
     // Add default filter values
     this.radioValue = 'and';
     this.searchType = 'terms';
@@ -138,6 +135,7 @@ export class TimelineComponent
   }
 
   ngAfterContentChecked(): void {
+
     this.events.forEach((event: { eventDate: Date; _id: string }) => {
       const date = new Date(event.eventDate);
       if (date.getFullYear() === this.currentYear) {
@@ -145,6 +143,7 @@ export class TimelineComponent
           .getElementById('timeline-year-' + event._id)
           ?.classList.add('d-none');
       } else {
+
         this.currentYear = date.getFullYear();
       }
     });
@@ -354,6 +353,7 @@ export class TimelineComponent
           `Er zijn ${this.events.length} resultaten gevonden!`,
           'Tijdlijn gefiltert!'
         );
+
   }
 
   searchOnTermFilter() {
