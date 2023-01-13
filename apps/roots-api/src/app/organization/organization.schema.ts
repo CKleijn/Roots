@@ -21,9 +21,9 @@ export class Organization implements IOrganization {
 
   @Prop({
     default: [],
-    type:[EventSchema]
+    type:[Types.ObjectId]
   })
-  events: [Event];
+  events: [Types.ObjectId];
 
   @Prop({
     default: [],

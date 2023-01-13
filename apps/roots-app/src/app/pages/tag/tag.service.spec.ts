@@ -9,9 +9,7 @@ import { TagService } from './tag.service';
 import { Tag } from './tag.model';
 import { Types } from 'mongoose';
 import { Organization, Event, } from '@roots/data';
-import { AuthModule } from '../auth/auth.module';
-import { HttpClientModule } from '@angular/common/http';
-import { ToastrModule, ToastrService } from 'ngx-toastr';
+import { ToastrModule } from 'ngx-toastr';
 
 const organizationId = '6391333037ceb01d296c5981';
 const tagIdOne = new Types.ObjectId('6391333037ceb01d296c5982');
@@ -23,9 +21,6 @@ fdescribe('TagService', () => {
     let dummyTags: Tag[] = [];
     let dummyOrgs: Organization[] = [];
     let dummyEvents: Event[] = [];
-    // let httpClient: HttpClient;
-    // let authService: AuthService;
-    // let toastr: ToastrService;
 
     beforeEach(() => {
         jest.setTimeout(600000);
@@ -39,7 +34,8 @@ fdescribe('TagService', () => {
                     tagIdOne,
                     tagIdTwo
                 ],
-                eventDate: new Date()
+                eventDate: new Date(),
+                isActive: true
             }
         ]
 
@@ -61,7 +57,7 @@ fdescribe('TagService', () => {
                 _id: new Types.ObjectId(organizationId),
                 name:'Mock Name Organization',
                 emailDomain:'organization.mock',
-                events: dummyEvents,
+                events: [dummyEvents[0]._id],
                 tags: [dummyTags[0]._id,dummyTags[1]._id]
             }
         ]
@@ -87,12 +83,20 @@ fdescribe('TagService', () => {
     it('should return tags when calling getAllTagsByOrganization', (done) => {
         service.getAllTagsByOrganization(dummyOrgs[0]._id.toString()).subscribe((tags) => {
             expect(tags.length).toBe(2);
+
             expect(tags.at(0)?._id).toEqual(dummyTags.at(0)?._id);
+            expect(tags.at(0).name).toEqual(dummyTags.at(0)?.name);
+            expect(tags.at(0).organization).toEqual(dummyTags.at(0)?.organization);
+
+            expect(tags.at(1)?._id).toEqual(dummyTags.at(1)?._id);
+            expect(tags.at(1).name).toEqual(dummyTags.at(1)?.name);
+            expect(tags.at(1).organization).toEqual(dummyTags.at(1)?.organization);
 
             done();
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/organizations/' + organizationId);
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/organizations/' + organizationId);
         expect(req.request.method).toBe("GET");
         req.flush(dummyTags);
     });
@@ -107,6 +111,7 @@ fdescribe('TagService', () => {
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/organizations/' + organizationId);
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/organizations/' + organizationId);
         expect(req.request.method).toBe("GET");
         req.flush(dummyTags);
     });
@@ -115,10 +120,19 @@ fdescribe('TagService', () => {
         service.getTagById(dummyOrgs[0].tags[0].toString()).subscribe((tag) => {
             expect(tag.length).toBe(2);
 
+            expect(tag.at(0)?._id).toEqual(dummyTags.at(0)?._id);
+            expect(tag.at(0).name).toEqual(dummyTags.at(0)?.name);
+            expect(tag.at(0).organization).toEqual(dummyTags.at(0)?.organization);
+
+            expect(tag.at(1)?._id).toEqual(dummyTags.at(1)?._id);
+            expect(tag.at(1).name).toEqual(dummyTags.at(1)?.name);
+            expect(tag.at(1).organization).toEqual(dummyTags.at(1)?.organization);
+
             done();
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/' + dummyOrgs[0].tags[0].toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/' + dummyOrgs[0].tags[0].toString());
         expect(req.request.method).toBe("GET");
         req.flush(dummyTags);
     });
@@ -133,41 +147,100 @@ fdescribe('TagService', () => {
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/' + undefined);
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/' + undefined);
         expect(req.request.method).toBe("GET");
         req.flush(dummyTags);
     });
 
     it('should return tag when calling postTagInEvent', (done) => {
         service.postTagInEvent(dummyOrgs[0].tags[0],dummyOrgs[0]._id.toString(),dummyEvents[0]._id.toString()).subscribe((tag) => {
-            expect(tag).toBeDefined();
+            expect(tag.length).toBe(2);
+            
+            expect(tag.at(0)?._id).toEqual(dummyTags.at(0)?._id);
+            expect(tag.at(0).name).toEqual(dummyTags.at(0)?.name);
+            expect(tag.at(0).organization).toEqual(dummyTags.at(0)?.organization);
+
+            expect(tag.at(1)?._id).toEqual(dummyTags.at(1)?._id);
+            expect(tag.at(1).name).toEqual(dummyTags.at(1)?.name);
+            expect(tag.at(1).organization).toEqual(dummyTags.at(1)?.organization);
 
             done();
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString() + '/events/' + dummyEvents[0]._id.toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString() + '/events/' + dummyEvents[0]._id.toString());
         expect(req.request.method).toBe("POST");
         req.flush(dummyTags);
     });
+
+    it('should return no tag when calling postTagInEvent', (done) => {
+        dummyTags = [];
+
+        service.postTagInEvent(dummyOrgs[0].tags[0],dummyOrgs[0]._id.toString(),dummyEvents[0]._id.toString()).subscribe((tag) => {
+            expect(tag.length).toBe(0);
+
+            done();
+        });
+
+        const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString() + '/events/' + dummyEvents[0]._id.toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString() + '/events/' + dummyEvents[0]._id.toString());
+        expect(req.request.method).toBe("POST");
+        req.flush(dummyTags);
+    });
+
     it('should return tag when calling postTagInOrganization', (done) => {
         service.postTagInOrganization(dummyOrgs[0].tags[0],dummyOrgs[0]._id.toString()).subscribe((tag) => {
-            expect(tag).toBeDefined();
+            expect(tag.length).toBe(2);
+            
+            expect(tag.at(0)?._id).toEqual(dummyTags.at(0)?._id);
+            expect(tag.at(0).name).toEqual(dummyTags.at(0)?.name);
+            expect(tag.at(0).organization).toEqual(dummyTags.at(0)?.organization);
+
+            expect(tag.at(1)?._id).toEqual(dummyTags.at(1)?._id);
+            expect(tag.at(1).name).toEqual(dummyTags.at(1)?.name);
+            expect(tag.at(1).organization).toEqual(dummyTags.at(1)?.organization);
+
             done();
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString());
+        expect(req.request.method).toBe("POST");
+        req.flush(dummyTags);
+    });
+
+    it('should return no tag when calling postTagInOrganization', (done) => {
+        dummyTags = [];
+
+        service.postTagInOrganization(dummyOrgs[0].tags[0],dummyOrgs[0]._id.toString()).subscribe((tag) => {
+            expect(tag.length).toBe(0);
+
+            done();
+        });
+        
+        const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/new/organizations/' + dummyOrgs[0]._id.toString());
         expect(req.request.method).toBe("POST");
         req.flush(dummyTags);
     });
     
     it('should return tag when calling putTagInEvent', (done) => {
         service.putTag(dummyTags[0], dummyTags[0]._id.toString()).subscribe((tag) => {
-            expect(tag).toBeDefined();
             expect(tag.length).toBe(2);
+            
+            expect(tag.at(0)?._id).toEqual(dummyTags.at(0)?._id);
+            expect(tag.at(0).name).toEqual(dummyTags.at(0)?.name);
+            expect(tag.at(0).organization).toEqual(dummyTags.at(0)?.organization);
+
+            expect(tag.at(1)?._id).toEqual(dummyTags.at(1)?._id);
+            expect(tag.at(1).name).toEqual(dummyTags.at(1)?.name);
+            expect(tag.at(1).organization).toEqual(dummyTags.at(1)?.organization);
 
             done();
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/' + dummyTags[0]._id.toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/' + dummyTags[0]._id.toString());
         expect(req.request.method).toBe("PUT");
         req.flush(dummyTags);
     });
@@ -182,6 +255,7 @@ fdescribe('TagService', () => {
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/' + undefined);
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/' + undefined);
         expect(req.request.method).toBe("PUT");
         req.flush(dummyTags);
     });
@@ -196,18 +270,28 @@ fdescribe('TagService', () => {
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/' + dummyTags[0]?.toString() + "/organization/" + dummyOrgs[0]?._id.toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/' + dummyTags[0]?.toString() + "/organization/" + dummyOrgs[0]?._id.toString());
         expect(req.request.method).toBe("DELETE");
         req.flush(dummyTags);
     });
 
     it('should return list when delete call has been made', (done) => {
         service.deleteTag(dummyTags[0]?.toString(), dummyOrgs[0]?._id.toString()).subscribe((tag) => {
-            expect(tag.length).toBe(2)
+            expect(tag.length).toBe(2);
+            
+            expect(tag.at(0)?._id).toEqual(dummyTags.at(0)?._id);
+            expect(tag.at(0).name).toEqual(dummyTags.at(0)?.name);
+            expect(tag.at(0).organization).toEqual(dummyTags.at(0)?.organization);
+
+            expect(tag.at(1)?._id).toEqual(dummyTags.at(1)?._id);
+            expect(tag.at(1).name).toEqual(dummyTags.at(1)?.name);
+            expect(tag.at(1).organization).toEqual(dummyTags.at(1)?.organization);
 
             done();
         });
 
         const req = httpMock.expectOne(environment.SERVER_API_URL + '/tags/' + dummyTags[0]?.toString() + "/organization/" + dummyOrgs[0]?._id.toString());
+        expect(req.request.url).toBe(environment.SERVER_API_URL + '/tags/' + dummyTags[0]?.toString() + "/organization/" + dummyOrgs[0]?._id.toString());
         expect(req.request.method).toBe("DELETE");
         req.flush(dummyTags);
     });

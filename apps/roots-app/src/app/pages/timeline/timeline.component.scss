@@ -23,16 +23,16 @@ $background-color: #E8ECFF;
 //area around search bar, centered
 .search-form-container {
   position: absolute;
-  left: 50%;
-  width: 80%;
+  width: 100%;
   top: 30%;
-  height: 50px;
-  transform: translateX(-50%);
   background-color: transparent;
 }
 
 .input-group {
-  width: 40% !important;
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
 }
 
 .search-title {
@@ -40,19 +40,25 @@ $background-color: #E8ECFF;
   color: #ffffff;
 }
 
-//search bar 
+.searchbar-container {
+  width: 550px;
+  max-height: 40px;
+}
+
 .search-searchbar {
+  margin: 0;
   border: none;
   background-color: $secondary-color;
-  width: 40% !important;
-  height: 40px;
+  width: 100%;
+  height: 41px;
   font-size: 20px;
   color: #000;
 
   //search bar on mouse focus
   &:focus {
     outline: none;
-    caret-color: $secondary-color;
+    border: none;
+    caret-color: #000;
   }
 }
 
@@ -61,14 +67,89 @@ $background-color: #E8ECFF;
   width: 40px;
   height: 40px;
   border: none;
-  background-color: $secondary-color;
   padding-left: 5px;
+  background-color: $secondary-color;
+}
+
+.search-submit-dropdown {
+  @extend .search-submit;
+  width: 100px;
 }
 
 //button icon
 .search-submit-icon {
   height: 20px;
   width: 20px;
+}
+
+.search-submit-dropdown-ul {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+ul {
+  background-color: #FFF;
+  vertical-align: middle;
+  display: inline-block;
+  z-index: 10;
+}
+
+ul li {
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none;
+  text-decoration: none;
+  position: relative;
+}
+
+li a {
+  color: black;
+}
+
+li:hover {
+  cursor: pointer;
+}
+
+ul li ul {
+  padding: 0 !important;
+  margin: 0 !important;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  display: none;
+  background: none;
+  width: 80px;
+  height: 40px;
+}
+
+ul li:hover>ul {
+  visibility: visible;
+  opacity: 1;
+  display: block;
+}
+
+ul li ul li:hover {
+  color: $primary-color;
+}
+
+ul li ul li {
+  margin: 5px -90px -6px -8px !important;
+  padding: 6px 90px 6px 8px !important;
+  transition: all 0.5s ease;
+  text-align: start;
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  background-color: #FFF;
+}
+
+.input-group-prepend {
+  height: 41px !important;
+  background-color: #fff;
+}
+
+.sss {
+  z-index: -1;
 }
 
 //area around timeline
@@ -171,6 +252,12 @@ $background-color: #E8ECFF;
       border-bottom: 15px solid transparent;
     }
   }
+
+
+  >.timeline-icon-archived {
+    @extend .timeline-icon;
+    opacity: 70%;
+  }
 }
 
 //items placed left of the timeline
@@ -182,6 +269,7 @@ $background-color: #E8ECFF;
     right: 100%;
     border-left: 15px solid #FFF;
   }
+
 }
 
 //items placed right of the timeline
@@ -215,6 +303,13 @@ $background-color: #E8ECFF;
   background-color: #FFF;
   position: relative;
   font-size: 15px;
+  border: 3px solid;
+  border-color: white;
+}
+
+.timeline-textbox-archived {
+  @extend .timeline-textbox;
+  opacity: 70%;
 }
 
 .detail-button {
@@ -254,10 +349,9 @@ $background-color: #E8ECFF;
 //changes values when using smaller screen
 @media screen and (max-width: 800px) {
 
-  .search-searchbar {
-    width: 80%;
+  .searchbar-container {
+    width: 250px;
   }
-
 
   .timeline {
     margin: 50px auto 50px 30px;

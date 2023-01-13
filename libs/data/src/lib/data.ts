@@ -13,7 +13,7 @@ export interface IUser {
 export interface IOrganization {
   name: string;
   emailDomain: string;
-  events: IEvent[];
+  events: Types.ObjectId[];
 }
 
 export interface IEvent {
@@ -28,6 +28,11 @@ export interface ITag {
   name: string;
 }
 
+export interface IToken {
+  type: string;
+  expirationDate: Date;
+}
+
 // CLASSES
 export class User implements IUser {
   _id = new Types.ObjectId();
@@ -39,18 +44,19 @@ export class User implements IUser {
   organization = new Types.ObjectId();
   initials = '';
   isActive = true;
+  isVerified = true;
 }
 
 export class Organization implements IOrganization {
   _id = new Types.ObjectId();
   name = '';
   emailDomain = '';
-  events = [] as Event[];
+  events = [] as Types.ObjectId[];
   tags = [] as Types.ObjectId[]
 }
 
 export class Event implements IEvent {
-  title= '';
+  title = '';
   description = '';
   content = '';
   eventDate = new Date();
@@ -61,6 +67,6 @@ export class Event implements IEvent {
 
 export class Tag implements ITag {
   _id = new Types.ObjectId();
-  name = "";
+  name = '';
   organization = new Types.ObjectId();
 }

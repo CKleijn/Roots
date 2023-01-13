@@ -1,0 +1,110 @@
+$primary-color: #FBA92C;
+
+.filter-outline {
+
+  >.filter-top-button-container {
+    position: relative;
+
+    >.filter-x-button {
+      position: absolute;
+      right: 10px;
+      top: 10px;
+      background-color: transparent;
+      border: none;
+      color: #000;
+      font-size: 30px;
+      height: 50px;
+      width: 50px;
+      line-height: 1.1;
+
+      &:hover {
+        border: 2px solid rgba(0, 0, 0, 0.1);
+        border-radius: 4px;
+      }
+    }
+  }
+}
+
+.filter-container {
+  width: 100%;
+  height: 100%;
+  padding: 20px 30px;
+}
+
+.filter-content {
+  display: grid;
+  grid-template-columns: 1;
+}
+
+.filter-row {
+  display: block;
+  margin: 15px 10px;
+
+  >.filter-button-container {
+    text-align: center;
+  }
+}
+
+.filter-title {
+  font-size: 41px;
+}
+
+.filter-subtitle {
+  font-size: 22px;
+  margin: 0 0 7px 0;
+  padding: 0;
+}
+
+.filter-subtext {
+  margin: 3px 0 2px 0;
+  padding: 0;
+  font-size: 15px;
+}
+
+.mat-mdc-radio-button.mat-accent {
+  --mdc-radio-selected-focus-icon-color: $primary-color #000;
+  --mdc-radio-selected-hover-icon-color: $primary-color #000;
+  --mdc-radio-selected-icon-color: $primary-color #000;
+  --mdc-radio-selected-pressed-icon-color: $primary-color #000;
+  --mat-mdc-radio-checked-ripple-color: $primary-color #000;
+}
+
+.filter-data-switch-label {
+  padding: 0 0 0 10px;
+  font-size: 1rem;
+  line-height: 1.1;
+  display: grid;
+  grid-template-columns: 1em auto;
+  gap: 0.5em;
+}
+
+input[type=checkbox] {
+  -webkit-appearance: none;
+  appearance: none;
+  background-color: var(#000);
+  width: 1.15em;
+  height: 1.15em;
+  border: 0.15em solid currentColor;
+  border-radius: 0.15em;
+  transform: translateY(-0.075em);
+  display: grid;
+  place-content: center;
+}
+
+input[type=checkbox]::before {
+  content: "";
+  width: 0.65em;
+  height: 0.65em;
+  clip-path: polygon(14% 44%, 0 65%, 50% 100%, 100% 16%, 80% 0%, 43% 62%);
+  transform: scale(0);
+  box-shadow: inset 1em 1em var(--form-control-color);
+  background-color: CanvasText;
+}
+
+input[type=checkbox]:checked::before {
+  transform: scale(1);
+}
+
+input[type=checkbox]:hover {
+  cursor: pointer;
+}

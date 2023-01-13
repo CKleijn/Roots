@@ -4,7 +4,7 @@
 @import 'quill-emoji/dist/quill-emoji.css';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-$primary-color: #FBA92C;
+$primary-color: #fba92c;
 $secondary-color: #ffffff;
 $background-color: #e6e6e6;
 $white: #ffffff;
@@ -181,8 +181,9 @@ body {
 
   .ql-tooltip {
     top: 0% !important;
-    left: 52% !important;
+    left: 38% !important;
     right: 1% !important;
+    text-align: center;
   }
 
   .ql-tooltip[data-mode='video']::before {
@@ -231,6 +232,10 @@ body {
 
   .ql-tooltip > input::placeholder {
     color: $white !important;
+  }
+
+  .quill-upload-progress {
+    opacity: 1 !important;
   }
 
   //Checkbox
@@ -307,18 +312,5 @@ body {
     padding-right: 10px;
     padding-top: 5px;
     padding-bottom: 5px;
-  }
-
-  // Searchbar
-  .search-searchbar:focus-visible {
-    border-bottom: 2px solid #fff !important;
-  }
-
-  .search-form-container {
-    width: 100% !important;
-  }
-
-  .bi-info-circle::before {
-    color: $primary-color;
   }
 }

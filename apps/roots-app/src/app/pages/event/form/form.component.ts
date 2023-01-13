@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as QuillNamespace from 'quill';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
@@ -9,18 +9,20 @@ import { map, Observable, startWith, Subscription } from 'rxjs';
 import { AuthService } from '../../auth/auth.service';
 import { Event } from '../event.model';
 import { EventService } from '../event.service';
-import { Tag } from '../../tag/tag.model';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent, MatChipEditedEvent } from '@angular/material/chips';
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import { User } from '@roots/data';
 import { TagService } from '../../tag/tag.service';
+import { VideoHandler, Options } from 'ngx-quill-upload';
+import { ToastrService } from 'ngx-toastr';
 
 let Quill: any = QuillNamespace;
 const ImageResize = require('quill-image-resize-module');
 const Emoji = require('quill-emoji');
 Quill.register('modules/imageResize', ImageResize.default);
 Quill.register("modules/emoji", Emoji.default);
+Quill.register('modules/videoHandler', VideoHandler);
 
 @Component({
   selector: 'roots-event-form',
@@ -35,12 +37,13 @@ export class EventFormComponent implements OnInit, OnDestroy {
   updateSubscription: Subscription | undefined;
   getAllTagsSubscription: Subscription | undefined;
   loggedInUserSubscription: Subscription | undefined;
-
   loggedInUser$!: Observable<User | undefined>
   eventId: string | undefined;
   organizationId: string | undefined;
   organizationIdString: string | undefined;
   editMode = false;
+  needContext = false;
+  prevEvent: string | undefined = "";
   error: string | undefined;
   event: Event = new Event();
   eventForm: FormGroup = new FormGroup({});
@@ -56,12 +59,40 @@ export class EventFormComponent implements OnInit, OnDestroy {
       [{ 'header': [1, 2, 3, 4, 5, 6, false] }],
       [{ 'font': [] }],
       [{ 'align': [] }],
-      ['link', 'image', 'video'],
       ['emoji'],
+      ['link', 'image', 'video'],
     ],
     imageResize: {
       modules: ['Resize', 'DisplaySize']
     },
+    videoHandler: {
+      upload: (file: any) => {
+        return new Promise((resolve, reject) => {
+          if (file.type === 'video/mpeg' || file.type === 'video/mp4') {
+            if (file.size < 15000000) {
+              this.eventForm.controls['content'].setErrors({ needContext: true });
+              this.needContext = true;
+              resolve(file);
+            } else {
+              scroll(0,0);
+              this.toastrService.error(
+                `Deze video overschreid de maximale uploadgrootte van 15 MB!`,
+                'Video uploaden mislukt!'
+              );
+              reject(`Deze video overschreid de maximale uploadgrootte van 15 MB!`);
+            }
+          } else {
+            scroll(0,0);
+            this.toastrService.error(
+              `Deze video type wordt niet ondersteund!`,
+              'Video uploaden mislukt!'
+            );
+            reject('Deze video type wordt niet ondersteund!');
+          }
+        });
+      },
+      accepts: ['mpeg', 'mp4']
+    } as Options,
     'emoji-toolbar': true,
   }
 
@@ -83,6 +114,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private dateAdapter: DateAdapter<Date>,
     private tagService: TagService,
+    private toastrService: ToastrService
   ) {
     this.dateAdapter.setLocale('nl-NL');
   }
@@ -95,16 +127,6 @@ export class EventFormComponent implements OnInit, OnDestroy {
       this.organizationIdString = p?.organization.toString();
     });
 
-    this.getAllTags().then(() => {
-      this.filteredTags = this.tagCtrl.valueChanges.pipe(
-        startWith(null),
-        map((tag: string | null) =>
-          tag ? this._filter(tag)?.sort() : this.allTags?.slice().sort()
-        )
-      );
-    }
-    );
-
     this.eventForm = new FormGroup({
       title: new FormControl(null, [Validators.required]),
       description: new FormControl(null, [Validators.required]),
@@ -116,14 +138,30 @@ export class EventFormComponent implements OnInit, OnDestroy {
     if (this.eventId)
       this.editMode = true;
 
+    this.getAllTags().then(() => {
+      this.filteredTags = this.tagCtrl.valueChanges.pipe(
+        startWith(null),
+        map((tag: string | null) => {
+          return tag ? this._filter(tag)?.sort() : this.allTags?.slice().sort()
+        }
+        )
+      );
+    });
+
     if (this.editMode) {
       this.eventSubscription = this.eventService.getEventById(this.eventId as string).subscribe({
-        next: (event) => {
+        next: async (event) => {
           this.event = {
             ...event
           }
 
-          this.getCurrentTags();
+          await this.getCurrentTags();
+
+          for await (const tag of this.allTags) {
+            if (this.tags.includes(tag)) {
+              this.filteredTags = this.filteredTags?.pipe(map(tags => tags?.filter(t => t !== tag)))
+            }
+          }
 
           this.eventForm.patchValue({
             title: this.event.title,
@@ -134,6 +172,16 @@ export class EventFormComponent implements OnInit, OnDestroy {
         },
         error: () => this.router.navigate([`organizations/${this.organizationId}/timeline`]),
       })
+    }
+  }
+
+  onChange(event: any) {
+    if (this.needContext) {
+      if (event !== this.prevEvent) {
+        this.needContext = false;
+      } else {
+        this.prevEvent = event;
+      }
     }
   }
 
@@ -160,17 +208,24 @@ export class EventFormComponent implements OnInit, OnDestroy {
       error: (error) => this.error = error.message
     });
 
-    if (!this.editMode) {
-      this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
-        next: () => this.router.navigate([`organizations/${this.organizationId}/timeline`]),
-        error: (error) => this.error = error.message
-      })
-    }
-    else {
-      this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
-        next: () => this.router.navigate([`organizations/${this.organizationId}/events/${this.eventId}`]),
-        error: (error) => this.error = error.message
-      })
+
+    if (!this.needContext) {
+      if (!this.editMode) {
+        this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
+          error: (error) => this.error = error.message
+        })
+      }
+      else {
+        this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
+          error: (error) => this.error = error.message
+        })
+      }
+    } else {
+      scroll(0,0);
+      this.toastrService.error(
+        `Deze gebeurtenis voldoet nog niet aan alle validatie!`,
+        'Validatie mislukt!'
+      );
     }
   }
 
@@ -187,8 +242,11 @@ export class EventFormComponent implements OnInit, OnDestroy {
   add(tag: MatChipInputEvent): void {
     const value = (tag.value || '').trim();
 
-    if (value) {
-      this.tags?.push(value);
+    if (this.tags?.length > 0) {
+      if (!this.tags?.includes(value))
+        this.tags.push(value);
+    } else {
+      this.tags.push(value);
     }
 
     tag.chipInput.clear();

@@ -19,7 +19,7 @@ export class EventController {
     @Public()
     @Get(':id/filter')
     async getEventsPerPage(@Param('id') organizationId: string, @Query() query): Promise<Event[]> {
-    Logger.log('Retrieving events per page (READ)');
+    Logger.log('Retrieving events with filter (READ)');
         return await this.eventService.getPerPage(query, organizationId);
     }
 
@@ -71,4 +71,18 @@ export class EventController {
             throw new HttpException(error.message, HttpStatus.NOT_MODIFIED)
         }
     }
+
+    @Public()
+    @Put(':companyId/:eventId/archive')
+    async archiveEvent(@Param('companyId') companyId: string, @Param('eventId') eventId: string, @Query('isActive') isActive: boolean): Promise<Event> {
+        try {
+            Logger.log (isActive ? 'Archiveren' : 'Dearchiveren' + ` event  from ${eventId} from company ${companyId}`);
+
+            return await this.eventService.archive(eventId,isActive);
+
+        } catch (error) {
+            throw new HttpException(error.message, HttpStatus.NOT_MODIFIED);
+        }
+    }
+
 }

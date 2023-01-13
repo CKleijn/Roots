@@ -21,6 +21,7 @@
         ],
         "styles": [
           "apps/roots-app/src/styles.scss",
+          "node_modules/ngx-spinner/animations/square-jelly-box.css",
           "node_modules/ngx-toastr/toastr.css",
           "./node_modules/quill/dist/quill.core.css",
           "./node_modules/quill/dist/quill.bubble.css",

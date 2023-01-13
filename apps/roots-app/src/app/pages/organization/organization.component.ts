@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Organization, User } from '@roots/data';
 import { Types } from 'mongoose';
+import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Tag } from '../tag/tag.model';
@@ -38,7 +39,14 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   deleteTagId!: string
   deleteTagName!: string
 
-  constructor(private organizationService: OrganizationService, private authService: AuthService, private tagService: TagService, private modalService: NgbModal, private router: Router) { }
+  constructor(
+    private organizationService: OrganizationService,
+    private authService: AuthService,
+    private tagService: TagService,
+    private modalService: NgbModal,
+    private router: Router,
+    private toastrService: ToastrService
+  ) { }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.getUserFromLocalStorage()
@@ -87,15 +95,26 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   }
 
   async editTag(newTag: string) {
-    let updateTag: Tag = {
-      _id: new Types.ObjectId(this.editTagId),
-      name: newTag,
-      organization: this.loggedInUser.organization.toString()
-    }
-    this.editSubscription = this.tagService.putTag(updateTag, this.editTagId).subscribe();
-    this.modalService.dismissAll();
+    let duplicate: boolean = false;
 
-    this.ngOnInit();
+    for await (const tag of this.tags) {
+      if (tag.name === newTag)
+        duplicate = true;
+    }
+
+    if (!duplicate) {
+      let updateTag: Tag = {
+        _id: new Types.ObjectId(this.editTagId),
+        name: newTag,
+        organization: this.loggedInUser.organization.toString()
+      }
+      this.editSubscription = this.tagService.putTag(updateTag, this.editTagId).subscribe();
+      this.modalService.dismissAll();
+
+      this.ngOnInit();
+    } else {
+      this.toastrService.error('De gegeven tag naam is al in gebruik!', 'Tag niet gewijzigd!')
+    }
   }
 
   deleteTag() {

@@ -45,13 +45,15 @@ export class AuthService {
       )
       .pipe(
         map((user) => {
-          this.saveUserToLocalStorage(user);
-          this.currentUser$.next(user);
+          if (user.isVerified) {
+            this.saveUserToLocalStorage(user);
+            this.currentUser$.next(user);
 
-          this.toastr.success(
-            'Je bent succesvol ingelogd!',
-            'Inloggen succesvol!'
-          );
+            this.toastr.success(
+              'Je bent succesvol ingelogd!',
+              'Inloggen succesvol!'
+            );
+          }
 
           return user;
         }),
@@ -70,10 +72,8 @@ export class AuthService {
       })
       .pipe(
         map((user) => {
-          this.saveUserToLocalStorage(user);
-          this.currentUser$.next(user);
           this.toastr.success(
-            'Je bent succesvol geregistreerd!',
+            'Controleer je mailbox voor de verificatiecode!',
             'Registratie succesvol!'
           );
           return user;
@@ -85,12 +85,60 @@ export class AuthService {
       );
   }
 
+  verifyAccount(userData: any) {
+    return this.http
+      .post<User>(`${environment.SERVER_API_URL}/auth/verify`, userData, {
+        headers: this.headers,
+      })
+      .pipe(
+        map((user) => {
+          this.saveUserToLocalStorage(user);
+          this.currentUser$.next(user);
+          this.toastr.success(
+            'Je hebt je account succesvol geverifieerd!',
+            'Verificatie succesvol!'
+          );
+          return user;
+        }),
+        catchError((err: any) => {
+          this.toastr.error(err.error.message, 'Verificatie gefaald!');
+          return of(undefined);
+        })
+      );
+  }
+
+  resendVerificationMail(emailAddress: string) {
+    return this.http
+      .post<User>(
+        `${environment.SERVER_API_URL}/auth/resend`,
+        { emailAddress },
+        {
+          headers: this.headers,
+        }
+      )
+      .pipe(
+        map(() => {
+          this.toastr.success(
+            'Bekijk je mailbox voor de nieuwe verificatiecode!',
+            'Verificatiecode opnieuw gestuurd!'
+          );
+        }),
+        catchError((err: any) => {
+          this.toastr.error(
+            err.error.message,
+            'Verificatiemail versturen gefaald!'
+          );
+          return of(undefined);
+        })
+      );
+  }
+
   validateToken(userData: User): Observable<User | undefined> {
     const url = `${environment.SERVER_API_URL}/auth/profile`;
     const httpOptions = {
       headers: new HttpHeaders({
         'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + userData.access_token,
+        Authorization: 'Bearer ' + userData?.access_token,
       }),
     };
     return this.http.get<any>(url, httpOptions).pipe(
@@ -116,10 +164,11 @@ export class AuthService {
   getUserFromLocalStorage(): Observable<User> {
     // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
     const localUser = JSON.parse(localStorage.getItem(this.CURRENT_USER)!);
+
     return of(localUser);
   }
 
-  private saveUserToLocalStorage(user: User): void {
+  saveUserToLocalStorage(user: User): void {
     localStorage.setItem(this.CURRENT_USER, JSON.stringify(user));
   }
 

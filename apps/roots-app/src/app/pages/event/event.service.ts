@@ -7,15 +7,18 @@ import { Observable, catchError, map, of } from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { Event } from '../event/event.model'
 import { ToastrService } from 'ngx-toastr';
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: 'root',
 })
 export class EventService {
+
   constructor(
     private httpClient: HttpClient,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   getAllEvents(): Observable<Event[]> {
@@ -24,13 +27,17 @@ export class EventService {
     ) as Observable<Event[]>;
   }
 
-    getEventsPerPage(old_records: number, new_records: number, organizationId: string): Observable<any[]> {
-        return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<any[]>;
-    }
+  getEventsPerPage(old_records: number, new_records: number, organizationId: string): Observable<any[]> {
+    return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<any[]>;
+  }
 
-    getEventById(eventId: string): Observable<Event> {
-        return this.httpClient.get(environment.SERVER_API_URL + '/events/' + eventId) as Observable<Event>;
-    }
+  getEventsByTerm(term: string, organizationId: string): Observable<any> {
+    return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?term=${term}`)
+  }
+
+  getEventById(eventId: string): Observable<Event> {
+    return this.httpClient.get(environment.SERVER_API_URL + '/events/' + eventId) as Observable<Event>;
+  }
 
   postEvent(event: Event, companyId: string): Observable<any> {
     return this.httpClient
@@ -40,16 +47,20 @@ export class EventService {
         this.authService.getHttpOptions()
       )
       .pipe(
-        map((event) => {
+        map(() => {
           this.toastr.success(
             'Gebeurtenis is succesvol aangemaakt!',
             'Gebeurtenis aangemaakt!'
           );
-          return event;
+          return this.router.navigate([`organizations/${companyId}/timeline`]);
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          this.toastr.error(err.error.message, 'Gebeurtenis niet aangemaakt!');
+          if(err.error.message === `The value of \"offset\" is out of range. It must be >= 0 && <= 17825792. Received 17825794`) {
+            this.toastr.error('De inhoud van deze gebeurtenis overschreid de maximale grootte van 15 MB!', 'Gebeurtenis niet aangemaakt!');
+          } else {
+            this.toastr.error(err.error.message, 'Gebeurtenis niet aangemaakt!');
+          }
           return of(undefined);
         })
         // eslint-disable-next-line @typescript-eslint/ban-types
@@ -69,19 +80,53 @@ export class EventService {
         this.authService.getHttpOptions()
       )
       .pipe(
-        map((event) => {
+        map(() => {
           this.toastr.success(
             'Gebeurtenis is succesvol aangepast!',
             'Gebeurtenis aangepast!'
           );
-          return event;
+          return this.router.navigate([`organizations/${companyId}/events/${eventId}`]);
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          this.toastr.error(err.error.message, 'Gebeurtenis niet aangepast!');
+          if(err.status === 304) {
+            this.toastr.error('De inhoud van deze gebeurtenis overschreid de maximale grootte van 15 MB!', 'Gebeurtenis niet aangemaakt!');
+          } else {
+            this.toastr.error(err.error.message, 'Gebeurtenis niet aangemaakt!');
+          }
           return of(undefined);
         })
         // eslint-disable-next-line @typescript-eslint/ban-types
       ) as Observable<Object>;
   }
+  
+  archiveEvent(isActive: boolean, eventId: string, companyId: string): Observable<any> {
+    return this.httpClient
+      .put(
+        environment.SERVER_API_URL +
+          '/events/' +
+          companyId +
+          '/' +
+          eventId +
+          '/archive?isActive=' +
+          isActive,
+          
+        this.authService.getHttpOptions()
+      )
+      .pipe(
+        map((event) => {
+          this.toastr.success(
+            'Gebeurtenis is succesvol ' + (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!')
+          );
+          return event;
+        }),
+        catchError((err: any) => {
+          window.scroll(0, 0);
+          this.toastr.error(err.error.message, 'Gebeurtenis niet ' + (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!'));
+          return of(undefined);
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-types
+      ) as Observable<Object>;
+  }
+
 }

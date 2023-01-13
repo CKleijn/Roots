@@ -18,7 +18,7 @@ export class OrganizationService {
 
     if (!organization)
       throw new HttpException(
-        'Organisatie bestaat niet!',
+        'Er bestaat geen organisatie met het opgegeven email domein!',
         HttpStatus.NOT_FOUND
       );
 
@@ -41,7 +41,9 @@ export class OrganizationService {
     return await this.organizationModel.find();
   }
 
-  async create(createOrganizationDTO : CreateOrganizationDTO): Promise<Organization> {
+  async create(
+    createOrganizationDTO: CreateOrganizationDTO
+  ): Promise<Organization> {
     await this.validate(createOrganizationDTO);
 
     const newOrganization = new this.organizationModel({

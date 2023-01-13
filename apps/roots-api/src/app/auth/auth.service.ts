@@ -1,7 +1,11 @@
 import { HttpException, HttpStatus, Injectable } from '@nestjs/common';
 import { JwtService } from '@nestjs/jwt';
 import * as bcrypt from 'bcryptjs';
-import { CreateUserDto } from '../user/user.dto';
+import { MailService } from '../providers/email/email.service';
+import { ParseObjectIdPipe } from '../shared/pipes/ParseObjectIdPipe';
+import { Token } from '../token/token.schema';
+import { TokenService } from '../token/token.service';
+import { UserDto } from '../user/user.dto';
 import { User } from '../user/user.schema';
 import { UserService } from '../user/user.service';
 import { jwtConstants } from './constants';
@@ -10,7 +14,9 @@ import { jwtConstants } from './constants';
 export class AuthService {
   constructor(
     private userService: UserService,
-    private jwtService: JwtService
+    private jwtService: JwtService,
+    private mailService: MailService,
+    private tokenService: TokenService
   ) {}
 
   async validateUser(username: string, pass: string): Promise<any> {
@@ -23,7 +29,9 @@ export class AuthService {
         );
       }
 
-      await this.userService.setLastLoginTimeStamp(user._id.toString());
+      if (user.isVerified) {
+        await this.userService.setLastLoginTimeStamp(user._id.toString());
+      }
 
       return user;
     }
@@ -34,9 +42,89 @@ export class AuthService {
     );
   }
 
-  async register(createUserDto: CreateUserDto) {
-    const user: User = await this.userService.create(createUserDto);
-    return this.login(user);
+  async register(UserDto: UserDto) {
+    const user: User = await this.userService.create(UserDto);
+
+    const token: Token = await this.tokenService.create(
+      'verification',
+      user._id.toString()
+    );
+
+    await this.mailService.SendVerificationMail(
+      user.emailAddress,
+      user.firstname,
+      token.verificationCode
+    );
+
+    return user;
+  }
+
+  async verify(req: any) {
+    //check if object id is valid
+    if (!ParseObjectIdPipe.isValidObjectId(req.userId)) {
+      throw new HttpException('Id is niet geldig!', HttpStatus.BAD_REQUEST);
+    }
+
+    //check if user exists (validation is elsewhere)
+    const user = await this.userService.getById(req.userId);
+
+    //retrieve existing token
+    const token = await this.tokenService.getByUserId(
+      req.userId,
+      'verification'
+    );
+
+    //check if token is correct + not expired
+    if (
+      token.verificationCode === req.verificationCode &&
+      token.expirationDate > new Date()
+    ) {
+      //delete used token
+      await this.tokenService.delete(req.userId, 'verification');
+
+      //change isVerified to true
+      await this.userService.verifyAccount(req.userId);
+
+      //set first login timestamp
+      await this.userService.setLastLoginTimeStamp(req.userId);
+
+      //login automatically
+      return await this.login({
+        username: user.emailAddress,
+        password: user.password,
+      });
+    } else {
+      throw new HttpException(
+        'De verificatiecode is ongeldig!',
+        HttpStatus.BAD_REQUEST
+      );
+    }
+  }
+
+  async resendVerificationMail(emailAddress: string) {
+    //retrieve user + check if exists
+    const user = await this.userService.findByEmailAddress(emailAddress);
+
+    //delete previous token
+    await this.tokenService.delete(user._id.toString(), 'verification');
+
+    //create new token
+    const token = await this.tokenService.create(
+      'verification',
+      user._id.toString()
+    );
+
+    //send email with new verificationcode
+    await this.mailService.SendVerificationMail(
+      user.emailAddress,
+      user.firstname,
+      token.verificationCode
+    );
+
+    return {
+      status: 200,
+      message: 'Verification Email has been sent!',
+    };
   }
 
   async login(user: any) {
@@ -51,6 +139,7 @@ export class AuthService {
       firstname: loggedInUser.firstname,
       lastname: loggedInUser.lastname,
       emailAddress: loggedInUser.emailAddress,
+      isVerified: loggedInUser.isVerified,
       organization: loggedInUser.organization,
       access_token: this.jwtService.sign(payload, jwtConstants),
     };
