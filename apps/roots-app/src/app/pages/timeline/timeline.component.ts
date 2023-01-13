@@ -348,16 +348,10 @@ export class TimelineComponent
   searchOnTermFilter() {
     this.eventTitleOptions = [];
     this.allEvents.forEach((event: { title: string; isActive: boolean }) => {
-      if (!this.showArchivedEvents && event.isActive) {
+      ((!this.showArchivedEvents && event.isActive) ||
+        this.showArchivedEvents) &&
         event.title.includes(this.searchterm) &&
-          this.eventTitleOptions.push(event.title);
-      } else if(this.showArchivedEvents) {
-        event.title.includes(this.searchterm) &&
-          this.eventTitleOptions.push(event.title);
-      }
-
-      // event.title.includes(this.searchterm) &&
-      //   this.eventTitleOptions.push(event.title);
+        this.eventTitleOptions.push(event.title);
     });
   }
 
