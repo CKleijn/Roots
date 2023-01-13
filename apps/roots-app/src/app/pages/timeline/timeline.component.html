@@ -3,25 +3,47 @@
     <div class="search-form-container">
       <h1 class="search-title">Vind alles over uw organisatie</h1>
 
-      <div class="input-group mx-auto">
-        <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
-          [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-          [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"
-          [(ngModel)]="searchterm" />
 
-        <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
-          <div *ngIf="searchType === 'tags'">
-            <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
-              {{ tag }}
+      <div class="input-group">
+        <!-- terms searchbar -->
+        <div class="searchbar-container" *ngIf="searchType === 'terms'">
+
+          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
+            [formControl]="termCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"
+            [(ngModel)]="searchterm" />
+
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let title of eventTitleOptions" [value]="title">
+              {{ title }}
             </mat-option>
-          </div>
-        </mat-autocomplete>
+          </mat-autocomplete>
+
+        </div>
+
+        <!-- tags searchbar -->
+        <div class="searchbar-container" *ngIf="searchType === 'tags'">
+
+          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
+            [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"
+            [(ngModel)]="searchterm" />
+
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <div *ngIf="searchType === 'tags'">
+              <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                {{ tag }}
+              </mat-option>
+            </div>
+          </mat-autocomplete>
+
+        </div>
 
         <div class="input-group-prepend">
 
-          <button class="search-submit-dropdown" style="position: relative; bottom: 1px;">
-            <ul class="aa">
-              <li class="qq">
+          <button class="search-submit-dropdown">
+            <ul class="search-submit-dropdown-ul">
+              <li class="search-submit-dropdown-li">
                 <span *ngIf="searchType === 'terms'">Termen</span>
                 <span *ngIf="searchType === 'tags'">Tags</span>
                 &dtrif;
@@ -53,7 +75,7 @@
 
       </div>
 
-      <div class="input-group mx-auto pl-2">
+      <div class="input-group pl-2">
         <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
             {{ tag }}

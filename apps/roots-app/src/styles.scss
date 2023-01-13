@@ -313,17 +313,4 @@ body {
     padding-top: 5px;
     padding-bottom: 5px;
   }
-
-  // Searchbar
-  .search-searchbar:focus-visible {
-    border-bottom: 2px solid #fff !important;
-  }
-
-  .search-form-container {
-    width: 100% !important;
-  }
-
-  .bi-info-circle::before {
-    color: $primary-color;
-  }
 }
