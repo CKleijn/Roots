@@ -27,6 +27,9 @@ import { UserModule } from './user/user.module';
           user: 'apikey',
           pass: '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',
         },
+        tls: {
+          rejectUnauthorized: false,
+        },
       },
     }),
   ],
