@@ -243,7 +243,6 @@ export class TimelineComponent
   }
 
   private _filter(value: string): string[] {
-
     const filterValue = value.toLowerCase();
 
     if (filterValue.length >= 3) {
@@ -348,9 +347,17 @@ export class TimelineComponent
 
   searchOnTermFilter() {
     this.eventTitleOptions = [];
-    this.allEvents.forEach((event: { title: string }) => {
-      event.title.includes(this.searchterm) &&
-        this.eventTitleOptions.push(event.title);
+    this.allEvents.forEach((event: { title: string; isActive: boolean }) => {
+      if (!this.showArchivedEvents && event.isActive) {
+        event.title.includes(this.searchterm) &&
+          this.eventTitleOptions.push(event.title);
+      } else if(this.showArchivedEvents) {
+        event.title.includes(this.searchterm) &&
+          this.eventTitleOptions.push(event.title);
+      }
+
+      // event.title.includes(this.searchterm) &&
+      //   this.eventTitleOptions.push(event.title);
     });
   }
 
