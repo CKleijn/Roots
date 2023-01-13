@@ -7,6 +7,7 @@ import { Observable, catchError, map, of } from "rxjs";
 import { AuthService } from "../auth/auth.service";
 import { Event } from '../event/event.model'
 import { ToastrService } from 'ngx-toastr';
+import { Router } from "@angular/router";
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,8 @@ export class EventService {
   constructor(
     private httpClient: HttpClient,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   getAllEvents(): Observable<Event[]> {
@@ -45,12 +47,12 @@ export class EventService {
         this.authService.getHttpOptions()
       )
       .pipe(
-        map((event) => {
+        map(() => {
           this.toastr.success(
             'Gebeurtenis is succesvol aangemaakt!',
             'Gebeurtenis aangemaakt!'
           );
-          return event;
+          return this.router.navigate([`organizations/${companyId}/timeline`]);
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
@@ -78,16 +80,16 @@ export class EventService {
         this.authService.getHttpOptions()
       )
       .pipe(
-        map((event) => {
+        map(() => {
           this.toastr.success(
             'Gebeurtenis is succesvol aangepast!',
             'Gebeurtenis aangepast!'
           );
-          return event;
+          return this.router.navigate([`organizations/${companyId}/events/${eventId}`]);
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          if(err.error.message === `The value of \"offset\" is out of range. It must be >= 0 && <= 17825792. Received 17825794`) {
+          if(err.status === 304) {
             this.toastr.error('De inhoud van deze gebeurtenis overschreid de maximale grootte van 15 MB!', 'Gebeurtenis niet aangemaakt!');
           } else {
             this.toastr.error(err.error.message, 'Gebeurtenis niet aangemaakt!');

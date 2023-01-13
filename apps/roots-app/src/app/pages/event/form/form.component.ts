@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 /* eslint-disable @typescript-eslint/no-var-requires */
-import { Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { ChangeDetectorRef, Component, ElementRef, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import * as QuillNamespace from 'quill';
 import { FormControl, FormGroup, Validators } from '@angular/forms';
 import { DateAdapter } from '@angular/material/core';
@@ -42,6 +42,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
   organizationId: string | undefined;
   organizationIdString: string | undefined;
   editMode = false;
+  needContext = false;
+  prevEvent: string | undefined = "";
   error: string | undefined;
   event: Event = new Event();
   eventForm: FormGroup = new FormGroup({});
@@ -68,9 +70,11 @@ export class EventFormComponent implements OnInit, OnDestroy {
         return new Promise((resolve, reject) => {
           if (file.type === 'video/mpeg' || file.type === 'video/mp4') {
             if (file.size < 15000000) {
-              this.eventForm.controls['content'].setErrors({ needContext: true })
+              this.eventForm.controls['content'].setErrors({ needContext: true });
+              this.needContext = true;
               resolve(file);
             } else {
+              scroll(0,0);
               this.toastrService.error(
                 `Deze video overschreid de maximale uploadgrootte van 15 MB!`,
                 'Video uploaden mislukt!'
@@ -78,6 +82,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
               reject(`Deze video overschreid de maximale uploadgrootte van 15 MB!`);
             }
           } else {
+            scroll(0,0);
             this.toastrService.error(
               `Deze video type wordt niet ondersteund!`,
               'Video uploaden mislukt!'
@@ -170,6 +175,16 @@ export class EventFormComponent implements OnInit, OnDestroy {
     }
   }
 
+  onChange(event: any) {
+    if (this.needContext) {
+      if (event !== this.prevEvent) {
+        this.needContext = false;
+      } else {
+        this.prevEvent = event;
+      }
+    }
+  }
+
   async onSubmit() {
     let allTags = [] as any[] | undefined;
     // eslint-disable-next-line prefer-const
@@ -193,17 +208,24 @@ export class EventFormComponent implements OnInit, OnDestroy {
       error: (error) => this.error = error.message
     });
 
-    if (!this.editMode) {
-      this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
-        next: () => {this.router.navigate([`organizations/${this.organizationId}/timeline`])},
-        error: (error) => this.error = error.message
-      })
-    }
-    else {
-      this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
-        next: () => this.router.navigate([`organizations/${this.organizationId}/events/${this.eventId}`]),
-        error: (error) => this.error = error.message
-      })
+
+    if (!this.needContext) {
+      if (!this.editMode) {
+        this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
+          error: (error) => this.error = error.message
+        })
+      }
+      else {
+        this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
+          error: (error) => this.error = error.message
+        })
+      }
+    } else {
+      scroll(0,0);
+      this.toastrService.error(
+        `Deze gebeurtenis voldoet nog niet aan alle validatie!`,
+        'Validatie mislukt!'
+      );
     }
   }
 
