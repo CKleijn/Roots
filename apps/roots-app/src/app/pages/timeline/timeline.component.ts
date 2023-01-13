@@ -54,6 +54,7 @@ export class TimelineComponent
   showArchivedEvents = false;
   searchType: string | undefined;
   searchterm = '';
+  searchRequest = false;
   allEvents: Event[] = [];
   filtered = false;
   eventTitleOptions: string[] = [];
@@ -332,6 +333,8 @@ export class TimelineComponent
       // Tell onScroll that filter is used
       this.filtered = true;
     }
+    // Tell HTML this is a searchrequest
+    this.searchRequest = true;
     // Show alert with total count of the results found
     const totalResults = this.events.length;
     totalResults === 1
@@ -374,6 +377,8 @@ export class TimelineComponent
           this.events = filterEvents;
           // Tell onScroll that filter is used
           this.filtered = true;
+          // Tell HTML this is a searchrequest
+          this.searchRequest = true;
           // Show alert with total count of the results found
           const totalResults = this.events.length;
           totalResults === 1

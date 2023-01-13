@@ -135,18 +135,18 @@
   </div>
 </div>
 
-<div *ngIf="this.events.length === 0 && this.tags.length > 0" style="padding: 20px">
+<div *ngIf="this.events.length === 0 && this.searchRequest" style="padding: 20px">
   <div class="row">
     <div class=" col-sm-12 col-md-6 offset-3">
       <div class="timeline-textbox">
         <h2>Oeps!</h2>
-        <p>Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de toegepaste filter(s)!</p>
+        <p>Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de filter(s)!</p>
       </div>
     </div>
   </div>
 </div>
 
-<div *ngIf="this.events.length === 0 && this.tags.length === 0" style="padding: 20px">
+<div *ngIf="this.events.length === 0 && !this.searchRequest" style="padding: 20px">
   <div class="row">
     <div class=" col-sm-12 col-md-6 offset-3">
       <div class="timeline-textbox">
