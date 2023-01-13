@@ -9,8 +9,8 @@ export class TokenService {
     @InjectModel(Token.name) private tokenModel: Model<TokenDocument>
   ) {}
 
-  async getByUserId(userId: string): Promise<Token> {
-    const token = await this.tokenModel.findOne({ userId });
+  async getByUserId(userId: string, type: string): Promise<Token> {
+    const token = await this.tokenModel.findOne({ userId, type });
 
     if (!token)
       throw new HttpException('Token bestaat niet!', HttpStatus.NOT_FOUND);
@@ -34,7 +34,7 @@ export class TokenService {
     return await this.tokenModel.create(newToken);
   }
 
-  async delete(userId: string) {
-    return this.tokenModel.deleteMany({ userId });
+  async delete(userId: string, type: string) {
+    return this.tokenModel.deleteMany({ userId, type });
   }
 }
