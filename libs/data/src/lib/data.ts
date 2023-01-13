@@ -44,6 +44,7 @@ export class User implements IUser {
   organization = new Types.ObjectId();
   initials = '';
   isActive = true;
+  isVerified = true;
 }
 
 export class Organization implements IOrganization {

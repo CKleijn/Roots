@@ -52,7 +52,8 @@ $background-color: #E8ECFF;
   //search bar on mouse focus
   &:focus {
     outline: none;
-    caret-color: $secondary-color;
+    border: none;
+    caret-color: #000;
   }
 }
 
@@ -61,8 +62,13 @@ $background-color: #E8ECFF;
   width: 40px;
   height: 40px;
   border: none;
-  background-color: $secondary-color;
   padding-left: 5px;
+  background-color: $secondary-color;
+}
+
+.search-submit-dropdown {
+  @extend .search-submit;
+  width: 100px;
 }
 
 //button icon
@@ -70,6 +76,89 @@ $background-color: #E8ECFF;
   height: 20px;
   width: 20px;
 }
+
+// .bbb {
+//   height: 40px;
+//   width: 100px;
+//   border: none;
+//   display: inline-block !important;
+//   border-radius: none;
+
+//   &:focus {
+//     border: none;
+//     outline: none;
+//   }
+// }
+
+.aa {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+ul {
+  background-color: #FFF;
+  vertical-align: middle;
+  display: inline-block;
+  z-index: 10;
+}
+
+ul li {
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none;
+  text-decoration: none;
+  position: relative;
+}
+
+li a {
+  color: black;
+}
+
+li:hover {
+  cursor: pointer;
+}
+
+ul li ul {
+  padding: 0 !important;
+  margin: 0 !important;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  display: none;
+  background: none;
+  width: 80px;
+  height: 40px;
+}
+
+ul li:hover>ul {
+  visibility: visible;
+  opacity: 1;
+  display: block;
+}
+
+ul li ul li:hover {
+  color: $primary-color;
+}
+
+ul li ul li {
+  margin: 5px -90px -6px -8px !important;
+  padding: 6px 90px 6px 8px !important;
+  transition: all 0.5s ease;
+  text-align: start;
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  background-color: #FFF;
+}
+
+
+
+
+
+
+
+
+
 
 //area around timeline
 .timeline {
@@ -171,9 +260,9 @@ $background-color: #E8ECFF;
       border-bottom: 15px solid transparent;
     }
   }
-  
-      
-  > .timeline-icon-archived {
+
+
+  >.timeline-icon-archived {
     @extend .timeline-icon;
     opacity: 70%;
   }
@@ -229,10 +318,6 @@ $background-color: #E8ECFF;
 .timeline-textbox-archived {
   @extend .timeline-textbox;
   opacity: 70%;
-}
-
-.archive-icon {
-  margin: 0.25rem 0;
 }
 
 .detail-button {

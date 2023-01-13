@@ -11,6 +11,7 @@ import {
   OrganizationSchema,
 } from '../organization/organization.schema';
 import { OrganizationService } from '../organization/organization.service';
+import { MailService } from '../providers/email/email.service';
 import { UserService } from '../user/user.service';
 import { User, UserDocument, UserSchema } from './../user/user.schema';
 import { AuthService } from './auth.service';
@@ -39,7 +40,13 @@ describe('UserService', () => {
           { name: Organization.name, schema: OrganizationSchema },
         ]),
       ],
-      providers: [AuthService, JwtService, OrganizationService, UserService],
+      providers: [
+        AuthService,
+        JwtService,
+        MailService,
+        OrganizationService,
+        UserService,
+      ],
     }).compile();
 
     service = app.get<AuthService>(AuthService);

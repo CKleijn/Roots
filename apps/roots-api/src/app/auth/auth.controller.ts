@@ -16,6 +16,18 @@ export class AuthController {
   }
 
   @Public()
+  @Post('auth/verify')
+  async verify(@Body() body) {
+    return this.authService.verify(body);
+  }
+
+  @Public()
+  @Post('auth/resend')
+  async resend(@Body() body) {
+    return this.authService.resendVerificationMail(body.emailAddress);
+  }
+
+  @Public()
   @Post('auth/register')
   async register(@Body() UserDto: UserDto) {
     return this.authService.register(UserDto);
