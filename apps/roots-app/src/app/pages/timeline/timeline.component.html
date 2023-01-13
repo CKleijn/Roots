@@ -73,7 +73,7 @@
 
       </div>
 
-      <div class="input-group sss mt-5 mr-3">
+      <div class="input-group tag-group mt-5 mr-3">
         <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
             {{ tag }}
@@ -92,11 +92,8 @@
 
 <div *ngIf="events.length > 0" class="timeline" infinite-scroll [infiniteScrollDistance]="distance"
   [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
-  <div *ngFor="let event of events; let left = even; let right = odd" [ngClass]="
-      !event.isActive && !showArchivedEvents
-        ? 'd-none'
-        : { right: right, left: left }
-    " class="timeline-container">
+  <div *ngFor="let event of events; let left = even; let right = odd" [ngClass]="{ right: right, left: left }"
+    class="timeline-container">
     <div class="timeline-year" id="timeline-year-{{ event._id }}">
       <span class="timeline-year-content">{{
         event.eventDate.getFullYear()
@@ -112,13 +109,7 @@
         </span>
       </div>
     </div>
-    <div [ngClass]="
-        !event.isActive && !showArchivedEvents
-          ? 'd-none'
-          : !event.isActive
-          ? 'timeline-textbox-archived'
-          : 'timeline-textbox'
-      ">
+    <div [ngClass]="!event.isActive ? 'timeline-textbox-archived' : 'timeline-textbox'">
       <h2>{{ event.title }}</h2>
       <p>
         {{ event.description.slice(0, 150) }}
