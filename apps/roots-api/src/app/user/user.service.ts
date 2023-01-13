@@ -41,7 +41,8 @@ export class UserService {
     const newUser = new this.userModel({
       ...UserDto,
       password: await bcrypt.hashSync(UserDto.password, 10),
-      isActive: true, //until email validation is implemented
+      isActive: true,
+      isVerified: false,
       createdAt: new Date(),
       organization: await this.organizationService.getByEmailDomain(
         UserDto.emailAddress.split('@').at(1)
@@ -54,6 +55,17 @@ export class UserService {
   async setLastLoginTimeStamp(id: string) {
     const user = await this.userModel.findOneAndUpdate({ _id: id }, [
       { $set: { lastLoginTimestamp: new Date() } },
+    ]);
+
+    if (!user)
+      throw new HttpException('Gebruiker bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
+  }
+
+  async verifyAccount(userId: string) {
+    const user = await this.userModel.findOneAndUpdate({ _id: userId }, [
+      { $set: { isVerified: true } },
     ]);
 
     if (!user)

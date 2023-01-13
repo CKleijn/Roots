@@ -9,9 +9,8 @@ export class TokenService {
     @InjectModel(Token.name) private tokenModel: Model<TokenDocument>
   ) {}
 
-  async getById(_id: string): Promise<Token> {
-    console.log('getById');
-    const token = await this.tokenModel.findOne({ _id });
+  async getByUserId(userId: string): Promise<Token> {
+    const token = await this.tokenModel.findOne({ userId });
 
     if (!token)
       throw new HttpException('Token bestaat niet!', HttpStatus.NOT_FOUND);
@@ -20,15 +19,19 @@ export class TokenService {
   }
 
   async create(type: string, userId: string): Promise<Token> {
-    console.log('create');
-
-    const newToken = {
+    const newToken: any = {
       type: type,
       expirationDate: new Date(Date.now() + 3600 * 1000 * 24),
       userId: userId,
     };
 
-    return await this.tokenModel.create({ newToken });
+    type === 'verification'
+      ? (newToken.verificationCode = Math.floor(
+          100000 + Math.random() * 900000
+        ))
+      : (newToken.verificationCode = '');
+
+    return await this.tokenModel.create(newToken);
   }
 
   async delete(userId: string) {

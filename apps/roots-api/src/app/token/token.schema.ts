@@ -6,11 +6,15 @@ export type TokenDocument = Token & Document;
 
 @Schema()
 export class Token implements IToken {
+  _id: Types.ObjectId;
+
   @Prop({
-    unique: true,
     required: true,
   })
   type: string;
+
+  @Prop()
+  verificationCode: string;
 
   @Prop({
     required: true,

@@ -28,7 +28,9 @@ export class LoginComponent implements OnInit, OnDestroy {
       .getUserFromLocalStorage()
       .subscribe((user: User) => {
         if (user) {
-          this.router.navigate([`/organizations/${user.organization}/timeline`]);
+          this.router.navigate([
+            `/organizations/${user.organization}/timeline`,
+          ]);
         }
       });
   }
@@ -46,8 +48,17 @@ export class LoginComponent implements OnInit, OnDestroy {
       const password = this.loginForm.value.password;
 
       this.authService.login(emailAddress, password).subscribe((user) => {
-        if (user) {
-          this.router.navigate([`/organizations/${user.organization}/timeline`]);
+        if (user && !user.isVerified) {
+          this.router.navigate([`/verification`], {
+            queryParams: {
+              emailAddress: user.emailAddress,
+              userId: user._id.toString(),
+            },
+          });
+        } else if (user) {
+          this.router.navigate([
+            `/organizations/${user.organization}/timeline`,
+          ]);
         }
         this.submitted = false;
       });

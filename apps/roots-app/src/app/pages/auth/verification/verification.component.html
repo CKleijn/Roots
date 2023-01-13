@@ -1,0 +1,75 @@
+<div class="container">
+  <div class="row justify-content-center">
+    <div class="col-sm-10 col-md-8 col-lg-6 my-5">
+      <div class="card card-auth shadow-lg p-3 px-md-5 py-md-4">
+        <div class="d-flex justify-content-center">
+          <h2>
+            Account verifiëren
+            <i
+              class="bi bi-info-circle"
+              style="font-size: 30px"
+              rel="tooltip"
+              title="Controleer alsjeblieft je mailbox en vul de verkregen verificatiecode in om je account te verifiëren."
+            ></i>
+          </h2>
+        </div>
+        <hr class="form-divider" />
+
+        <div class="d-flex justify-content-center"></div>
+
+        <p style="margin-top: 15px; text-align: center">
+          Er is een verificatie code gestuurd naar:<br /><b>
+            {{ emailAddress }}
+          </b>
+        </p>
+
+        <div class="d-flex justify-content-center">
+          <ngx-otp-input
+            [config]="otpInputConfig"
+            (otpChange)="handleOtpChange($event)"
+            (fill)="handleFillEvent($event)"
+            #ngxotp
+          >
+          </ngx-otp-input>
+        </div>
+
+        <form (ngSubmit)="onSubmit()">
+          <button
+            id="submitbutton"
+            class="btn btn-100 btn-block"
+            type="submit"
+            style="margin-top: 15px"
+            [disabled]="!validInput"
+          >
+            Verifieer
+          </button>
+        </form>
+
+        <p class="mt-2" style="font-size: 12px">
+          Heb je geen email ontvangen?
+          <a
+            *ngIf="canResendEmail"
+            (click)="resendEmail()"
+            class="text-link"
+            style="cursor: pointer"
+            >Opnieuw verzenden</a
+          >
+          <a
+            *ngIf="!canResendEmail"
+            style="pointer-events: none; cursor: default; opacity: 0.5"
+            class="text-link"
+            >Opnieuw verzenden</a
+          >
+
+          <span *ngIf="secondsUntilResend !== 0">
+            mogelijk in
+            {{ secondsUntilResend }} seconde<span
+              *ngIf="secondsUntilResend !== 1"
+              >n</span
+            ></span
+          >.
+        </p>
+      </div>
+    </div>
+  </div>
+</div>

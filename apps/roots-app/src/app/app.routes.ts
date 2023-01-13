@@ -2,6 +2,7 @@ import { Route } from '@angular/router';
 import { LoggedInAuthGuard } from './pages/auth/auth.guards';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
+import { VerificationComponent } from './pages/auth/verification/verification.component';
 import { EventDetailComponent } from './pages/event/detail/detail.component';
 import { EventFormComponent } from './pages/event/form/form.component';
 import { OrganizationComponent } from './pages/organization/organization.component';
@@ -21,13 +22,20 @@ export const appRoutes: Route[] = [
     pathMatch: 'full',
     title: 'Registreren',
   },
+  {
+    path: 'verification',
+    component: VerificationComponent,
+    pathMatch: 'full',
+    title: 'Account verifiëren',
+  },
+
   //TIMELINE
   {
     path: 'organizations/:organizationId/timeline',
     component: TimelineComponent,
     pathMatch: 'full',
     title: 'Tijdlijn',
-    canActivate: [LoggedInAuthGuard]
+    canActivate: [LoggedInAuthGuard],
   },
   // EVENTS
   {
