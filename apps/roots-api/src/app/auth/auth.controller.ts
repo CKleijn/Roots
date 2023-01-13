@@ -28,6 +28,18 @@ export class AuthController {
   }
 
   @Public()
+  @Post('auth/forgot_password')
+  async forgotPassword(@Body() body) {
+    return this.authService.forgotPasswordMail(body.emailAddress);
+  }
+
+  @Public()
+  @Post('auth/reset_password')
+  async resetPassword(@Body() body) {
+    return this.authService.resetPassword(body.tokenId, body.password);
+  }
+
+  @Public()
   @Post('auth/register')
   async register(@Body() UserDto: UserDto) {
     return this.authService.register(UserDto);

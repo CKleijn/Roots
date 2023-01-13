@@ -9,6 +9,15 @@ export class TokenService {
     @InjectModel(Token.name) private tokenModel: Model<TokenDocument>
   ) {}
 
+  async getById(id: string): Promise<Token> {
+    const token = await this.tokenModel.findOne({ _id: id });
+
+    if (!token)
+      throw new HttpException('Token bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return token;
+  }
+
   async getByUserId(userId: string, type: string): Promise<Token> {
     const token = await this.tokenModel.findOne({ userId, type });
 

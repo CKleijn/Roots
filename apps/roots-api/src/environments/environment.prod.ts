@@ -3,7 +3,7 @@ export const environment = {
   //online
 
   API_URL: 'mongodb://localhost:27017/roots',
-  APPLICATION_URL: 'localhost:9000',
+  APPLICATION_URL: 'http://localhost:4200',
 
   //mailing
   EMAIL_HOST: 'smtp.sendgrid.net',

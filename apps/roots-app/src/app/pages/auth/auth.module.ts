@@ -5,6 +5,7 @@ import { RouterModule } from '@angular/router';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 import { NgxOtpInputModule } from 'ngx-otp-input';
 import { LoggedInAuthGuard } from './auth.guards';
+import { ForgotPasswordComponent } from './forgot-password/forgot-password.component';
 import { LoginComponent } from './login/login.component';
 import { RegisterComponent } from './register/register.component';
 import { VerificationComponent } from './verification/verification.component';
@@ -18,7 +19,12 @@ import { VerificationComponent } from './verification/verification.component';
     ReactiveFormsModule,
     NgxOtpInputModule,
   ],
-  declarations: [LoginComponent, RegisterComponent, VerificationComponent],
+  declarations: [
+    LoginComponent,
+    RegisterComponent,
+    VerificationComponent,
+    ForgotPasswordComponent,
+  ],
   providers: [LoggedInAuthGuard],
   exports: [LoginComponent, RegisterComponent],
 })

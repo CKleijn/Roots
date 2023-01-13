@@ -1,5 +1,6 @@
 import { Route } from '@angular/router';
 import { LoggedInAuthGuard } from './pages/auth/auth.guards';
+import { ForgotPasswordComponent } from './pages/auth/forgot-password/forgot-password.component';
 import { LoginComponent } from './pages/auth/login/login.component';
 import { RegisterComponent } from './pages/auth/register/register.component';
 import { VerificationComponent } from './pages/auth/verification/verification.component';
@@ -28,6 +29,18 @@ export const appRoutes: Route[] = [
     pathMatch: 'full',
     title: 'Account verifiëren',
   },
+  {
+    path: 'forgot_password',
+    component: ForgotPasswordComponent,
+    pathMatch: 'full',
+    title: 'Wachtwoord vergeten',
+  },
+  // {
+  //   path: 'password_reset/:tokenId',
+  //   component: ,
+  //   pathMatch: 'full',
+  //   title: 'Wachtwoord instellen',
+  // },
 
   //TIMELINE
   {
