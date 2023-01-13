@@ -69,7 +69,7 @@
                 <!-- Tags -->
                 <h5>Alle tags</h5>
                 <div class="tag-container">
-                  <table mat-table [dataSource]="tags" class="mat-elevation-z8" id="table-tags">
+                  <table *ngIf="tags?.length! > 0" mat-table [dataSource]="tags" class="mat-elevation-z8" id="table-tags">
                     <!-- Tags -->
                     <ng-container matColumnDef="tag">
                       <th mat-header-cell *matHeaderCellDef>Tags</th>
@@ -89,6 +89,10 @@
                     <tr mat-header-row *matHeaderRowDef="displayedColumnsTag" class="p-3"></tr>
                     <tr mat-row *matRowDef="let row; columns: displayedColumnsTag"></tr>
                   </table>
+
+                  <p *ngIf="tags?.length === 0">
+                    Er zijn nog geen tags aangemaakt binnen deze organisatie!
+                  </p>
                 </div>
               </div>
             </div>

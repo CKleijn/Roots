@@ -62,7 +62,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
       });
     // Get tags
     this.tagsSubscription = this.tagService.getAllTagsByOrganization(this.loggedInUser.organization.toString())
-      .subscribe((tags) => this.tags = tags);
+      .subscribe((tags) => this.tags = tags?.sort((a, b) => a.name.localeCompare(b.name)));
     // Get organization name
     this.organizationSubscription = this.organizationService.getById(this.loggedInUser.organization.toString())
       .subscribe((organization) => this.organization = organization);
