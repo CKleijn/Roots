@@ -78,7 +78,8 @@ export class TimelineComponent
             this.old_records,
             this.new_records,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            params.get('organizationId')!
+            params.get('organizationId')!,
+            this.showArchivedEvents
           )
         )
       )
@@ -155,7 +156,8 @@ export class TimelineComponent
             this.old_records,
             this.new_records,
             // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-            params.get('organizationId')!
+            params.get('organizationId')!,
+            this.showArchivedEvents
           )
         )
       )
@@ -366,7 +368,11 @@ export class TimelineComponent
     //if there is an organizationId -> get events by term
     if (this.organizationId) {
       this.eventService
-        .getEventsByTerm(this.searchterm, this.organizationId)
+        .getEventsByTerm(
+          this.searchterm,
+          this.organizationId,
+          this.showArchivedEvents
+        )
         .subscribe((events) => {
           //retrieve the filter events
           let filterEvents = events;

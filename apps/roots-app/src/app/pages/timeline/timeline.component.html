@@ -59,16 +59,15 @@
           <button type="submit" class="search-submit" (click)="reset()">
             <i class="bi bi-arrow-clockwise"></i>
           </button>
+          <button class="search-submit" (click)="openFilter()">
+            <i class="bi bi-funnel"></i>
+          </button>
           <button *ngIf="searchType === 'tags'" type="submit" class="search-submit" (click)="searchOnTag()">
             <i class="bi bi-search"></i>
           </button>
           <button *ngIf="searchType === 'terms'" type="submit" class="search-submit" (click)="searchOnTerm()">
             <i class="bi bi-search"></i>
           </button>
-          <button class="search-submit" (click)="openFilter()">
-            <i class="bi bi-funnel"></i>
-          </button>
-
         </div>
 
       </div>
