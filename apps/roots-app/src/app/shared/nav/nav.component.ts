@@ -1,10 +1,8 @@
 import { Component, OnDestroy, OnInit } from '@angular/core';
 import { User } from '@roots/data';
-import { ToastrService } from 'ngx-toastr';
-import { Observable, Subscription } from 'rxjs';
+import { Subscription } from 'rxjs';
 import { AuthService } from '../../pages/auth/auth.service';
-import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
-
+import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 
 @Component({
   selector: 'roots-nav',
@@ -14,25 +12,38 @@ import { ModalDismissReasons, NgbModal } from '@ng-bootstrap/ng-bootstrap';
 export class NavComponent implements OnInit, OnDestroy {
   userAuthenticated!: boolean;
   userSubscription!: Subscription;
+  localUserSubscription!: Subscription;
   currentUser: User | undefined;
 
-  constructor(private authService: AuthService, private modalService: NgbModal) {}
+  constructor(
+    private authService: AuthService,
+    private modalService: NgbModal
+  ) {}
 
+  // Get current user when loading the component
   ngOnInit(): void {
-    this.userSubscription = this.authService.currentUser$.subscribe((user) => this.currentUser = user);
-    this.authService.getUserFromLocalStorage().subscribe((user) => this.currentUser = user)
+    this.userSubscription = this.authService.currentUser$.subscribe(
+      (user) => (this.currentUser = user)
+    );
+    this.localUserSubscription = this.authService
+      .getUserFromLocalStorage()
+      .subscribe((user) => (this.currentUser = user));
   }
 
+  // Open modal
+  open(content: any) {
+    this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' });
+  }
+
+  // Close modal and log out
   logout() {
-    this.modalService.dismissAll()
+    this.modalService.dismissAll();
     this.authService.logout();
   }
 
-  open(content: any) {
-		this.modalService.open(content, { ariaLabelledBy: 'modal-basic-title' })
-	}
-
+  // Destroy all subscriptions
   ngOnDestroy(): void {
-    this.userSubscription.unsubscribe;
+    this.userSubscription?.unsubscribe;
+    this.localUserSubscription?.unsubscribe;
   }
 }

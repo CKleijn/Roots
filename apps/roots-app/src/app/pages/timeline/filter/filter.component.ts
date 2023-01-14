@@ -17,6 +17,7 @@ export class FilterComponent implements OnInit {
     @Inject(MAT_DIALOG_DATA) private passedData: Filter
   ) {}
 
+  // Load everything when start up component
   ngOnInit(): void {
     this.passedData.radioValue &&
       (this.radioValue = this.passedData.radioValue);
@@ -24,17 +25,20 @@ export class FilterComponent implements OnInit {
       (this.showArchivedEvents = this.passedData.showArchivedEvents);
   }
 
+  // Toggle if you want to show archive events or not
   toggleArchivedEvents(): void {
     this.showArchivedEvents
       ? (this.showArchivedEvents = false)
       : (this.showArchivedEvents = true);
   }
 
-  closeDialog() {
-    this.dialogRef.close();
-  }
-
+  // Submit the filter
   filterSubmit(): void {
     this.dialogRef.close(new Filter(this.radioValue, this.showArchivedEvents));
+  }
+
+  // Close the dialog
+  closeDialog() {
+    this.dialogRef.close();
   }
 }
