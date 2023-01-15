@@ -5,10 +5,12 @@ import { Token, TokenDocument } from './token.schema';
 
 @Injectable()
 export class TokenService {
+  // Inject all dependencies
   constructor(
     @InjectModel(Token.name) private tokenModel: Model<TokenDocument>
   ) {}
 
+  // Get token by ID
   async getById(id: string): Promise<Token> {
     const token = await this.tokenModel.findOne({ _id: id });
 
@@ -18,6 +20,7 @@ export class TokenService {
     return token;
   }
 
+  // get user by ID from token
   async getByUserId(userId: string, type: string): Promise<Token> {
     const token = await this.tokenModel.findOne({ userId, type });
 
@@ -27,6 +30,7 @@ export class TokenService {
     return token;
   }
 
+  // Create new token
   async create(type: string, userId: string): Promise<Token> {
     const newToken: any = {
       type: type,
@@ -43,6 +47,7 @@ export class TokenService {
     return await this.tokenModel.create(newToken);
   }
 
+  // Delete token
   async delete(userId: string, type: string) {
     return this.tokenModel.deleteMany({ userId, type });
   }

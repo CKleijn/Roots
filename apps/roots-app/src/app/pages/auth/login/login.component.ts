@@ -18,6 +18,7 @@ export class LoginComponent implements OnInit, OnDestroy {
 
   constructor(private authService: AuthService, private router: Router) {}
 
+  // Create new form and get user from local storage when starting component
   ngOnInit(): void {
     this.loginForm = new FormGroup({
       emailAddress: new FormControl(null, [Validators.required]),
@@ -35,12 +36,12 @@ export class LoginComponent implements OnInit, OnDestroy {
       });
   }
 
-  ngOnDestroy(): void {
-    if (this.subs) {
-      this.subs.unsubscribe();
-    }
+  // Show password instead of *****
+  showPasswordToggle() {
+    this.showPassword = !this.showPassword;
   }
 
+  // Submit the form and redirect
   onSubmit(): void {
     if (this.loginForm.valid) {
       this.submitted = true;
@@ -67,7 +68,10 @@ export class LoginComponent implements OnInit, OnDestroy {
     }
   }
 
-  showPasswordToggle() {
-    this.showPassword = !this.showPassword;
+  // Destroy all subscriptions
+  ngOnDestroy(): void {
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
   }
 }

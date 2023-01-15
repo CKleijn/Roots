@@ -9,6 +9,7 @@ export class JwtAuthGuard extends AuthGuard('jwt') {
     super();
   }
 
+  // Create Guard to check if user is authenticated
   canActivate(context: ExecutionContext) {
     const isPublic = this.reflector.getAllAndOverride<boolean>(IS_PUBLIC_KEY, [
       context.getHandler(),

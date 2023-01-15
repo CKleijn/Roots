@@ -22,6 +22,7 @@ export class AuthService {
     private router: Router,
     private toastr: ToastrService
   ) {
+    // Get current user out of the local storage
     this.getUserFromLocalStorage()
       .pipe(
         switchMap((user: User | undefined) => {
@@ -36,6 +37,7 @@ export class AuthService {
       .subscribe();
   }
 
+  // Login user and store in local storage
   login(username: string, password: string): Observable<User | undefined> {
     return this.http
       .post<User>(
@@ -65,6 +67,7 @@ export class AuthService {
       );
   }
 
+  // Register new user
   register(userData: User): Observable<User | undefined> {
     return this.http
       .post<User>(`${environment.SERVER_API_URL}/auth/register`, userData, {
@@ -85,6 +88,50 @@ export class AuthService {
       );
   }
 
+  // Validate JWT token
+  validateToken(userData: User): Observable<User | undefined> {
+    const url = `${environment.SERVER_API_URL}/auth/profile`;
+    const httpOptions = {
+      headers: new HttpHeaders({
+        'Content-Type': 'application/json',
+        Authorization: 'Bearer ' + userData?.access_token,
+      }),
+    };
+    return this.http.get<any>(url, httpOptions).pipe(
+      map((response) => {
+        return response;
+      }),
+      catchError(() => {
+        this.logout();
+        this.currentUser$.next(undefined);
+        return of(undefined);
+      })
+    );
+  }
+
+  // Log user out / delete from local storage
+  logout(): void {
+    this.router.navigate(['/']);
+    localStorage.removeItem(this.CURRENT_USER);
+    this.currentUser$.next(undefined);
+
+    this.toastr.success('Je bent succesvol uitgelogd!', 'Uitloggen succesvol!');
+  }
+
+  // Get user from local storage
+  getUserFromLocalStorage(): Observable<User> {
+    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+    const localUser = JSON.parse(localStorage.getItem(this.CURRENT_USER)!);
+
+    return of(localUser);
+  }
+
+  // Save user in the local storage
+  saveUserToLocalStorage(user: User): void {
+    localStorage.setItem(this.CURRENT_USER, JSON.stringify(user));
+  }
+
+  // Verify new account (user)
   verifyAccount(userData: any) {
     return this.http
       .post<User>(`${environment.SERVER_API_URL}/auth/verify`, userData, {
@@ -107,6 +154,7 @@ export class AuthService {
       );
   }
 
+  // Send new verification mail
   resendVerificationMail(emailAddress: string) {
     return this.http
       .post<User>(
@@ -133,6 +181,31 @@ export class AuthService {
       );
   }
 
+  // Reset password
+  resetPassword(tokenId: string, password: string) {
+    return this.http
+      .post<User>(
+        `${environment.SERVER_API_URL}/auth/reset_password`,
+        { tokenId, password },
+        {
+          headers: this.headers,
+        }
+      )
+      .pipe(
+        map(() => {
+          this.toastr.success(
+            'Je hebt je wachtwoord succesvol opnieuw ingesteld!',
+            'Wachtwoord instellen succesvol!'
+          );
+        }),
+        catchError((err: any) => {
+          this.toastr.error(err.error.message, 'Wachtwoord instellen gefaald!');
+          return of(undefined);
+        })
+      );
+  }
+
+  // Send forgot password mail
   sendForgotPasswordMail(emailAddress: string) {
     return this.http
       .post<User>(
@@ -159,68 +232,7 @@ export class AuthService {
       );
   }
 
-  resetPassword(tokenId: string, password: string) {
-    return this.http
-      .post<User>(
-        `${environment.SERVER_API_URL}/auth/reset_password`,
-        { tokenId, password },
-        {
-          headers: this.headers,
-        }
-      )
-      .pipe(
-        map(() => {
-          this.toastr.success(
-            'Je hebt je wachtwoord succesvol opnieuw ingesteld!',
-            'Wachtwoord instellen succesvol!'
-          );
-        }),
-        catchError((err: any) => {
-          this.toastr.error(err.error.message, 'Wachtwoord instellen gefaald!');
-          return of(undefined);
-        })
-      );
-  }
-
-  validateToken(userData: User): Observable<User | undefined> {
-    const url = `${environment.SERVER_API_URL}/auth/profile`;
-    const httpOptions = {
-      headers: new HttpHeaders({
-        'Content-Type': 'application/json',
-        Authorization: 'Bearer ' + userData?.access_token,
-      }),
-    };
-    return this.http.get<any>(url, httpOptions).pipe(
-      map((response) => {
-        return response;
-      }),
-      catchError(() => {
-        this.logout();
-        this.currentUser$.next(undefined);
-        return of(undefined);
-      })
-    );
-  }
-
-  logout(): void {
-    this.router.navigate(['/']);
-    localStorage.removeItem(this.CURRENT_USER);
-    this.currentUser$.next(undefined);
-
-    this.toastr.success('Je bent succesvol uitgelogd!', 'Uitloggen succesvol!');
-  }
-
-  getUserFromLocalStorage(): Observable<User> {
-    // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
-    const localUser = JSON.parse(localStorage.getItem(this.CURRENT_USER)!);
-
-    return of(localUser);
-  }
-
-  saveUserToLocalStorage(user: User): void {
-    localStorage.setItem(this.CURRENT_USER, JSON.stringify(user));
-  }
-
+  // Get the HTTP options for a request
   getHttpOptions(): object {
     let token;
     this.getUserFromLocalStorage()

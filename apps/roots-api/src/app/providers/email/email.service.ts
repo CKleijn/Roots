@@ -6,8 +6,10 @@ import { Public } from '../../auth/auth.module';
 
 @Injectable()
 export class MailService {
+  // Inject all dependencies
   constructor(private mailService: MailerService) {}
 
+  // Send verification mail
   @Public()
   async SendVerificationMail(
     email: string,
@@ -22,6 +24,7 @@ export class MailService {
     });
   }
 
+  // Send reset password mail
   @Public()
   async SendPasswordResetMail(
     email: string,

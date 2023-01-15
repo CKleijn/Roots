@@ -12,6 +12,7 @@ import { jwtConstants } from './constants';
 
 @Injectable()
 export class AuthService {
+  // Inject all dependencies
   constructor(
     private userService: UserService,
     private jwtService: JwtService,
@@ -19,6 +20,44 @@ export class AuthService {
     private tokenService: TokenService
   ) {}
 
+  // Login user
+  async login(user: any) {
+    const payload = { username: user.username || user.emailAddress };
+
+    const loggedInUser = await this.userService.findByEmailAddress(
+      payload.username
+    );
+
+    return {
+      _id: loggedInUser._id,
+      firstname: loggedInUser.firstname,
+      lastname: loggedInUser.lastname,
+      emailAddress: loggedInUser.emailAddress,
+      isVerified: loggedInUser.isVerified,
+      organization: loggedInUser.organization,
+      access_token: this.jwtService.sign(payload, jwtConstants),
+    };
+  }
+
+  // Register new user/organization + create token + send verify mail
+  async register(UserDto: UserDto) {
+    const user: User = await this.userService.create(UserDto);
+
+    const token: Token = await this.tokenService.create(
+      'verification',
+      user._id.toString()
+    );
+
+    await this.mailService.SendVerificationMail(
+      user.emailAddress,
+      user.firstname,
+      token.verificationCode
+    );
+
+    return user;
+  }
+
+  // Check if user is active
   async validateUser(username: string, pass: string): Promise<any> {
     const user: User = await this.userService.findByEmailAddress(username);
     if (user && (await bcrypt.compareSync(pass, user.password))) {
@@ -41,23 +80,7 @@ export class AuthService {
     );
   }
 
-  async register(UserDto: UserDto) {
-    const user: User = await this.userService.create(UserDto);
-
-    const token: Token = await this.tokenService.create(
-      'verification',
-      user._id.toString()
-    );
-
-    await this.mailService.SendVerificationMail(
-      user.emailAddress,
-      user.firstname,
-      token.verificationCode
-    );
-
-    return user;
-  }
-
+  // Verify user
   async verify(req: any) {
     //check if object id is valid
     if (!ParseObjectIdPipe.isValidObjectId(req.userId)) {
@@ -100,6 +123,7 @@ export class AuthService {
     }
   }
 
+  // Resend verification mail
   async resendVerificationMail(emailAddress: string) {
     //retrieve user + check if exists
     const user = await this.userService.findByEmailAddress(emailAddress);
@@ -126,6 +150,7 @@ export class AuthService {
     };
   }
 
+  // Send forgot password mail
   async forgotPasswordMail(emailAddress: string) {
     //retrieve user + check if exists
     const user = await this.userService.findByEmailAddress(emailAddress);
@@ -152,6 +177,7 @@ export class AuthService {
     };
   }
 
+  // Reset password
   async resetPassword(tokenId: string, password: string) {
     //retrieve user + check if exists
     const token = await this.tokenService.getById(tokenId);
@@ -170,23 +196,5 @@ export class AuthService {
     } else {
       throw new HttpException('Token is ongeldig!', HttpStatus.BAD_REQUEST);
     }
-  }
-
-  async login(user: any) {
-    const payload = { username: user.username || user.emailAddress };
-
-    const loggedInUser = await this.userService.findByEmailAddress(
-      payload.username
-    );
-
-    return {
-      _id: loggedInUser._id,
-      firstname: loggedInUser.firstname,
-      lastname: loggedInUser.lastname,
-      emailAddress: loggedInUser.emailAddress,
-      isVerified: loggedInUser.isVerified,
-      organization: loggedInUser.organization,
-      access_token: this.jwtService.sign(payload, jwtConstants),
-    };
   }
 }

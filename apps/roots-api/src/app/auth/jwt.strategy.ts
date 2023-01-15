@@ -14,6 +14,7 @@ export class JwtStrategy extends PassportStrategy(Strategy) {
     });
   }
 
+  // Check if user JWT token is valid
   async validate(payload: any) {
     const user = await this.userService.findByEmailAddress(payload.username);
 

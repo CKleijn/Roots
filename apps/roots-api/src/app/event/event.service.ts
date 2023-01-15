@@ -10,12 +10,14 @@ import { Event, EventDocument } from './event.schema';
 
 @Injectable()
 export class EventService {
+  // Inject all dependencies
   constructor(
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(Organization.name)
     private organizationModel: Model<OrganizationDocument>
   ) {}
 
+  // Get all events
   async getAll(): Promise<Event[]> {
     const events = await this.organizationModel.aggregate([
       {
@@ -76,6 +78,7 @@ export class EventService {
     return events[0]?.events;
   }
 
+  // Get amount of events per page + filter
   async getPerPage(query: any, organizationId: string): Promise<Event[]> {
     const events = await this.organizationModel.aggregate([
       {
@@ -170,11 +173,10 @@ export class EventService {
         }
       });
       return matchingEvents;
-    }
-    else if (query.term && query.show_archived_events === 'false') {
+    } else if (query.term && query.show_archived_events === 'false') {
       const matchingEvents: any[] = [];
       events[0].events.forEach((event) => {
-        if (event.title.includes(query.term) && event.isActive ) {
+        if (event.title.includes(query.term) && event.isActive) {
           matchingEvents.push(event);
         }
       });
@@ -182,6 +184,7 @@ export class EventService {
     }
   }
 
+  // Get event by ID
   async getById(id: string): Promise<Event> {
     const event = await this.organizationModel.aggregate([
       {
@@ -218,6 +221,7 @@ export class EventService {
     return event[0]?.events[0];
   }
 
+  // Create new organization
   async create(organizationId: string, eventDto: EventDto): Promise<any> {
     const event = await this.eventModel.create(eventDto);
 
@@ -240,6 +244,7 @@ export class EventService {
     return updatedOrganizationEvents;
   }
 
+  // Update organization
   async update(eventId: string, eventDto: EventDto): Promise<any> {
     const updatedEventFromOrganization = await this.eventModel.findOneAndUpdate(
       { _id: eventId },
@@ -267,6 +272,7 @@ export class EventService {
     return updatedEventFromOrganization;
   }
 
+  // Archive/Dearchive event
   async archive(eventId: string, isActive: boolean): Promise<any> {
     const updatedArchive = await this.eventModel.findOneAndUpdate(
       { _id: new Types.ObjectId(eventId) },
