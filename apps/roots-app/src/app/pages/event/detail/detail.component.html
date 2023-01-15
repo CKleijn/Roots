@@ -13,7 +13,7 @@
             Archiveer <i class="bi bi-archive"></i>
           </button>
           <button *ngIf="!event.isActive" class="btn" style="float: right !important;" (click)="archiveModal(contentArchive)">
-            Activeer <i class="bi bi-plus-square"></i>
+            Dearchiveer <i class="bi bi-plus-square"></i>
           </button>
           <br><br>
           <h1>{{ event.title }} <i *ngIf="!event.isActive" class="bi bi-archive-fill"></i></h1>
