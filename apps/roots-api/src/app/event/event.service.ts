@@ -14,21 +14,21 @@ export class EventService {
     @InjectModel(Event.name) private eventModel: Model<EventDocument>,
     @InjectModel(Organization.name)
     private organizationModel: Model<OrganizationDocument>
-  ) { }
+  ) {}
 
   async getAll(): Promise<Event[]> {
     const events = await this.organizationModel.aggregate([
       {
         $unwind: {
-          path: "$events",
+          path: '$events',
         },
       },
       {
         $lookup: {
-          from: "events",
-          localField: "events",
-          foreignField: "_id",
-          as: "events",
+          from: 'events',
+          localField: 'events',
+          foreignField: '_id',
+          as: 'events',
         },
       },
       {
@@ -37,23 +37,23 @@ export class EventService {
           events: {
             $push: {
               _id: {
-                $first: "$events._id",
+                $first: '$events._id',
               },
               title: {
-                $first: "$events.title",
+                $first: '$events.title',
               },
               description: {
-                $first: "$events.description",
+                $first: '$events.description',
               },
               eventDate: {
-                $first: "$events.eventDate",
+                $first: '$events.eventDate',
               },
               isActive: {
-                $first: "$events.isActive",
+                $first: '$events.isActive',
               },
               tags: {
-                $first: "$events.tags"
-              }
+                $first: '$events.tags',
+              },
             },
           },
         },
@@ -63,7 +63,7 @@ export class EventService {
           _id: 0,
           events: {
             $sortArray: {
-              input: "$events",
+              input: '$events',
               sortBy: {
                 eventDate: -1,
               },
@@ -85,15 +85,15 @@ export class EventService {
       },
       {
         $unwind: {
-          path: "$events",
+          path: '$events',
         },
       },
       {
         $lookup: {
-          from: "events",
-          localField: "events",
-          foreignField: "_id",
-          as: "events",
+          from: 'events',
+          localField: 'events',
+          foreignField: '_id',
+          as: 'events',
         },
       },
       {
@@ -102,23 +102,23 @@ export class EventService {
           events: {
             $push: {
               _id: {
-                $first: "$events._id",
+                $first: '$events._id',
               },
               title: {
-                $first: "$events.title",
+                $first: '$events.title',
               },
               description: {
-                $first: "$events.description",
+                $first: '$events.description',
               },
               eventDate: {
-                $first: "$events.eventDate",
+                $first: '$events.eventDate',
               },
               isActive: {
-                $first: "$events.isActive",
+                $first: '$events.isActive',
               },
               tags: {
-                $first: "$events.tags"
-              }
+                $first: '$events.tags',
+              },
             },
           },
         },
@@ -128,7 +128,7 @@ export class EventService {
           _id: 0,
           events: {
             $sortArray: {
-              input: "$events",
+              input: '$events',
               sortBy: {
                 eventDate: -1,
               },
@@ -138,12 +138,43 @@ export class EventService {
       },
     ]);
 
-    if(query.old_records && query.new_records) {
-      return events[0]?.events.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
-    } else {
+    if (
+      query.old_records &&
+      query.new_records &&
+      query.show_archived_events === 'true'
+    ) {
+      return events[0]?.events.slice(
+        Number(query.old_records),
+        Number(query.new_records) + Number(query.old_records)
+      );
+    } else if (
+      query.old_records &&
+      query.new_records &&
+      query.show_archived_events === 'false'
+    ) {
+      const activeEvents: any[] = [];
+      events[0]?.events.forEach((event) => {
+        if (event.isActive) {
+          activeEvents.push(event);
+        }
+      });
+      return activeEvents.slice(
+        Number(query.old_records),
+        Number(query.new_records) + Number(query.old_records)
+      );
+    } else if (query.term && query.show_archived_events === 'true') {
       const matchingEvents: any[] = [];
-      events[0].events.forEach(event => {
-        if(event.title.includes(query.term)) {
+      events[0].events.forEach((event) => {
+        if (event.title.includes(query.term)) {
+          matchingEvents.push(event);
+        }
+      });
+      return matchingEvents;
+    }
+    else if (query.term && query.show_archived_events === 'false') {
+      const matchingEvents: any[] = [];
+      events[0].events.forEach((event) => {
+        if (event.title.includes(query.term) && event.isActive ) {
           matchingEvents.push(event);
         }
       });
@@ -154,26 +185,27 @@ export class EventService {
   async getById(id: string): Promise<Event> {
     const event = await this.organizationModel.aggregate([
       {
-        '$unwind': {
-          'path': '$events'
-        }
-      }, {
-        '$lookup': {
-          'from': 'events',
-          'localField': 'events',
-          'foreignField': '_id',
-          'as': 'events'
-        }
+        $unwind: {
+          path: '$events',
+        },
       },
       {
-        '$match': {
+        $lookup: {
+          from: 'events',
+          localField: 'events',
+          foreignField: '_id',
+          as: 'events',
+        },
+      },
+      {
+        $match: {
           'events._id': new mongoose.Types.ObjectId(id),
         },
       },
       {
-        '$project': {
-          '_id': 0,
-          'events': 1,
+        $project: {
+          _id: 0,
+          events: 1,
         },
       },
     ]);
@@ -209,23 +241,22 @@ export class EventService {
   }
 
   async update(eventId: string, eventDto: EventDto): Promise<any> {
-    const updatedEventFromOrganization =
-      await this.eventModel.findOneAndUpdate(
-        { '_id': eventId },
-        {
-          $set: {
-            'title': eventDto?.title,
-            'description': eventDto?.description,
-            'content': eventDto?.content,
-            'tags': eventDto?.tags,
-            'eventDate': eventDto?.eventDate,
-          },
+    const updatedEventFromOrganization = await this.eventModel.findOneAndUpdate(
+      { _id: eventId },
+      {
+        $set: {
+          title: eventDto?.title,
+          description: eventDto?.description,
+          content: eventDto?.content,
+          tags: eventDto?.tags,
+          eventDate: eventDto?.eventDate,
         },
-        {
-          new: true,
-          runValidators: true,
-        }
-      );
+      },
+      {
+        new: true,
+        runValidators: true,
+      }
+    );
 
     if (!updatedEventFromOrganization)
       throw new HttpException(
@@ -237,12 +268,11 @@ export class EventService {
   }
 
   async archive(eventId: string, isActive: boolean): Promise<any> {
-
     const updatedArchive = await this.eventModel.findOneAndUpdate(
-      { '_id': new Types.ObjectId(eventId) },
+      { _id: new Types.ObjectId(eventId) },
       {
         $set: {
-          'isActive': isActive,
+          isActive: isActive,
         },
       },
       {
@@ -250,7 +280,6 @@ export class EventService {
         runValidators: true,
       }
     );
-
 
     if (!updatedArchive)
       throw new HttpException(

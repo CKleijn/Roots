@@ -50,9 +50,11 @@ describe('Auth controller', () => {
       emailAddress: 'test@test.com',
       password: 'password',
       isActive: true,
+      isVerified: true,
       createdAt: new Date(),
       lastLoginTimestamp: new Date(),
       organization: exampleOrganization._id,
+      isVerified: true
     };
 
     const loginResponse: any = {

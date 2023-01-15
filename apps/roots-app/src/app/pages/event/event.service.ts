@@ -27,12 +27,12 @@ export class EventService {
     ) as Observable<Event[]>;
   }
 
-  getEventsPerPage(old_records: number, new_records: number, organizationId: string): Observable<any[]> {
-    return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?old_records=${old_records}&new_records=${new_records}`) as Observable<any[]>;
+  getEventsPerPage(old_records: number, new_records: number, organizationId: string, show_archived_events: boolean): Observable<any[]> {
+    return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?old_records=${old_records}&new_records=${new_records}&show_archived_events=${show_archived_events}`) as Observable<any[]>;
   }
 
-  getEventsByTerm(term: string, organizationId: string): Observable<any> {
-    return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?term=${term}`)
+  getEventsByTerm(term: string, organizationId: string, show_archived_events: boolean): Observable<any> {
+    return this.httpClient.get(environment.SERVER_API_URL + `/events/${organizationId}/filter?term=${term}&show_archived_events=${show_archived_events}`)
   }
 
   getEventById(eventId: string): Observable<Event> {

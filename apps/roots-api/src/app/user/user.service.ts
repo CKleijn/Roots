@@ -63,6 +63,20 @@ export class UserService {
     return user;
   }
 
+  async setPassword(userId: string, password: string) {
+    const encryptedPassword = await bcrypt.hashSync(password, 10);
+
+    const user = await this.userModel.findOneAndUpdate(
+      { _id: userId },
+      { password: encryptedPassword }
+    );
+
+    if (!user)
+      throw new HttpException('Gebruiker bestaat niet!', HttpStatus.NOT_FOUND);
+
+    return user;
+  }
+
   async verifyAccount(userId: string) {
     const user = await this.userModel.findOneAndUpdate({ _id: userId }, [
       { $set: { isVerified: true } },

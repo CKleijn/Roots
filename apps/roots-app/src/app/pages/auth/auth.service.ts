@@ -133,6 +133,55 @@ export class AuthService {
       );
   }
 
+  sendForgotPasswordMail(emailAddress: string) {
+    return this.http
+      .post<User>(
+        `${environment.SERVER_API_URL}/auth/forgot_password`,
+        { emailAddress },
+        {
+          headers: this.headers,
+        }
+      )
+      .pipe(
+        map(() => {
+          this.toastr.success(
+            'Bekijk je mailbox voor het opnieuw instellen van je wachtwoord!',
+            'Wachtwoord vergeten mail gestuurd!'
+          );
+        }),
+        catchError((err: any) => {
+          this.toastr.error(
+            err.error.message,
+            'Wachtwoord vergeten mail versturen gefaald!'
+          );
+          return of(undefined);
+        })
+      );
+  }
+
+  resetPassword(tokenId: string, password: string) {
+    return this.http
+      .post<User>(
+        `${environment.SERVER_API_URL}/auth/reset_password`,
+        { tokenId, password },
+        {
+          headers: this.headers,
+        }
+      )
+      .pipe(
+        map(() => {
+          this.toastr.success(
+            'Je hebt je wachtwoord succesvol opnieuw ingesteld!',
+            'Wachtwoord instellen succesvol!'
+          );
+        }),
+        catchError((err: any) => {
+          this.toastr.error(err.error.message, 'Wachtwoord instellen gefaald!');
+          return of(undefined);
+        })
+      );
+  }
+
   validateToken(userData: User): Observable<User | undefined> {
     const url = `${environment.SERVER_API_URL}/auth/profile`;
     const httpOptions = {

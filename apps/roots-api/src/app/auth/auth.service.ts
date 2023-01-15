@@ -32,7 +32,6 @@ export class AuthService {
       if (user.isVerified) {
         await this.userService.setLastLoginTimeStamp(user._id.toString());
       }
-
       return user;
     }
 
@@ -125,6 +124,52 @@ export class AuthService {
       status: 200,
       message: 'Verification Email has been sent!',
     };
+  }
+
+  async forgotPasswordMail(emailAddress: string) {
+    //retrieve user + check if exists
+    const user = await this.userService.findByEmailAddress(emailAddress);
+
+    //delete previous tokens (if there are any)
+    await this.tokenService.delete(user._id.toString(), 'password_reset');
+
+    //create new token
+    const token = await this.tokenService.create(
+      'password_reset',
+      user._id.toString()
+    );
+
+    //send email with link for password reset
+    await this.mailService.SendPasswordResetMail(
+      user.emailAddress,
+      user.firstname,
+      token._id.toString()
+    );
+
+    return {
+      status: 200,
+      message: 'Reset Password Email has been sent!',
+    };
+  }
+
+  async resetPassword(tokenId: string, password: string) {
+    //retrieve user + check if exists
+    const token = await this.tokenService.getById(tokenId);
+
+    //delete previous tokens (if there are any)
+    await this.tokenService.delete(token.userId.toString(), 'password_reset');
+
+    if (token.expirationDate > new Date()) {
+      //reset password
+      await this.userService.setPassword(token.userId.toString(), password);
+
+      return {
+        status: 200,
+        message: 'Password has been reset!',
+      };
+    } else {
+      throw new HttpException('Token is ongeldig!', HttpStatus.BAD_REQUEST);
+    }
   }
 
   async login(user: any) {
