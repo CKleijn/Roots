@@ -4,7 +4,7 @@ export const environment = {
   production: true,
   //online
 
-  API_URL: 'mongodb+srv://admin:7FTchkFkFavo1j3g@cluster0.ygjk7ng.mongodb.net/?retryWrites=true&w=majority',
+  API_URL: `mongodb+srv://admin:${password}@cluster0.ygjk7ng.mongodb.net/?retryWrites=true&w=majority`,
   APPLICATION_URL: 'https://ih-roots.netlify.app',
 
   //mailing
