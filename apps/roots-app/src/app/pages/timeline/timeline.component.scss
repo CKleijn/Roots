@@ -1,0 +1,397 @@
+$primary-color: #FBA92C;
+$secondary-color: #ffffff;
+$background-color: #E8ECFF;
+
+// area around search bar
+.search {
+  width: 100%;
+  height: 350px;
+}
+
+//area around search bar
+.search-form {
+  position: absolute;
+  background-color: $primary-color;
+  width: inherit;
+  height: inherit;
+  z-index: 3;
+  text-align: center;
+  display: table-cell;
+  vertical-align: middle;
+}
+
+//area around search bar, centered
+.search-form-container {
+  position: absolute;
+  width: 100%;
+  top: 30%;
+  background-color: transparent;
+}
+
+.input-group {
+  position: absolute;
+  left: 50%;
+  transform: translateX(-50%);
+  width: max-content;
+}
+
+.search-title {
+  text-align: center;
+  color: #ffffff;
+}
+
+.searchbar-container {
+  width: 550px;
+  max-height: 40px;
+}
+
+.search-searchbar {
+  margin: 0;
+  border: none;
+  background-color: $secondary-color;
+  width: 100%;
+  height: 41px;
+  font-size: 20px;
+  color: #000;
+
+  //search bar on mouse focus
+  &:focus {
+    outline: none;
+    border: none;
+    caret-color: #000;
+  }
+}
+
+//submit button
+.search-submit {
+  width: 40px;
+  height: 40px;
+  border: none;
+  padding-left: 5px;
+  background-color: $secondary-color;
+}
+
+.search-submit-dropdown {
+  @extend .search-submit;
+  width: 100px;
+}
+
+//button icon
+.search-submit-icon {
+  height: 20px;
+  width: 20px;
+}
+
+.search-submit-dropdown-ul {
+  padding: 0 !important;
+  margin: 0 !important;
+}
+
+ul {
+  background-color: #FFF;
+  vertical-align: middle;
+  display: inline-block;
+  z-index: 10;
+}
+
+ul li {
+  padding: 0 !important;
+  margin: 0 !important;
+  list-style: none;
+  text-decoration: none;
+  position: relative;
+}
+
+li a {
+  color: black;
+}
+
+li:hover {
+  cursor: pointer;
+}
+
+ul li ul {
+  padding: 0 !important;
+  margin: 0 !important;
+  visibility: hidden;
+  opacity: 0;
+  position: absolute;
+  display: none;
+  background: none;
+  width: 80px;
+  height: 40px;
+}
+
+ul li:hover>ul {
+  visibility: visible;
+  opacity: 1;
+  display: block;
+}
+
+ul li ul li:hover {
+  color: $primary-color;
+}
+
+ul li ul li {
+  margin: 5px -90px -6px -8px !important;
+  padding: 6px 90px 6px 8px !important;
+  transition: all 0.5s ease;
+  text-align: start;
+  position: absolute;
+  width: inherit;
+  height: inherit;
+  background-color: #FFF;
+}
+
+
+.input-group-prepend {
+  height: 41px !important;
+  background-color: #fff;
+}
+
+.tag-group {
+  z-index: -1;
+}
+
+//area around timeline
+.timeline {
+  position: relative;
+  max-width: 1500px;
+  margin: 50px auto;
+
+  //vertical line
+  &::before {
+    content: '';
+    position: absolute;
+    width: 6px;
+    height: 100%;
+    background-color: #FFF;
+    top: 0%;
+    left: 50%;
+    transform: translateX(-50%);
+    z-index: -1;
+  }
+
+  //little dot on top of the line
+  &::after {
+    content: '';
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: $primary-color;
+    top: -20px;
+    left: 50%;
+    transform: translateX(-50%);
+    border-radius: 50%;
+    border: 2px solid #FFF;
+  }
+}
+
+//container for a timeline item
+.timeline-container {
+  padding: 0 50px;
+  position: relative;
+  width: 50%;
+  display: none;
+
+  >.timeline-year {
+    position: absolute;
+    padding: 0.2rem 0;
+    width: 70px;
+    right: -35px;
+    text-align: center;
+    border: 2px solid $primary-color;
+    background-color: white;
+    z-index: 1;
+    font-weight: bold;
+  }
+
+  //date-circle on the line
+  >.timeline-icon {
+    position: absolute;
+    width: 70px;
+    height: 70px;
+    border-radius: 50%;
+    background-color: #FFF;
+    right: -35px;
+    top: 2.6rem;
+    z-index: 1;
+
+    //content of a date-circle
+    >.timeline-icon-content {
+      position: absolute;
+      left: 50%;
+      top: 5px;
+      transform: translateX(-50%);
+      text-align: center;
+      padding: 0;
+      margin: 0;
+
+      //day of the event inside date-circle
+      >.timeline-icon-content-day {
+        font-size: 35px;
+        line-height: 1.2;
+      }
+
+      //month of the event inside date-circle
+      >.timeline-icon-content-month {
+        position: absolute;
+        top: 34px;
+        left: 50%;
+        transform: translateX(-50%);
+      }
+    }
+
+    //triangle that connects an event to a date-circle
+    &::after {
+      content: '';
+      position: absolute;
+      top: 50%;
+      transform: translateY(-50%);
+      z-index: 10;
+      border-top: 15px solid transparent;
+      border-bottom: 15px solid transparent;
+    }
+  }
+
+
+  >.timeline-icon-archived {
+    @extend .timeline-icon;
+    opacity: 70%;
+  }
+}
+
+//items placed left of the timeline
+.left {
+  left: 0;
+
+  //triangle points right for left events
+  >.timeline-icon::after {
+    right: 100%;
+    border-left: 15px solid #FFF;
+  }
+
+}
+
+//items placed right of the timeline
+.right {
+  left: 50%;
+
+  >.timeline-year {
+    right: 0;
+    left: -35px;
+  }
+
+  //place icon of right sided events on the timeline
+  >.timeline-icon {
+    left: -35px;
+
+    //triangle points left for right events
+    &::after {
+      left: 100%;
+      border-right: 15px solid #FFF;
+    }
+  }
+
+  >.timeline-textbox>.detail-button-container {
+    text-align: end;
+  }
+}
+
+//container for timeline item text
+.timeline-textbox {
+  padding: 18px 25px;
+  background-color: #FFF;
+  position: relative;
+  font-size: 15px;
+  border: 3px solid;
+  border-color: white;
+}
+
+.timeline-textbox-archived {
+  @extend .timeline-textbox;
+  opacity: 70%;
+}
+
+.detail-button {
+  padding: 10px 30px;
+  outline: 0;
+  border: 2px solid $primary-color;
+  background-color: transparent;
+  position: relative;
+  z-index: 1;
+  font-size: 19px;
+  font-weight: 500;
+  color: $primary-color;
+
+  &:hover {
+    background-color: $primary-color;
+    color: #FFF
+  }
+}
+
+.timeline-container-seen {
+  @extend .timeline-container;
+  display: block;
+}
+
+@keyframes slide-up {
+  0% {
+    margin-top: 500px;
+  }
+}
+
+@media (prefers-reduced-motion: no-preference) {
+  .timeline-container {
+    animation: slide-up 1s 1;
+  }
+}
+
+//changes values when using smaller screen
+@media screen and (max-width: 800px) {
+
+  .searchbar-container {
+    width: 250px;
+  }
+
+  .timeline {
+    margin: 50px auto 50px 30px;
+
+    &::before,
+    &::after {
+      left: 35px;
+    }
+  }
+
+  .timeline-container {
+    width: 100%;
+  }
+
+  .timeline-textbox {
+    margin: 1rem 0 1rem 35px;
+  }
+
+  .right,
+  .right>.timeline-icon {
+    left: 0%;
+
+    >.timeline-textbox>.detail-button-container {
+      text-align: start;
+    }
+  }
+
+  .left>.timeline-icon {
+    left: 0%;
+
+    &::after {
+      left: 100%;
+      border-right: 15px solid #FFF;
+      border-left: none;
+    }
+  }
+
+  .timeline-year {
+    left: -35px;
+    transform: translateX(35px);
+  }
+}

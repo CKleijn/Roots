@@ -1,0 +1,148 @@
+<div class="search">
+  <form class="search-form">
+    <div class="search-form-container">
+      <h1 class="search-title">Vind alles over uw organisatie</h1>
+
+
+      <div class="input-group">
+        <!-- terms searchbar -->
+        <div class="searchbar-container" *ngIf="searchType === 'terms'">
+
+          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
+            [formControl]="termCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto" [(ngModel)]="searchterm" />
+
+          <mat-autocomplete #auto="matAutocomplete">
+            <mat-option *ngFor="let title of eventTitleOptions" [value]="title">
+              {{ title }}
+            </mat-option>
+          </mat-autocomplete>
+
+        </div>
+
+        <!-- tags searchbar -->
+        <div class="searchbar-container" *ngIf="searchType === 'tags'">
+
+          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
+            [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"
+            [(ngModel)]="searchterm" />
+
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+            <div *ngIf="searchType === 'tags'">
+              <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
+                {{ tag }}
+              </mat-option>
+            </div>
+          </mat-autocomplete>
+
+        </div>
+
+        <div class="input-group-prepend">
+
+          <button class="search-submit-dropdown">
+            <ul class="search-submit-dropdown-ul">
+              <li class="search-submit-dropdown-li">
+                <span *ngIf="searchType === 'terms'">Termen</span>
+                <span *ngIf="searchType === 'tags'">Tags</span>
+                &dtrif;
+                <ul class="dropdown">
+                  <li>
+                    <span (click)="switchSearchType('tags')" *ngIf="searchType === 'terms'">Tags</span>
+                    <span (click)="switchSearchType('terms')" *ngIf="searchType === 'tags'">Termen</span>
+                  </li>
+                </ul>
+              </li>
+            </ul>
+          </button>
+
+
+          <button type="submit" class="search-submit" (click)="reset()">
+            <i class="bi bi-arrow-clockwise"></i>
+          </button>
+          <button class="search-submit" (click)="openFilter()">
+            <i class="bi bi-funnel"></i>
+          </button>
+          <button *ngIf="searchType === 'tags'" type="submit" class="search-submit" (click)="searchOnTag()">
+            <i class="bi bi-search"></i>
+          </button>
+          <button *ngIf="searchType === 'terms'" type="submit" class="search-submit" (click)="searchOnTerm()">
+            <i class="bi bi-search"></i>
+          </button>
+        </div>
+
+      </div>
+
+      <div class="input-group tag-group mt-5 mr-3">
+        <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
+          <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
+            {{ tag }}
+            <button matChipRemove [attr.aria-label]="'remove ' + tag">
+              <mat-icon><i class="bi bi-x"></i></mat-icon>
+            </button>
+          </mat-chip-row>
+        </mat-chip-grid>
+      </div>
+
+    </div>
+
+  </form>
+
+</div>
+
+<div *ngIf="events.length > 0" class="timeline" infinite-scroll [infiniteScrollDistance]="distance"
+  [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
+  <div *ngFor="let event of events; let left = even; let right = odd" [ngClass]="{ right: right, left: left }"
+    class="timeline-container">
+    <div class="timeline-year" id="timeline-year-{{ event._id }}">
+      <span class="timeline-year-content">{{
+        event.eventDate.getFullYear()
+        }}</span>
+    </div>
+    <div [ngClass]="!event.isActive ? 'timeline-icon-archived' : 'timeline-icon'">
+      <div class="timeline-icon-content">
+        <span class="timeline-icon-content-day">
+          {{ event.eventDate.getDate() }}
+        </span>
+        <span class="timeline-icon-content-month">
+          {{ event.eventDate.toLocaleString('default', { month: 'short' }) }}
+        </span>
+      </div>
+    </div>
+    <div [ngClass]="!event.isActive ? 'timeline-textbox-archived' : 'timeline-textbox'">
+      <h2>{{ event.title }}</h2>
+      <p>
+        {{ event.description.slice(0, 150) }}
+        <span *ngIf="event.description.length > 150">...</span>
+      </p>
+      <div class="detail-button-container">
+        <button class="btn" routerLink="/organizations/{{ loggedInUser.organization }}/events/{{
+            event._id
+          }}">
+          Lees meer
+        </button>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="this.events.length === 0 && this.searchRequest" style="padding: 20px">
+  <div class="row">
+    <div class=" col-sm-12 col-md-6 offset-3">
+      <div class="timeline-textbox">
+        <h2>Oeps!</h2>
+        <p>Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de filter(s)!</p>
+      </div>
+    </div>
+  </div>
+</div>
+
+<div *ngIf="this.events.length === 0 && !this.searchRequest" style="padding: 20px">
+  <div class="row">
+    <div class=" col-sm-12 col-md-6 offset-3">
+      <div class="timeline-textbox">
+        <h2>Oeps!</h2>
+        <p>Er zijn op het moment geen gebeurtenissen aanwezig voor deze organisatie!</p>
+      </div>
+    </div>
+  </div>
+</div>

@@ -1,0 +1,84 @@
+<nav class="navbar navbar-expand-lg navbar-expand-md stroke">
+  <div class="container-fluid">
+    <button
+      class="navbar-toggler"
+      type="button"
+      data-bs-toggle="collapse"
+      data-bs-target="#navbarNav"
+      aria-controls="navbarNav"
+      aria-expanded="false"
+      aria-label="Toggle navigation"
+    >
+      <span class="navbar-toggler-icon"></span>
+    </button>
+
+    <div class="collapse navbar-collapse" id="navbarNav">
+      <ul style="margin-bottom: 0" class="mx-auto navbar-nav">
+        <li>
+          <a
+            routerLink="organizations/{{ currentUser.organization }}/timeline"
+            *ngIf="currentUser !== undefined && currentUser !== null"
+            >Tijdlijn</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="organizations/{{ currentUser.organization }}/events/new"
+            *ngIf="currentUser !== undefined && currentUser !== null"
+            >Gebeurtenis toevoegen</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="organizations/{{ currentUser.organization }}"
+            *ngIf="currentUser !== undefined && currentUser !== null"
+            >Organisatie</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/login"
+            *ngIf="currentUser === undefined || currentUser === null"
+            >Inloggen</a
+          >
+        </li>
+        <li>
+          <a
+            routerLink="/register"
+            *ngIf="currentUser === undefined || currentUser === null"
+            >Registreren</a
+          >
+        </li>
+        <li>
+          <a
+            class="logout-button"
+            *ngIf="currentUser !== undefined && currentUser !== null"
+            (click)="open(content)"
+            >Uitloggen</a
+          >
+        </li>
+      </ul>
+    </div>
+  </div>
+</nav>
+
+<ng-template #content let-modal>
+  <div class="modal-header">
+    <h4 class="modal-title" id="modal-basic-title">Uitloggen</h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
+  </div>
+  <div class="modal-body">
+    <span>Weet je zeker dat je uit wil loggen?</span>
+  </div>
+  <div class="modal-footer">
+    <button type="button" class="btn" (click)="modal.dismiss()">
+      Annuleren
+    </button>
+    <button type="button" class="btn" (click)="logout()">Uitloggen</button>
+  </div>
+</ng-template>

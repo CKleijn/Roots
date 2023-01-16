@@ -1,0 +1,316 @@
+//imports
+@import '~@angular/material/prebuilt-themes/indigo-pink.css';
+@import '~bootstrap/dist/css/bootstrap.css';
+@import 'quill-emoji/dist/quill-emoji.css';
+@import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
+
+$primary-color: #fba92c;
+$secondary-color: #ffffff;
+$background-color: #e6e6e6;
+$white: #ffffff;
+$black: #000000;
+$error: #dc3545;
+
+body {
+  background-color: $background-color !important;
+  font-family: 'Montserrat', sans-serif !important;
+  scroll-behavior: smooth;
+
+  h1,
+  h2,
+  h3,
+  h4,
+  h5,
+  h6 {
+    font-weight: bold;
+    color: $black;
+  }
+
+  a {
+    color: $primary-color;
+  }
+
+  .p-0 > .ql-container > .ql-editor {
+    padding: 0px !important;
+  }
+
+  .pl-2 {
+    padding-left: 8px;
+  }
+
+  .toast-container .ngx-toastr {
+    margin-bottom: 15px;
+  }
+
+  input:focus-visible {
+    border-color: $primary-color !important;
+  }
+
+  .text-link {
+    color: $primary-color;
+    text-decoration: none;
+
+    &:hover {
+      color: #fcc776;
+    }
+  }
+
+  .form-divider {
+    background: $black;
+    height: 1px;
+    position: relative;
+    border: none;
+    margin: 5px 0;
+    opacity: 0.6 !important;
+  }
+
+  #input-invalid {
+    margin-bottom: 0 !important;
+  }
+
+  .--organization-form-group {
+    margin-top: 30px;
+  }
+
+  .is-invalid-eye {
+    background-color: $error !important;
+    border: 1px solid $error !important;
+  }
+
+  .input-group-text {
+    background-color: $primary-color;
+    color: $white;
+    border: 1px solid $primary-color;
+
+    &:hover {
+      background-color: #fcc776;
+      border-color: #fcc776;
+    }
+  }
+
+  .submit-btn {
+    width: 100%;
+    height: 100%;
+    border-radius: 0;
+    border: 2px solid;
+    border-color: black !important;
+    color: black !important;
+    background-color: transparent !important;
+    font-size: 16px;
+    font-weight: 600;
+
+    &:hover {
+      color: white !important;
+      background-color: black !important;
+    }
+  }
+
+  .btn-close {
+    &:focus {
+      box-shadow: none;
+    }
+  }
+
+  .card {
+    border-radius: 0px !important;
+  }
+
+  .invalid-feeback {
+    color: red !important;
+  }
+
+  .form-control {
+    border-radius: 0px !important;
+  }
+
+  .form-control:focus,
+  input:focus-visible {
+    outline: none !important;
+    box-shadow: none !important;
+  }
+
+  .charCount {
+    float: right;
+    font-size: 12px;
+  }
+
+  .mdc-floating-label--required {
+    display: none !important;
+  }
+
+  .btn {
+    background-color: $primary-color !important;
+    border-color: $primary-color !important;
+    border-width: 3px !important;
+    border-radius: 0px !important;
+    color: #ffffff !important;
+  }
+
+  .btn:hover {
+    border-color: $primary-color !important;
+    background-color: #ffffff !important;
+    color: $primary-color !important;
+  }
+
+  .btn-100 {
+    width: 100% !important;
+  }
+
+  iframe {
+    width: 100vw !important;
+    height: 45vh !important;
+  }
+
+  .ql-editor {
+    min-height: 200px !important;
+  }
+
+  .ql-editor > p > a {
+    color: $primary-color !important;
+    text-decoration: none !important;
+  }
+
+  #tab-panel {
+    justify-content: unset !important;
+    padding: 7px !important;
+  }
+
+  .ql-container {
+    font-family: 'Montserrat', sans-serif !important;
+  }
+
+  .ql-tooltip {
+    top: 0% !important;
+    left: 38% !important;
+    right: 1% !important;
+    text-align: center;
+  }
+
+  .ql-tooltip[data-mode='video']::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode='link']::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip::before {
+    content: 'Acties:' !important;
+  }
+
+  .ql-tooltip[data-mode='video']::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode='link']::before {
+    content: 'Voer link in:' !important;
+  }
+
+  .ql-tooltip[data-mode='video'] a.ql-action::after {
+    content: 'Voeg toe' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip[data-mode='link'] a.ql-action::after {
+    content: 'Voeg toe' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip a.ql-action::after {
+    content: 'Bewerken' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip a.ql-remove::before {
+    content: 'Verwijderen' !important;
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip .ql-preview {
+    color: $primary-color !important;
+  }
+
+  .ql-tooltip > input::placeholder {
+    color: $white !important;
+  }
+
+  .quill-upload-progress {
+    opacity: 1 !important;
+  }
+
+  //Checkbox
+
+  .checkbox-container {
+    display: block;
+    position: relative;
+    padding-left: 35px;
+    padding-top: 1px;
+    cursor: pointer;
+    -webkit-user-select: none;
+    -moz-user-select: none;
+    -ms-user-select: none;
+    user-select: none;
+  }
+
+  .checkbox-container input {
+    position: absolute;
+    opacity: 0;
+    cursor: pointer;
+    height: 0;
+    width: 0;
+  }
+
+  .checkmark {
+    position: absolute;
+    top: 0;
+    left: 0;
+    height: 25px;
+    width: 25px;
+    background-color: #eee;
+  }
+
+  .checkbox-container:hover input ~ .checkmark {
+    background-color: #ced4da;
+  }
+
+  .checkbox-container input:checked ~ .checkmark {
+    background-color: $primary-color;
+  }
+
+  .checkmark:after {
+    content: '';
+    position: absolute;
+    display: none;
+  }
+
+  .checkbox-container input:checked ~ .checkmark:after {
+    display: block;
+  }
+
+  .checkbox-container .checkmark:after {
+    left: 9px;
+    top: 3px;
+    width: 8px;
+    height: 16px;
+    border: solid $white;
+    border-width: 0 3px 3px 0;
+    -webkit-transform: rotate(45deg);
+    -ms-transform: rotate(45deg);
+    transform: rotate(45deg);
+  }
+
+  //END Checkbox
+
+  // Detail
+  .detail-label {
+    background-color: $primary-color !important;
+    border-color: $primary-color !important;
+    border-width: 3px !important;
+    border-radius: 0px !important;
+    color: #ffffff !important;
+    padding-left: 10px;
+    padding-right: 10px;
+    padding-top: 5px;
+    padding-bottom: 5px;
+  }
+}
