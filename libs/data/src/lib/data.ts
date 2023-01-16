@@ -14,6 +14,7 @@ export interface IOrganization {
   name: string;
   emailDomain: string;
   events: Types.ObjectId[];
+  logs: ILog[];
 }
 
 export interface IEvent {
@@ -33,6 +34,13 @@ export interface IToken {
   expirationDate: Date;
 }
 
+
+export interface ILog{
+  editor: string;
+  action: string;
+  object: string;
+  logStamp: Date;
+}
 // CLASSES
 export class User implements IUser {
   _id = new Types.ObjectId();
@@ -52,7 +60,8 @@ export class Organization implements IOrganization {
   name = '';
   emailDomain = '';
   events = [] as Types.ObjectId[];
-  tags = [] as Types.ObjectId[]
+  tags = [] as Types.ObjectId[];
+  logs = [] as ILog[]
 }
 
 export class Event implements IEvent {
@@ -69,4 +78,12 @@ export class Tag implements ITag {
   _id = new Types.ObjectId();
   name = '';
   organization = new Types.ObjectId();
+}
+
+
+export class Log implements ILog {
+  editor = '';
+  action = '';
+  object = '';
+  logStamp = new Date();
 }
