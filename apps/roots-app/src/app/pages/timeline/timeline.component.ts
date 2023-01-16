@@ -129,6 +129,10 @@ export class TimelineComponent
       )
     );
     // Add default filter values
+
+    console.log(this.searchType);
+    console.log(localStorage.getItem('searchType'))
+
     this.searchType = localStorage.getItem('searchType') || 'terms';
     localStorage.setItem('searchType', this.searchType);
 
@@ -251,7 +255,11 @@ export class TimelineComponent
           );
         }
 
-        data.radioValue && (this.radioValue = data.radioValue);
+        if(data.radioValue){
+          localStorage.setItem('radioValue', data.radioValue)
+          this.radioValue = data.radioValue;
+        }
+
         this.events = this.getAllEvents();
       }
     });
@@ -311,6 +319,9 @@ export class TimelineComponent
     this.searchType = 'terms';
     this.searchterm = '';
     this.showArchivedEvents = false;
+    localStorage.setItem('radioValue', this.radioValue);
+    localStorage.setItem('searchType', this.searchType);
+    localStorage.setItem('showArchivedEvents', JSON.stringify(false));
     this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!');
   }
 
