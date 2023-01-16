@@ -1,0 +1,35 @@
+name: "Deploy to Netlify"
+
+on: 
+  push:
+    branches:
+    - main
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+    steps:
+    - uses: actions/checkout@v2
+    - name: Use Node.js 18.x
+      uses: actions/setup-node@v2
+      with:
+        node-version: 18.x
+        cache: 'npm'
+        cache-dependency-path: package-lock.json
+    - name: Installeer alle packages
+      run: npm i
+#     - name: Run tests
+#       run: npm run test
+    - name: Build file
+      run: npm run build
+      
+
+    # deploy the application to netlify
+    - name: Deploy to netlify
+      uses: netlify/actions/cli@master
+      env:
+        NETLIFY_AUTH_TOKEN: ${{ secrets.NETLIFY_AUTH_TOKEN }}
+        NETLIFY_SITE_ID: ${{ secrets.NETLIFY_SITE_ID }}
+      with:
+        args: deploy --dir=dist/apps/roots-app
+        secrets: '["NETLIFY_AUTH_TOKEN", "NETLIFY_SITE_ID"]'   
