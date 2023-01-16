@@ -86,7 +86,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     // get log
     this.logSubscription = this.organizationService.log(this.loggedInUser.organization.toString())
       .subscribe((log) => {this.dataSource = new MatTableDataSource(log.logs);
-      console.log(log.logs)}
+      console.log('ORG COMP ',log.logs)}
       )
     
   }
@@ -118,6 +118,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   }
 
   async editTag(newTag: string) {
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let duplicate: boolean = false;
 
     for await (const tag of this.tags) {
@@ -133,6 +134,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
       }
       this.editSubscription = this.tagService.putTag(updateTag, this.editTagId).subscribe();
       this.modalService.dismissAll();
+      this.organizationService.logCreate(this.loggedInUser, 'Gewijzigd', '(T) ' + updateTag.name).subscribe()
 
       this.ngOnInit();
     } else {

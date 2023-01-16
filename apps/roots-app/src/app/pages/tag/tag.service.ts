@@ -8,6 +8,7 @@ import { Tag } from './tag.model';
 import { ToastrService } from 'ngx-toastr';
 import { AuthService } from "../auth/auth.service";
 import { environment } from "apps/roots-app/src/environments/environment.prod";
+import { OrganizationService } from "../organization/organization.service";
 
 @Injectable({
     providedIn: 'root'

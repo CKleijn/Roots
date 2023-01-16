@@ -1,4 +1,4 @@
-import { Body, Controller, Get, Logger, Param, Post } from '@nestjs/common';
+import { Body, Controller, Get, Logger, Param, Post, Put } from '@nestjs/common';
 import { Public } from '../auth/auth.module';
 import { ParseObjectIdPipe } from '../shared/pipes/ParseObjectIdPipe';
 import { LogDTO } from './log.dto';
@@ -6,12 +6,12 @@ import { Log } from './log.schema';
 import { LogService } from './log.service';
 
 
-@Controller()
+@Controller('log')
 export class LogController {
   constructor(private readonly logService: LogService) { }
 
   @Public()
-  @Get('log/:organizationId')
+  @Get(':organizationId')
   async getAll(@Param('organizationId') organizationId: string): Promise<Log[]> {
     Logger.log(`Retrieve logs (READ)`);
 
@@ -19,8 +19,14 @@ export class LogController {
   }
 
   @Public()
-  @Post('log/:organizationId')     
+  @Put(':organizationId')     
   async createLog(@Param('organizationId') organizationId: string, @Body() logDto:LogDTO): Promise<Log> {
+    console.log(organizationId)
+    console.log(logDto)
     return await this.logService.create(organizationId,logDto);
   }
+
+
+
+
 }    

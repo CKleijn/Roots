@@ -23,8 +23,6 @@ export class LogService {
   }
 
   async create(organizationId:string, logDto:LogDTO ): Promise<Log> {
-    
-
     return await this.organizationModel.findOneAndUpdate(
         {organizationId},
         {

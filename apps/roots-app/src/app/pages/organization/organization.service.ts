@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Organization, User } from '@roots/data';
+import { ILog, Log, Organization, User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -25,11 +26,10 @@ export class OrganizationService {
   }
 
   getById(organizationId: string): Observable<Organization> {
-    return this.httpClient
-      .get(
-        environment.SERVER_API_URL + `/organizations/${organizationId}`,
-        this.authService.getHttpOptions()
-      ) as Observable<Organization>
+    return this.httpClient.get(
+      environment.SERVER_API_URL + `/organizations/${organizationId}`,
+      this.authService.getHttpOptions()
+    ) as Observable<Organization>;
   }
 
   create(organization: Organization): Observable<any> {
@@ -83,19 +83,14 @@ export class OrganizationService {
       ) as Observable<Object>;
   }
 
-  log(organizationId:string): Observable<any> {
+  log(organizationId: string): Observable<any> {
     return this.httpClient
       .get(
-        environment.SERVER_API_URL + '/log/' + organizationId ,
+        environment.SERVER_API_URL + '/log/' + organizationId,
         this.authService.getHttpOptions()
       )
       .pipe(
         map((log: any) => {
-         
-          this.toastr.success(
-            `Je hebt het account succesvol ${status}`,
-            'Account status veranderd'
-          );
           return log;
         }),
         catchError((err: any) => {
@@ -103,7 +98,41 @@ export class OrganizationService {
           this.toastr.error(err.error.message, 'Log is niet gevonden');
           return of(undefined);
         })
-        // eslint-disable-next-line @typescript-eslint/ban-types
+      ) as Observable<Object>;
+  }
+
+  logCreate(
+    loggedInUser: User,
+    action: string,
+    object: string
+  ): Observable<any> {
+    const log: Log = {
+      editor: loggedInUser.firstname + ' ' + loggedInUser.lastname,
+      action: action,
+      object: object,
+      logStamp: new Date(),
+    };
+    console.log('APP - SERV ', log);
+
+    const organizationId = loggedInUser.organization.toString();
+
+    return this.httpClient
+      .put(
+        environment.SERVER_API_URL + '/log/' + organizationId,
+        log,
+        this.authService.getHttpOptions()
+      )
+      .pipe(
+        map((organization) => {
+          this.toastr.success('log aangemaakt');
+
+          return organization;
+        }),
+        catchError((err: any) => {
+          window.scroll(0, 0);
+          this.toastr.error(err.error.message, 'Log mislukt');
+          return of(undefined);
+        })
       ) as Observable<Object>;
   }
 }
