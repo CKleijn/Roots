@@ -303,8 +303,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
         if (this.organizationIdString) {
           await this.tagService.postTagInOrganization({ name: tag }, this.organizationIdString).toPromise();
 
-          this.loggedInUser$.subscribe((user) => {
-            const editor = user
+          this.loggedInUser$.subscribe((editor) => {
             this.organizationService.logCreate(editor,'Toegevoegd', '(T) ' + tag).subscribe();
           });
       

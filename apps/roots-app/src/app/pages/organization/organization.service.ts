@@ -68,6 +68,11 @@ export class OrganizationService {
         map((user: any) => {
           const status = user.isActive ? 'geactiveerd' : 'gedeactiveerd';
 
+          this.authService.currentUser$.subscribe((loggedInUser) => {
+            this.logCreate(loggedInUser, user.isActive ? 'Geactiveerd' : 'Gedeactiveerd', '(A) ' + user.firstname + ' ' + user.lastname).subscribe()
+          });
+
+
           this.toastr.success(
             `Je hebt het account succesvol ${status}`,
             'Account status veranderd'
