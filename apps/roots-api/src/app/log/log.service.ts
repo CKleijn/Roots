@@ -16,7 +16,7 @@ export class LogService {
   ) {}
 
   async getAll(organizationId: string): Promise<Log[]> {
-    return await this.organizationModel.find( 
+    return await this.organizationModel.findOne( 
         {organizationId},
         {logs:1}
     );

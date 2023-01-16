@@ -82,4 +82,28 @@ export class OrganizationService {
         // eslint-disable-next-line @typescript-eslint/ban-types
       ) as Observable<Object>;
   }
+
+  log(organizationId:string): Observable<any> {
+    return this.httpClient
+      .get(
+        environment.SERVER_API_URL + '/log/' + organizationId ,
+        this.authService.getHttpOptions()
+      )
+      .pipe(
+        map((log: any) => {
+         
+          this.toastr.success(
+            `Je hebt het account succesvol ${status}`,
+            'Account status veranderd'
+          );
+          return log;
+        }),
+        catchError((err: any) => {
+          window.scroll(0, 0);
+          this.toastr.error(err.error.message, 'Log is niet gevonden');
+          return of(undefined);
+        })
+        // eslint-disable-next-line @typescript-eslint/ban-types
+      ) as Observable<Object>;
+  }
 }

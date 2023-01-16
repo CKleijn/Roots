@@ -1,8 +1,9 @@
 /* eslint-disable prefer-const */
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Organization, User } from '@roots/data';
+import { ILog, Organization, User } from '@roots/data';
 import { Types } from 'mongoose';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
@@ -39,6 +40,14 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   deleteTagId!: string
   deleteTagName!: string
 
+
+  // LOG
+
+  displayedColumnsLog: string[] = ['Gebruiker', 'Actie', 'Object', 'Wanneer'];
+  dataSource: MatTableDataSource<ILog>;
+  logSubscription!: Subscription;
+
+
   constructor(
     private organizationService: OrganizationService,
     private authService: AuthService,
@@ -46,7 +55,14 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private router: Router,
     private toastrService: ToastrService
-  ) { }
+  ) {
+      // get all logs
+      const logs = this.organization?.logs;
+    // Assign the data to the data source for the table to render
+    this.dataSource = new MatTableDataSource(logs);
+
+
+   }
 
   ngOnInit(): void {
     this.authSubscription = this.authService.getUserFromLocalStorage()
@@ -66,6 +82,13 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     // Get organization name
     this.organizationSubscription = this.organizationService.getById(this.loggedInUser.organization.toString())
       .subscribe((organization) => this.organization = organization);
+
+    // get log
+    this.logSubscription = this.organizationService.log(this.loggedInUser.organization.toString())
+      .subscribe((log) => {this.dataSource = new MatTableDataSource(log.logs);
+      console.log(log.logs)}
+      )
+    
   }
 
   changeStatus(id: string) {
@@ -124,6 +147,15 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.ngOnInit();
   }
 
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
   ngOnDestroy(): void {
     this.authSubscription?.unsubscribe;
     this.organizationSubscription?.unsubscribe;
@@ -131,5 +163,6 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.tagsSubscription?.unsubscribe;
     this.editSubscription?.unsubscribe;
     this.deleteSubscription?.unsubscribe;
+    this.logSubscription?.unsubscribe;
   }
 }
