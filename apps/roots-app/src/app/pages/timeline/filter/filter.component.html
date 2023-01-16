@@ -14,7 +14,7 @@
         <h2 class="filter-title">Filter de tijdlijn</h2>
       </div>
       <!-- Filter tags AND/OR -->
-      <div class="filter-row">
+      <div class="filter-row" *ngIf="this.searchType === 'tags'">
         <div class="filter-text-container">
           <h5 class="filter-subtitle">Hoe worden de tags gebruikt?</h5>
           <p class="filter-subtext">Een gebeurtenis moet...</p>

@@ -104,9 +104,13 @@ export class TimelineComponent
     this.getAllEvents();
     // If there is a searchterm - call searchOnTermFilter
     this.termSubscription = this.termCtrl.valueChanges.subscribe(() => {
-      this.searchterm.length > 1
-        ? this.searchOnTermFilter()
-        : (this.eventTitleOptions = []);
+      if (this.searchterm) {
+        this.searchterm.length > 1
+          ? this.searchOnTermFilter()
+          : (this.eventTitleOptions = []);
+      } else {
+        this.eventTitleOptions = [];
+      }
     });
     // Get current user
     this.authSubscription = this.authService
@@ -224,14 +228,17 @@ export class TimelineComponent
       data: {
         showArchivedEvents: this.showArchivedEvents,
         radioValue: this.radioValue,
+        searchType: this.searchType,
       },
     });
     this.dialogSubscription = dialogref.afterClosed().subscribe((data) => {
-      (data.showArchivedEvents === false || data.showArchivedEvents === true) &&
-        (this.showArchivedEvents = data.showArchivedEvents);
+      if (data) {
+        (data.showArchivedEvents === false ||
+          data.showArchivedEvents === true) &&
+          (this.showArchivedEvents = data.showArchivedEvents);
 
-      data.radioValue && (this.radioValue = data.radioValue);
-      this.events = this.getAllEvents();
+        data.radioValue && (this.radioValue = data.radioValue);
+      }
     });
   }
 
