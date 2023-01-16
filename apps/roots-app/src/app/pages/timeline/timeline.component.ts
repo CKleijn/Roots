@@ -130,6 +130,7 @@ export class TimelineComponent
     this.searchType = 'terms';
 
     // Checks if loggedInUser's organization is the same as the url organizationId
+    // If not redirect to correct timeline
     if (this.loggedInUser.organization.toString() !== this.organizationIdUrl?.toString()) {
       this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}/timeline`]);
     }
