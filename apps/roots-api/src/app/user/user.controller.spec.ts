@@ -57,7 +57,6 @@ describe('Auth controller', () => {
         createdAt: new Date(),
         lastLoginTimestamp: new Date(),
         organization: exampleOrganization._id,
-        isVerified: true
       },
       {
         _id: new Types.ObjectId(),
@@ -70,7 +69,6 @@ describe('Auth controller', () => {
         createdAt: new Date(),
         lastLoginTimestamp: new Date(),
         organization: exampleOrganization._id,
-        isVerified: true
       },
     ];
 
@@ -130,7 +128,6 @@ describe('Auth controller', () => {
       createdAt: new Date(),
       lastLoginTimestamp: new Date(),
       organization: exampleOrganization._id,
-      isVerified: true
     };
 
     const getById = jest
@@ -171,11 +168,9 @@ describe('Auth controller', () => {
       password: 'password',
       isActive: true,
       isVerified: true,
-
       createdAt: new Date(),
       lastLoginTimestamp: new Date(),
       organization: exampleOrganization._id,
-      isVerified: true
     };
 
     const create = jest
@@ -224,7 +219,6 @@ describe('Auth controller', () => {
       createdAt: new Date(),
       lastLoginTimestamp: new Date(),
       organization: exampleOrganization._id,
-      isVerified: true
     };
 
     const status = jest
