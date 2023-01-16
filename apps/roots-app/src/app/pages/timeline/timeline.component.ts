@@ -14,7 +14,7 @@ import { FormControl } from '@angular/forms';
 import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
-import { ActivatedRoute, ParamMap } from '@angular/router';
+import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
@@ -50,6 +50,7 @@ export class TimelineComponent
   currentYear = 0;
   loggedInUser!: User;
   organizationId: string | undefined;
+  organizationIdUrl: string | undefined;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
   filteredTags: Observable<string[]> | undefined;
@@ -77,7 +78,8 @@ export class TimelineComponent
     private route: ActivatedRoute,
     private tagService: TagService,
     private dialog: MatDialog,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private router: Router
   ) {}
 
   // Load everything when start up component
@@ -89,7 +91,7 @@ export class TimelineComponent
           this.eventService.getEventsPerPage(
             this.old_records,
             this.new_records,
-            params.get('organizationId')!,
+            this.organizationIdUrl = params.get('organizationId')!,
             this.showArchivedEvents
           )
         )
@@ -129,10 +131,6 @@ export class TimelineComponent
       )
     );
     // Add default filter values
-
-    console.log(this.searchType);
-    console.log(localStorage.getItem('searchType'))
-
     this.searchType = localStorage.getItem('searchType') || 'terms';
     localStorage.setItem('searchType', this.searchType);
 
@@ -144,6 +142,12 @@ export class TimelineComponent
       'showArchivedEvents',
       JSON.stringify(this.showArchivedEvents)
     );
+    
+    // Checks if loggedInUser's organization is the same as the url organizationId
+    // If not redirect to correct timeline
+    if (this.loggedInUser.organization.toString() !== this.organizationIdUrl?.toString()) {
+      this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}/timeline`]);
+    }
   }
 
   // Observer to check if an entry has been seen by the user + some CSS classes
