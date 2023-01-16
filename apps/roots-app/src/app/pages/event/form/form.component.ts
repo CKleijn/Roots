@@ -214,11 +214,19 @@ export class EventFormComponent implements OnInit, OnDestroy {
     if (!this.needContext) {
       if (!this.editMode) {
         this.createSubscription = this.eventService.postEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.organizationIdString as string)).subscribe({
+          next: (event) =>           
+          this.loggedInUser$.subscribe((editor) => {
+            this.organizationService.logCreate(editor,'AANGEMAAKT', '(G) ' + this.eventForm.value.title).subscribe();
+          }),
           error: (error) => this.error = error.message
         })
       }
       else {
         this.updateSubscription = this.eventService.putEvent({ ...this.eventForm.value, tags: allSelectedTags }, (this.eventId as string), (this.organizationIdString as string)).subscribe({
+          next: (event) =>           
+          this.loggedInUser$.subscribe((editor) => {
+            this.organizationService.logCreate(editor,'GEWIJZIGD', '(G) ' + this.eventForm.value.title).subscribe();
+          }),
           error: (error) => this.error = error.message
         })
       }
