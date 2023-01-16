@@ -34,6 +34,11 @@ export class EventService {
         },
       },
       {
+        $sort: {
+          'events.eventDate': -1,
+        },
+      },
+      {
         $group: {
           _id: null,
           events: {
@@ -63,14 +68,7 @@ export class EventService {
       {
         $project: {
           _id: 0,
-          events: {
-            $sortArray: {
-              input: '$events',
-              sortBy: {
-                eventDate: -1,
-              },
-            },
-          },
+          events: 1,
         },
       },
     ]);
@@ -100,6 +98,11 @@ export class EventService {
         },
       },
       {
+        $sort: {
+          'events.eventDate': -1,
+        },
+      },
+      {
         $group: {
           _id: null,
           events: {
@@ -129,14 +132,7 @@ export class EventService {
       {
         $project: {
           _id: 0,
-          events: {
-            $sortArray: {
-              input: '$events',
-              sortBy: {
-                eventDate: -1,
-              },
-            },
-          },
+          events: 1
         },
       },
     ]);
