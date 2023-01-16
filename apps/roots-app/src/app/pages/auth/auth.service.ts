@@ -112,7 +112,7 @@ export class AuthService {
   // Log user out / delete from local storage
   logout(): void {
     this.router.navigate(['/']);
-    localStorage.removeItem(this.CURRENT_USER);
+    localStorage.clear();
     this.currentUser$.next(undefined);
 
     this.toastr.success('Je bent succesvol uitgelogd!', 'Uitloggen succesvol!');
