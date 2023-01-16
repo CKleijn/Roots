@@ -3,56 +3,103 @@
     <div class="col-sm-12 col-md-8">
       <div class="card shadow-lg">
         <div class="card-body p-5">
+          <!-- Back button -->
           <button class="btn" routerLink="/">
             <i class="bi bi-arrow-left"></i> Terug
           </button>
-          <button class="btn" style="float: right !important;" routerLink="./edit">
+          <!-- Edit button -->
+          <button
+            class="btn"
+            style="float: right !important"
+            routerLink="./edit"
+          >
             Bewerk gebeurtenis <i class="bi bi-pencil-square"></i>
           </button>
-          <button *ngIf="event.isActive" class="btn" style="float: right !important;" (click)="archiveModal(contentArchive)">
+          <!-- Archive buttons -->
+          <button
+            *ngIf="event.isActive"
+            class="btn"
+            style="float: right !important"
+            (click)="archiveModal(contentArchive)"
+          >
             Archiveer <i class="bi bi-archive"></i>
           </button>
-          <button *ngIf="!event.isActive" class="btn" style="float: right !important;" (click)="archiveModal(contentArchive)">
-            Activeer <i class="bi bi-plus-square"></i>
+          <button
+            *ngIf="!event.isActive"
+            class="btn"
+            style="float: right !important"
+            (click)="archiveModal(contentArchive)"
+          >
+            Dearchiveer <i class="bi bi-plus-square"></i>
           </button>
-          <br><br>
-          <h1>{{ event.title }} <i *ngIf="!event.isActive" class="bi bi-archive-fill"></i></h1>
+          <br /><br />
+          <!-- Event details -->
+          <h1>
+            {{ event.title }}
+            <i *ngIf="!event.isActive" class="bi bi-archive-fill"></i>
+          </h1>
           <i>{{ event.description }}</i>
-          <br><br>
+          <br /><br />
           <mat-chip-grid #chipGrid aria-label="Tag selection">
             <mat-chip-row *ngFor="let tag of tags">
-              {{ tag.name }} 
-
+              {{ tag.name }}
             </mat-chip-row>
           </mat-chip-grid>
-          <br>
-          <quill-view-html class="p-0" [content]="event.content"></quill-view-html>
-          <br>
-          <small><i>Gebeurtenis vond plaatst op <b>{{ event.eventDate | date : 'dd-MM-YYYY' }}</b></i></small>
+          <br />
+          <quill-view-html
+            class="p-0"
+            [content]="event.content"
+          ></quill-view-html>
+          <br />
+          <small
+            ><i
+              >Gebeurtenis vond plaatst op
+              <b>{{ event.eventDate | date : 'dd-MM-YYYY' }}</b></i
+            ></small
+          >
         </div>
       </div>
     </div>
   </div>
 </div>
-
+<!-- Archive modal -->
 <ng-template #contentArchive let-modal>
   <div class="modal-header">
-    <h4 class="modal-title" id="modal-event-archive">{{ event.isActive ? 'Archiveren' : 'Activeren' }}?</h4>
-    <button type="button" class="btn-close" aria-label="Close" (click)="modal.dismiss('Cross click')"></button>
+    <h4 class="modal-title" id="modal-event-archive">
+      {{ event.isActive ? 'Archiveren' : 'Dearchiveren' }}?
+    </h4>
+    <button
+      type="button"
+      class="btn-close"
+      aria-label="Close"
+      (click)="modal.dismiss('Cross click')"
+    ></button>
   </div>
   <div class="modal-body">
-    <span>Weet je zeker dat je de gebeurtenis <b>{{this.event.title}}</b> wilt
-      {{ event.isActive ? 'archiveren' : 'dearchiveren' }}?</span>
+    <span
+      >Weet je zeker dat je de gebeurtenis <b>{{ this.event.title }}</b> wilt
+      {{ event.isActive ? 'archiveren' : 'dearchiveren' }}?</span
+    >
   </div>
   <div class="modal-footer">
     <button type="button" class="btn" (click)="modal.dismiss()">
       Annuleren
     </button>
-    <button *ngIf='event.isActive' type="button" class="btn" (click)="archiveEvent()">
+    <button
+      *ngIf="event.isActive"
+      type="button"
+      class="btn"
+      (click)="archiveEvent()"
+    >
       Archiveren
     </button>
-    <button *ngIf='!event.isActive' type="button" class="btn" (click)="archiveEvent()">
-      Activeren
+    <button
+      *ngIf="!event.isActive"
+      type="button"
+      class="btn"
+      (click)="archiveEvent()"
+    >
+      Dearchiveren
     </button>
   </div>
 </ng-template>

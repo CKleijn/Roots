@@ -14,16 +14,15 @@ import { AuthService } from './auth.service';
 
 @Injectable()
 export class LoggedInAuthGuard implements CanActivate, CanActivateChild {
-  //
   constructor(private authService: AuthService, private router: Router) {}
 
+  // Check if user is authenticated
   canActivate(): Observable<boolean> {
     return this.authService.currentUser$.pipe(
       map((user: User | undefined) => {
         if (user) {
           return true;
         } else {
-          console.log('not logged in, reroute to /');
           this.router.navigate(['/']);
           return false;
         }

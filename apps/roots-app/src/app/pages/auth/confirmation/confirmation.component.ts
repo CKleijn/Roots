@@ -1,9 +1,7 @@
 import { Component } from '@angular/core';
 import { FormGroup } from '@angular/forms';
 import { Router } from '@angular/router';
-import { NgxSpinnerService } from 'ngx-spinner';
 import { Subscription } from 'rxjs';
-import { AuthService } from '../auth.service';
 
 @Component({
   selector: 'roots-app-confirmation',
@@ -15,13 +13,11 @@ export class ConfirmationComponent {
   subs: Subscription = new Subscription();
 
   constructor(
-    private authService: AuthService,
     private router: Router,
-    private spinner: NgxSpinnerService
   ) {}
 
+  // Navigate to login when submitting
   onSubmit(): void {
-    console.log('dsadsajdksab');
     this.router.navigate(['/login']);
   }
 }

@@ -1,10 +1,12 @@
 /* eslint-disable prefer-const */
+/* eslint-disable @typescript-eslint/no-non-null-assertion */
 import { COMMA, ENTER } from '@angular/cdk/keycodes';
 import {
   AfterContentChecked,
   AfterViewChecked,
   Component,
   ElementRef,
+  OnDestroy,
   OnInit,
   ViewChild,
 } from '@angular/core';
@@ -15,7 +17,7 @@ import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap } from '@angular/router';
 import { User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
-import { map, Observable, of, startWith, switchMap } from 'rxjs';
+import { map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Event } from '../event/event.model';
 import { EventService } from '../event/event.service';
@@ -29,14 +31,23 @@ import { FilterComponent } from './filter/filter.component';
   styleUrls: ['./timeline.component.scss'],
 })
 export class TimelineComponent
-  implements OnInit, AfterViewChecked, AfterContentChecked
+  implements OnInit, AfterViewChecked, AfterContentChecked, OnDestroy
 {
+  routeSubscription!: Subscription;
+  authSubscription!: Subscription;
+  scrollSubscription!: Subscription;
+  allEventsSubscription!: Subscription;
+  eventSubscription!: Subscription;
+  dialogSubscription!: Subscription;
+  termSubscription!: Subscription;
   events: any[] = [];
   standardEvents: any = [];
+  allEvents: Event[] = [];
   throttle = 0;
   distance = 0;
   old_records = 0;
   new_records = 5;
+  currentYear = 0;
   loggedInUser!: User;
   organizationId: string | undefined;
   separatorKeysCodes: number[] = [ENTER, COMMA];
@@ -54,10 +65,8 @@ export class TimelineComponent
   searchType: string | undefined;
   searchterm = '';
   searchRequest = false;
-  allEvents: Event[] = [];
   filtered = false;
   eventTitleOptions: string[] = [];
-  currentYear = 0;
 
   @ViewChild('tagInput') tagInput?: ElementRef<HTMLInputElement>;
 
@@ -70,14 +79,15 @@ export class TimelineComponent
     private toastr: ToastrService
   ) {}
 
+  // Load everything when start up component
   ngOnInit(): void {
-    this.route.paramMap
+    // Get first 5 events and store all events
+    this.routeSubscription = this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) =>
           this.eventService.getEventsPerPage(
             this.old_records,
             this.new_records,
-            // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
             params.get('organizationId')!,
             this.showArchivedEvents
           )
@@ -90,22 +100,23 @@ export class TimelineComponent
           event.eventDate = new Date(event.eventDate);
         });
       });
-
+    // Get all events
     this.getAllEvents();
-
-    this.termCtrl.valueChanges.subscribe(() => {
+    // If there is a searchterm - call searchOnTermFilter
+    this.termSubscription = this.termCtrl.valueChanges.subscribe(() => {
       this.searchterm.length > 1
         ? this.searchOnTermFilter()
         : (this.eventTitleOptions = []);
     });
-
-    this.authService
+    // Get current user
+    this.authSubscription = this.authService
       .getUserFromLocalStorage()
       .subscribe((user) => (this.loggedInUser = user));
-
+    // Get current organization
     this.organizationId = this.loggedInUser.organization.toString();
+    // Get all tags
     this.getAllTags();
-
+    // Get filtered tags and sort them
     this.filteredTags = this.tagCtrl.valueChanges.pipe(
       startWith(null),
       map((tag: string | null) =>
@@ -117,6 +128,7 @@ export class TimelineComponent
     this.searchType = 'terms';
   }
 
+  // Observer to check if an entry has been seen by the user + some CSS classes
   ngAfterViewChecked(): void {
     let observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
@@ -126,7 +138,6 @@ export class TimelineComponent
         }
       });
     });
-
     let targetGetIn = document.querySelectorAll('.timeline-container');
     targetGetIn.forEach((element) => {
       observer.observe(element);
@@ -134,6 +145,7 @@ export class TimelineComponent
     return;
   }
 
+  // Foreach event create a new Date so we can use the currentYear function + some CSS classes
   ngAfterContentChecked(): void {
     this.events.forEach((event: { eventDate: Date; _id: string }) => {
       const date = new Date(event.eventDate);
@@ -147,9 +159,10 @@ export class TimelineComponent
     });
   }
 
+  // Get next 5 events when scrolling down
   onScroll(): void {
     this.old_records += this.new_records;
-    this.route.paramMap
+    this.scrollSubscription = this.route.paramMap
       .pipe(
         switchMap((params: ParamMap) =>
           this.eventService.getEventsPerPage(
@@ -180,88 +193,50 @@ export class TimelineComponent
       });
   }
 
+  // Get all events and store them
   getAllEvents(): Event[] {
-    // Get all events
     this.allEvents = [];
-    this.eventService.getAllEvents().subscribe((events) => {
-      events.forEach((event) => {
-        if (
-          this.showArchivedEvents ||
-          (!this.showArchivedEvents && event.isActive)
-        ) {
-          event.eventDate = new Date(event.eventDate);
-          this.allEvents.push(event);
-        }
+    this.allEventsSubscription = this.eventService
+      .getAllEvents()
+      .subscribe((events) => {
+        events.forEach((event) => {
+          if (
+            this.showArchivedEvents ||
+            (!this.showArchivedEvents && event.isActive)
+          ) {
+            event.eventDate = new Date(event.eventDate);
+            this.allEvents.push(event);
+          }
+        });
+        return events;
       });
-      return events;
-    });
     return this.allEvents;
   }
 
-  add(event: MatChipInputEvent): void {
-    const value = (event.value || '').trim();
-
-    if (this.allTags?.includes(value)) {
-      if (this.tags?.length > 0) {
-        if (!this.tags?.includes(value)) this.tags.push(value);
-      } else {
-        this.tags.push(value);
-      }
-    }
-
-    event.chipInput.clear();
-
-    this.tagCtrl.setValue(null);
+  // Switch filter (tags/terms)
+  switchSearchType(type: string) {
+    this.searchType = type;
   }
 
-  remove(tag: string): void {
-    const index = this.tags.indexOf(tag);
+  // Open dialog with all filters
+  openFilter() {
+    const dialogref = this.dialog.open(FilterComponent, {
+      data: {
+        showArchivedEvents: this.showArchivedEvents,
+        radioValue: this.radioValue,
+      },
+    });
+    this.dialogSubscription = dialogref.afterClosed().subscribe((data) => {
+      (data.showArchivedEvents === false || data.showArchivedEvents === true) &&
+        (this.showArchivedEvents = data.showArchivedEvents);
 
-    if (index >= 0) this.tags.splice(index, 1);
-    this.filteredTags = this.filteredTags?.pipe(
-      map((tags) => tags.concat(tag)),
-      map((tags) => tags?.sort())
-    );
+      data.radioValue && (this.radioValue = data.radioValue);
+      this.events = this.getAllEvents();
+    });
   }
 
-  reset(): void {
-    this.tags = [];
-    this.events = this.standardEvents;
-    this.filteredTags = of(this.allTags);
-    this.radioValue = 'and';
-    this.searchType = 'terms';
-    this.searchterm = '';
-    this.showArchivedEvents = false;
-    this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!');
-  }
-
-  selected(event: MatAutocompleteSelectedEvent): void {
-    if (!this.tags?.includes(event.option.viewValue)) {
-      this.tags.push(event.option.viewValue);
-      this.filteredTags = this.filteredTags?.pipe(
-        map((tags) => tags.filter((tag) => tag !== event.option.viewValue))
-      );
-
-      if (this.tagInput) this.tagInput.nativeElement.value = '';
-
-      this.tagCtrl.setValue(null);
-    }
-  }
-
-  private _filter(value: string): string[] {
-    const filterValue = value.toLowerCase();
-
-    if (filterValue.length >= 3) {
-      return this.allTags.filter((tag) =>
-        tag.toLowerCase().includes(filterValue)
-      );
-    }
-
-    return [];
-  }
-
+  // Get all tags from the organization if the organization exists
   async getAllTags() {
-    // Get all tags from the organization if the organization exists
     if (this.organizationId) {
       const tags = await this.tagService
         .getAllTagsByOrganization(this.organizationId)
@@ -278,6 +253,73 @@ export class TimelineComponent
     }
   }
 
+  // Add a tag to filter
+  add(event: MatChipInputEvent): void {
+    const value = (event.value || '').trim();
+
+    if (this.allTags?.includes(value)) {
+      if (this.tags?.length > 0) {
+        if (!this.tags?.includes(value)) this.tags.push(value);
+      } else {
+        this.tags.push(value);
+      }
+    }
+
+    event.chipInput.clear();
+    this.tagCtrl.setValue(null);
+  }
+
+  // Remove a tag from the filter
+  remove(tag: string): void {
+    const index = this.tags.indexOf(tag);
+
+    if (index >= 0) this.tags.splice(index, 1);
+    this.filteredTags = this.filteredTags?.pipe(
+      map((tags) => tags.concat(tag)),
+      map((tags) => tags?.sort())
+    );
+  }
+
+  // Reset all filters
+  reset(): void {
+    this.tags = [];
+    this.events = this.standardEvents;
+    this.filteredTags = of(this.allTags);
+    this.radioValue = 'and';
+    this.searchType = 'terms';
+    this.searchterm = '';
+    this.showArchivedEvents = false;
+    this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!');
+  }
+
+  // Select a tag from the autocomplete
+  selected(event: MatAutocompleteSelectedEvent): void {
+    if (!this.tags?.includes(event.option.viewValue)) {
+      this.tags.push(event.option.viewValue);
+      this.filteredTags = this.filteredTags?.pipe(
+        map((tags) => tags.filter((tag) => tag !== event.option.viewValue))
+      );
+
+      if (this.tagInput) this.tagInput.nativeElement.value = '';
+
+      this.tagCtrl.setValue(null);
+    }
+  }
+
+  // Trigger the autocomplete dropdown when entering 3 characters
+  private _filter(value: string): string[] {
+    const filterValue = value.toLowerCase();
+
+    if (filterValue.length >= 3) {
+      return this.allTags.filter((tag) =>
+        tag.toLowerCase().includes(filterValue)
+      );
+    }
+
+    return [];
+  }
+
+  // Search events with tags
   async searchOnTag() {
     // Clear array from previous search
     this.fullSelectedTags = [];
@@ -353,6 +395,7 @@ export class TimelineComponent
         );
   }
 
+  // Search on term filter
   searchOnTermFilter() {
     this.eventTitleOptions = [];
     this.allEvents.forEach((event: { title: string; isActive: boolean }) => {
@@ -367,7 +410,7 @@ export class TimelineComponent
   searchOnTerm() {
     //if there is an organizationId -> get events by term
     if (this.organizationId) {
-      this.eventService
+      this.eventSubscription = this.eventService
         .getEventsByTerm(
           this.searchterm,
           this.organizationId,
@@ -403,23 +446,14 @@ export class TimelineComponent
     }
   }
 
-  switchSearchType(type: string) {
-    this.searchType = type;
-  }
-
-  openFilter() {
-    const dialogref = this.dialog.open(FilterComponent, {
-      data: {
-        showArchivedEvents: this.showArchivedEvents,
-        radioValue: this.radioValue,
-      },
-    });
-    dialogref.afterClosed().subscribe((data) => {
-      (data.showArchivedEvents === false || data.showArchivedEvents === true) &&
-        (this.showArchivedEvents = data.showArchivedEvents);
-
-      data.radioValue && (this.radioValue = data.radioValue);
-      this.events = this.getAllEvents();
-    });
+  // Destroy all subscriptions
+  ngOnDestroy(): void {
+    this.routeSubscription?.unsubscribe;
+    this.authSubscription?.unsubscribe;
+    this.scrollSubscription?.unsubscribe;
+    this.allEventsSubscription?.unsubscribe;
+    this.eventSubscription?.unsubscribe;
+    this.dialogSubscription?.unsubscribe;
+    this.termSubscription?.unsubscribe;
   }
 }

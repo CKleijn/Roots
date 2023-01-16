@@ -16,6 +16,7 @@ export class OrganizationService {
     private toastr: ToastrService
   ) {}
 
+  // Get all participants from an organization
   getParticipants(organizationId: string): Observable<User[]> {
     return this.httpClient.get(
       environment.SERVER_API_URL +
@@ -24,14 +25,15 @@ export class OrganizationService {
     ) as Observable<User[]>;
   }
 
+  // Get organization by ID
   getById(organizationId: string): Observable<Organization> {
-    return this.httpClient
-      .get(
-        environment.SERVER_API_URL + `/organizations/${organizationId}`,
-        this.authService.getHttpOptions()
-      ) as Observable<Organization>
+    return this.httpClient.get(
+      environment.SERVER_API_URL + `/organizations/${organizationId}`,
+      this.authService.getHttpOptions()
+    ) as Observable<Organization>;
   }
 
+  // Create organization
   create(organization: Organization): Observable<any> {
     return this.httpClient
       .post(
@@ -57,6 +59,7 @@ export class OrganizationService {
       ) as Observable<Object>;
   }
 
+  // Change user status (active/inactive)
   status(id: string): Observable<any> {
     return this.httpClient
       .post(

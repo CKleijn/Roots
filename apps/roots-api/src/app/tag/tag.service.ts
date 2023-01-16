@@ -11,8 +11,9 @@ import { Event, EventDocument } from '../event/event.schema';
 
 @Injectable()
 export class TagService {
+  // Inject all dependencies
   constructor(
-    @InjectModel(Tag.name) 
+    @InjectModel(Tag.name)
     private tagModel: Model<TagDocument>,
     @InjectModel(Organization.name)
     private organizationModel: Model<OrganizationDocument>,
@@ -20,6 +21,7 @@ export class TagService {
     private eventModel: Model<EventDocument>
   ) {}
 
+  // Get all tags from organization
   async getAllByOrganization(organizationId: string): Promise<Tag[]> {
     const organizationTagIds = await this.organizationModel.findOne(
       { _id: new Types.ObjectId(organizationId) },
@@ -48,6 +50,7 @@ export class TagService {
     return tags;
   }
 
+  // Get tag by ID
   async getById(tagId: string): Promise<Tag> {
     const tag = await this.tagModel.findOne({ _id: new Types.ObjectId(tagId) });
 
@@ -57,6 +60,7 @@ export class TagService {
     return tag;
   }
 
+  // Create event tag
   async createInEvent(
     organizationId: string,
     eventId: string,
@@ -112,15 +116,16 @@ export class TagService {
     // push to event
     await this.eventModel.updateOne(
       {
-        _id: new Types.ObjectId(eventId)
+        _id: new Types.ObjectId(eventId),
       },
-      { $push: { 'tags': new Types.ObjectId(tag._id) } },
+      { $push: { tags: new Types.ObjectId(tag._id) } },
       { new: true }
     );
 
     return tag;
   }
 
+  // Create organization tag
   async createInOrganization(
     organizationId: string,
     tagDto: TagDto
@@ -163,6 +168,7 @@ export class TagService {
     return tag;
   }
 
+  // Update tag
   async update(tagId: string, tagDto: TagDto): Promise<Tag> {
     const updatedTag = await this.tagModel.findOneAndUpdate(
       { _id: new Types.ObjectId(tagId) },

@@ -1,3 +1,4 @@
+// Create instance of Event
 export class Event {
     title = "";
     description = "";
@@ -5,5 +6,4 @@ export class Event {
     tags = [];
     eventDate: Date = <Date>{};
     isActive!: boolean;
-    
 }

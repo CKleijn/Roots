@@ -19,8 +19,10 @@ import { TagService } from './tag.service';
 
 @Controller('tags')
 export class TagController {
+  // Inject all dependencies
   constructor(private readonly tagService: TagService) {}
 
+  // Get all tags from organization
   @Public()
   @Get('organizations/:organizationId')
   async getAllTagsByOrganization(
@@ -31,6 +33,7 @@ export class TagController {
     return await this.tagService.getAllByOrganization(organizationId);
   }
 
+  // Get tag by id
   @Public()
   @Get(':tagId')
   async getTagById(
@@ -45,6 +48,7 @@ export class TagController {
     }
   }
 
+  // Create new event tag
   @Public()
   @Post('new/organizations/:organizationId/events/:eventId')
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -67,6 +71,7 @@ export class TagController {
     }
   }
 
+  // Create new organization tag
   @Public()
   @Post('new/organizations/:organizationId')
   // eslint-disable-next-line @typescript-eslint/ban-types
@@ -90,6 +95,7 @@ export class TagController {
     }
   }
 
+  // Update tag
   @Public()
   @Put(':tagId')
   // eslint-disable-next-line @typescript-eslint/ban-types

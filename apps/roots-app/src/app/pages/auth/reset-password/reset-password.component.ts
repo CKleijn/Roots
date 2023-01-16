@@ -31,6 +31,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService
   ) {}
 
+  // Create form when starting up component
   ngOnInit(): void {
     this.resetPasswordForm = new FormGroup(
       {
@@ -48,26 +49,17 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     );
   }
 
-  ngOnDestroy(): void {
-    if (this.subs) {
-      this.subs.unsubscribe();
-    }
+  // Show password instead of *****
+  showPasswordToggle() {
+    return (this.showPassword = !this.showPassword);
   }
 
-  onSubmit(): void {
-    if (this.resetPasswordForm.valid) {
-      this.spinner.show();
-      const password = this.resetPasswordForm.value.password;
-
-      this.authService
-        .resetPassword(this.tokenId as string, password)
-        .subscribe(() => {
-          this.spinner.hide();
-          this.router.navigate(['/login']);
-        });
-    }
+  // Show confirm password instead of *****
+  showConfirmPasswordToggle() {
+    return (this.showConfirmPassword = !this.showConfirmPassword);
   }
 
+  // Check if password is valid
   validPassword(control: FormControl): { [s: string]: boolean } {
     const password = control.value;
 
@@ -83,6 +75,7 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     }
   }
 
+  // Check if password and confirmPassword are matching
   passwordMatchingValidatior: ValidatorFn = (control: AbstractControl) => {
     const password = control.get('password');
     const confirmPassword = control.get('confirmPassword');
@@ -98,11 +91,25 @@ export class ResetPasswordComponent implements OnInit, OnDestroy {
     return null;
   };
 
-  showPasswordToggle() {
-    return (this.showPassword = !this.showPassword);
+  // Submit form and reset password
+  onSubmit(): void {
+    if (this.resetPasswordForm.valid) {
+      this.spinner.show();
+      const password = this.resetPasswordForm.value.password;
+
+      this.authService
+        .resetPassword(this.tokenId as string, password)
+        .subscribe(() => {
+          this.spinner.hide();
+          this.router.navigate(['/login']);
+        });
+    }
   }
 
-  showConfirmPasswordToggle() {
-    return (this.showConfirmPassword = !this.showConfirmPassword);
+  // Destroy all subscriptions
+  ngOnDestroy(): void {
+    if (this.subs) {
+      this.subs.unsubscribe();
+    }
   }
 }
