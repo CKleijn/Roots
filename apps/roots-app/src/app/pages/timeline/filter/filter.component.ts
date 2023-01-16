@@ -11,6 +11,7 @@ import { Filter } from './filter.model';
 export class FilterComponent implements OnInit {
   radioValue: string | undefined;
   showArchivedEvents: boolean | undefined;
+  searchType: string | undefined;
 
   constructor(
     private dialogRef: MatDialogRef<TimelineComponent>,
@@ -23,6 +24,8 @@ export class FilterComponent implements OnInit {
       (this.radioValue = this.passedData.radioValue);
     this.passedData.showArchivedEvents &&
       (this.showArchivedEvents = this.passedData.showArchivedEvents);
+    this.passedData.searchType &&
+      (this.searchType = this.passedData.searchType);
   }
 
   // Toggle if you want to show archive events or not
@@ -34,7 +37,7 @@ export class FilterComponent implements OnInit {
 
   // Submit the filter
   filterSubmit(): void {
-    this.dialogRef.close(new Filter(this.radioValue, this.showArchivedEvents));
+    this.dialogRef.close(new Filter(this.radioValue, this.showArchivedEvents, this.searchType));
   }
 
   // Close the dialog
