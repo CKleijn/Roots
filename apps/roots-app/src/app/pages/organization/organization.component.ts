@@ -1,5 +1,6 @@
 /* eslint-disable prefer-const */
 import { Component, OnDestroy, OnInit } from '@angular/core';
+import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
@@ -85,7 +86,10 @@ export class OrganizationComponent implements OnInit, OnDestroy {
 
     // get log
     this.logSubscription = this.organizationService.log(this.loggedInUser.organization.toString())
-      .subscribe((log) => {this.dataSource = new MatTableDataSource(log.logs);
+      .subscribe((log) => {
+       
+
+        this.dataSource = new MatTableDataSource(log.logs);
       console.log('ORG COMP ',log.logs)}
       )
     
