@@ -54,7 +54,6 @@ describe('Auth controller', () => {
       createdAt: new Date(),
       lastLoginTimestamp: new Date(),
       organization: exampleOrganization._id,
-      isVerified: true
     };
 
     const loginResponse: any = {
