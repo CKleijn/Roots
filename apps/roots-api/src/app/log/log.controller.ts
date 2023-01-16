@@ -21,8 +21,6 @@ export class LogController {
   @Public()
   @Put(':organizationId')     
   async createLog(@Param('organizationId') organizationId: string, @Body() logDto:LogDTO): Promise<Log> {
-    console.log(organizationId)
-    console.log(logDto)
     return await this.logService.create(organizationId,logDto);
   }
 

@@ -102,7 +102,7 @@ export class OrganizationService {
   }
 
   logCreate(
-    loggedInUser: User,
+    loggedInUser: any,
     action: string,
     object: string
   ): Observable<any> {
@@ -112,10 +112,8 @@ export class OrganizationService {
       object: object,
       logStamp: new Date(),
     };
-    console.log('APP - SERV ', log);
-
+    console.log(log)
     const organizationId = loggedInUser.organization.toString();
-
     return this.httpClient
       .put(
         environment.SERVER_API_URL + '/log/' + organizationId,

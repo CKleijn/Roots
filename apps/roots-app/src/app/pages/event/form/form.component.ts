@@ -16,6 +16,7 @@ import { User } from '@roots/data';
 import { TagService } from '../../tag/tag.service';
 import { VideoHandler, Options } from 'ngx-quill-upload';
 import { ToastrService } from 'ngx-toastr';
+import { OrganizationService } from '../../organization/organization.service';
 
 let Quill: any = QuillNamespace;
 const ImageResize = require('quill-image-resize-module');
@@ -114,7 +115,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private dateAdapter: DateAdapter<Date>,
     private tagService: TagService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private organizationService: OrganizationService
   ) {
     this.dateAdapter.setLocale('nl-NL');
   }
@@ -300,6 +302,12 @@ export class EventFormComponent implements OnInit, OnDestroy {
       if (!this.allTags.includes(tag)) {
         if (this.organizationIdString) {
           await this.tagService.postTagInOrganization({ name: tag }, this.organizationIdString).toPromise();
+
+          this.loggedInUser$.subscribe((user) => {
+            const editor = user
+            this.organizationService.logCreate(editor,'Toegevoegd', '(T) ' + tag).subscribe();
+          });
+      
         }
       }
     }
