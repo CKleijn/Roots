@@ -36,10 +36,18 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
       this.spinner.show();
       const emailAddress = this.forgotPasswordForm.value.emailAddress;
 
-      this.authService.sendForgotPasswordMail(emailAddress).subscribe(() => {
-        this.spinner.hide();
-        this.router.navigate(['/confirmation']);
-      });
+      this.authService
+        .sendForgotPasswordMail(emailAddress)
+        .subscribe((result) => {
+          this.spinner.hide();
+
+          //when email has been found, redirect to confirmation page
+          if (result) {
+            this.router.navigate(['/confirmation']);
+          } else {
+            this.ngOnInit();
+          }
+        });
     }
   }
 

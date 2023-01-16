@@ -216,11 +216,12 @@ export class AuthService {
         }
       )
       .pipe(
-        map(() => {
+        map((result) => {
           this.toastr.success(
             'Bekijk je mailbox voor het opnieuw instellen van je wachtwoord!',
             'Wachtwoord vergeten mail gestuurd!'
           );
+          return result;
         }),
         catchError((err: any) => {
           this.toastr.error(
