@@ -6,8 +6,8 @@
           <div class="card-body p-5">
             <!-- Form title -->
             <div class="d-flex justify-content-start">
-              <h2 *ngIf="!editMode">Gebeurtenis toevoegen</h2>
-              <h2 *ngIf="editMode">Gebeurtenis bewerken</h2>
+              <h2 *ngIf="!editMode">Gebeurtenis <span class="h2-span">toevoegen</span></h2>
+              <h2 *ngIf="editMode">Gebeurtenis <span class="h2-span">bewerken</span></h2>
             </div>
             <!-- Form -->
             <form [formGroup]="eventForm" (ngSubmit)="onSubmit()">

@@ -15,12 +15,13 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { User } from '@roots/data';
+import { Organization, User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Event } from '../event/event.model';
 import { EventService } from '../event/event.service';
+import { OrganizationService } from '../organization/organization.service';
 import { Tag } from '../tag/tag.model';
 import { TagService } from '../tag/tag.service';
 import { FilterComponent } from './filter/filter.component';
@@ -40,6 +41,7 @@ export class TimelineComponent
   eventSubscription!: Subscription;
   dialogSubscription!: Subscription;
   termSubscription!: Subscription;
+  organizationSubscription!: Subscription;
   events: any[] = [];
   standardEvents: any = [];
   allEvents: Event[] = [];
@@ -51,6 +53,7 @@ export class TimelineComponent
   loggedInUser!: User;
   organizationId: string | undefined;
   organizationIdUrl: string | undefined;
+  organization: Organization | undefined;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
   filteredTags: Observable<string[]> | undefined;
@@ -79,7 +82,8 @@ export class TimelineComponent
     private tagService: TagService,
     private dialog: MatDialog,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private organizationService: OrganizationService
   ) {}
 
   // Load everything when start up component
@@ -121,6 +125,10 @@ export class TimelineComponent
       .subscribe((user) => (this.loggedInUser = user));
     // Get current organization
     this.organizationId = this.loggedInUser.organization.toString();
+    // Get organization name
+    this.organizationSubscription = this.organizationService
+      .getById(this.loggedInUser.organization.toString())
+      .subscribe((organization) => (this.organization = organization));
     // Get all tags
     this.getAllTags();
     // Get filtered tags and sort them
@@ -494,5 +502,6 @@ export class TimelineComponent
     this.eventSubscription?.unsubscribe;
     this.dialogSubscription?.unsubscribe;
     this.termSubscription?.unsubscribe;
+    this.organizationSubscription?.unsubscribe;
   }
 }

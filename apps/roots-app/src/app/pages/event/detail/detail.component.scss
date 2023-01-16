@@ -1,3 +1,63 @@
+$primary-color: #1353d9;
+$secondary-color: #ffffff;
+
 ul {
-    list-style-type: circle;
+  list-style-type: circle;
+}
+
+.back-button {
+  font-size: 30px;
+}
+
+.back-button:hover {
+  color: black;
+}
+
+.archive {
+  float: right;
+  font-size: 40px;
+  color: $primary-color;
+  padding-right: 20px;
+}
+
+.detail-links {
+  color: #1353d9;
+  font-size: 12px;
+  cursor: pointer;
+  float: right;
+
+  .link-detail {
+    text-decoration: none;
+  }
+
+  .link-detail:hover {
+    color: black;
+  }
+}
+
+//date-circle on the line
+.timeline-icon {
+  width: 70px;
+  height: 70px;
+  color: $primary-color;
+  float: right;
+
+  //content of a date-circle
+  > .timeline-icon-content {
+    text-align: center;
+    padding: 0;
+    margin: 0;
+
+    //day of the event inside date-circle
+    > .timeline-icon-content-day {
+      font-size: 35px;
+      line-height: 1.2;
+    }
+
+    //month/year of the event inside date-circle
+    > .timeline-icon-content-month-year {
+      position: relative;
+      bottom: 6px;
+    }
+  }
 }

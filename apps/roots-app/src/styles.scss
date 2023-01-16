@@ -4,9 +4,9 @@
 @import 'quill-emoji/dist/quill-emoji.css';
 @import url('https://fonts.googleapis.com/css2?family=Montserrat&display=swap');
 
-$primary-color: #fba92c;
+$primary-color: #1353d9;
 $secondary-color: #ffffff;
-$background-color: #e6e6e6;
+$background-color: #eae6dd;
 $white: #ffffff;
 $black: #000000;
 $error: #dc3545;
@@ -100,6 +100,7 @@ body {
     font-weight: 600;
 
     &:hover {
+      transition: all 0.5s;
       color: white !important;
       background-color: black !important;
     }
@@ -147,6 +148,7 @@ body {
   }
 
   .btn:hover {
+    transition: all 0.5s;
     border-color: $primary-color !important;
     background-color: #ffffff !important;
     color: $primary-color !important;

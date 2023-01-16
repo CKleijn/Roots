@@ -4,59 +4,61 @@
       <div class="card shadow-lg">
         <div class="card-body p-5">
           <!-- Back button -->
-          <button class="btn" routerLink="/">
-            <i class="bi bi-arrow-left"></i> Terug
-          </button>
-          <!-- Edit button -->
-          <button
-            class="btn"
-            style="float: right !important"
-            routerLink="./edit"
-          >
-            Bewerk gebeurtenis <i class="bi bi-pencil-square"></i>
-          </button>
-          <!-- Archive buttons -->
-          <button
-            *ngIf="event.isActive"
-            class="btn"
-            style="float: right !important"
-            (click)="archiveModal(contentArchive)"
-          >
-            Archiveer <i class="bi bi-archive"></i>
-          </button>
-          <button
-            *ngIf="!event.isActive"
-            class="btn"
-            style="float: right !important"
-            (click)="archiveModal(contentArchive)"
-          >
-            Dearchiveer <i class="bi bi-plus-square"></i>
-          </button>
+          <a class="back-button" routerLink="..">
+            <i class="bi bi-arrow-left"></i>
+          </a>
+          <div class="timeline-icon">
+            <div class="timeline-icon-content">
+              <span class="timeline-icon-content-day">
+                {{ this.day }}
+              </span>
+              <span class="timeline-icon-content-month-year">
+                {{ this.month }}
+                {{ this.year }}
+              </span>
+            </div>
+          </div>
+          <div class="archive" *ngIf="!event.isActive">
+            <i class="bi bi-folder2-open"></i>
+          </div>
           <br /><br />
           <!-- Event details -->
           <h1>
             {{ event.title }}
-            <i *ngIf="!event.isActive" class="bi bi-archive-fill"></i>
           </h1>
           <i>{{ event.description }}</i>
           <br /><br />
+          <quill-view-html
+            class="p-0"
+            [content]="event.content"
+          ></quill-view-html>
+          <br />
           <mat-chip-grid #chipGrid aria-label="Tag selection">
             <mat-chip-row *ngFor="let tag of tags">
               {{ tag.name }}
             </mat-chip-row>
           </mat-chip-grid>
           <br />
-          <quill-view-html
-            class="p-0"
-            [content]="event.content"
-          ></quill-view-html>
-          <br />
-          <small
-            ><i
-              >Gebeurtenis vond plaatst op
-              <b>{{ event.eventDate | date : 'dd-MM-YYYY' }}</b></i
-            ></small
-          >
+          <div class="detail-links">
+            <!-- Edit button -->
+            <a class="link-detail" routerLink="./edit">Bewerken</a>
+            |
+            <!-- Archive buttons -->
+            <a
+              *ngIf="event.isActive"
+              class="link-detail"
+              (click)="archiveModal(contentArchive)"
+            >
+              Archiveren
+            </a>
+            <a
+              *ngIf="!event.isActive"
+              class="link-detail"
+              (click)="archiveModal(contentArchive)"
+            >
+              Dearchiveren
+            </a>
+          </div>
         </div>
       </div>
     </div>
