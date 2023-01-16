@@ -6,11 +6,13 @@ import { Organization, OrganizationDocument } from './organization.schema';
 
 @Injectable()
 export class OrganizationService {
+  // Inject all dependencies
   constructor(
     @InjectModel(Organization.name)
     private organizationModel: Model<OrganizationDocument>
   ) {}
 
+  // Get organization by email domain
   async getByEmailDomain(
     emailDomain: string
   ): Promise<Organization | undefined> {
@@ -25,6 +27,7 @@ export class OrganizationService {
     return organization;
   }
 
+  // Get organization by ID
   async getById(_id: string): Promise<Organization> {
     const organization = await this.organizationModel.findOne({ _id });
 
@@ -37,10 +40,12 @@ export class OrganizationService {
     return organization;
   }
 
+  // Get all organizations
   async getAll(): Promise<Organization[]> {
     return await this.organizationModel.find();
   }
 
+  // Create new organization
   async create(
     createOrganizationDTO: CreateOrganizationDTO
   ): Promise<Organization> {
@@ -53,10 +58,10 @@ export class OrganizationService {
     return await this.organizationModel.create(newOrganization);
   }
 
+  // Check if organization already exists
   async validate(organization: any): Promise<void> {
     if (
-      (await this.organizationModel.find({ name: organization.name })).length >
-      0
+      (await this.organizationModel.find({ name: organization.name })).length > 0
     ) {
       throw new HttpException(
         `Er bestaat al een bedrijf met de opgegeven naam!`,
@@ -65,11 +70,7 @@ export class OrganizationService {
     }
 
     if (
-      (
-        await this.organizationModel.find({
-          emailDomain: organization.emailDomain,
-        })
-      ).length > 0
+      (await this.organizationModel.find({ emailDomain: organization.emailDomain })).length > 0
     ) {
       throw new HttpException(
         `Er bestaat al een bedrijf met het opgegeven email domein!`,

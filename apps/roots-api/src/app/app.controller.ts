@@ -6,6 +6,7 @@ import { AppService } from './app.service';
 export class AppController {
   constructor(private readonly appService: AppService) {}
 
+  // Get API welcome message
   @Get()
   getData() {
     return this.appService.getData();

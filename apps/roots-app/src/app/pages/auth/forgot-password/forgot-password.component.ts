@@ -20,6 +20,7 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     private spinner: NgxSpinnerService
   ) {}
 
+  // Create form when starting up the component
   ngOnInit(): void {
     this.forgotPasswordForm = new FormGroup({
       emailAddress: new FormControl(null, [
@@ -29,24 +30,28 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     });
   }
 
-  ngOnDestroy(): void {
-    if (this.subs) {
-      this.subs.unsubscribe();
-    }
-  }
-
+  // When submitting the form check if form is valid and send new password forgot mail
   onSubmit(): void {
     if (this.forgotPasswordForm.valid) {
       this.spinner.show();
       const emailAddress = this.forgotPasswordForm.value.emailAddress;
 
-      this.authService.sendForgotPasswordMail(emailAddress).subscribe(() => {
-        this.spinner.hide();
-        this.router.navigate(['/confirmation']);
-      });
+      this.authService
+        .sendForgotPasswordMail(emailAddress)
+        .subscribe((result) => {
+          this.spinner.hide();
+
+          //when email has been found, redirect to confirmation page
+          if (result) {
+            this.router.navigate(['/confirmation']);
+          } else {
+            this.ngOnInit();
+          }
+        });
     }
   }
 
+  // Check if email is valid
   validEmail(control: FormControl): { [s: string]: boolean } {
     const email = control.value;
     const regexp = new RegExp('^[^@]+@[^@]+\\.[^@]+$');
@@ -55,6 +60,13 @@ export class ForgotPasswordComponent implements OnInit, OnDestroy {
     } else {
       // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
       return null!;
+    }
+  }
+
+  // Destroy all subscriptions
+  ngOnDestroy(): void {
+    if (this.subs) {
+      this.subs.unsubscribe();
     }
   }
 }

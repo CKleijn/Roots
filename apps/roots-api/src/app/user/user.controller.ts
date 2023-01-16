@@ -15,8 +15,10 @@ import { UserService } from './user.service';
 
 @Controller()
 export class UserController {
+  // Inject all dependencies
   constructor(private readonly userService: UserService) {}
 
+  // Get all participants from organization
   @Public()
   @Get('organizations/:id/participants')
   async getParticipants(
@@ -27,6 +29,7 @@ export class UserController {
     return await this.userService.getAllParticipants(id);
   }
 
+  // Get user by id
   @Public()
   @Get('users/:id')
   async getById(@Param('id', ParseObjectIdPipe) id: string): Promise<User> {
@@ -35,6 +38,7 @@ export class UserController {
     return await this.userService.getById(id);
   }
 
+  // Create new user
   @Post('users/new')
   async create(@Body() UserDto: UserDto): Promise<User> {
     Logger.log(`Creating user (CREATE)`);
@@ -42,6 +46,7 @@ export class UserController {
     return await this.userService.create(UserDto);
   }
 
+  // Get user status (activated/deactivated)
   @Post('users/:id/status')
   async status(
     @Param('id', ParseObjectIdPipe) id: string,
