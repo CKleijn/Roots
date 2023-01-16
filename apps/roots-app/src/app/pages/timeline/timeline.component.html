@@ -5,17 +5,8 @@
       <div class="input-group">
         <!-- Terms searchbar -->
         <div class="searchbar-container" *ngIf="searchType === 'terms'">
-          <input
-            type="text"
-            name="search"
-            id="search"
-            class="form-control search-searchbar"
-            #tagInput
-            [formControl]="termCtrl"
-            [matChipInputFor]="chipGrid"
-            [matAutocomplete]="auto"
-            [(ngModel)]="searchterm"
-          />
+          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
+            [formControl]="termCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto" [(ngModel)]="searchterm" />
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let title of eventTitleOptions" [value]="title">
               {{ title }}
@@ -24,28 +15,13 @@
         </div>
         <!-- Tags searchbar -->
         <div class="searchbar-container" *ngIf="searchType === 'tags'">
-          <input
-            type="text"
-            name="search"
-            id="search"
-            class="form-control search-searchbar"
-            #tagInput
-            [formControl]="tagCtrl"
-            [matChipInputFor]="chipGrid"
-            [matAutocomplete]="auto"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
-            (matChipInputTokenEnd)="add($event)"
-            [(ngModel)]="searchterm"
-          />
-          <mat-autocomplete
-            #auto="matAutocomplete"
-            (optionSelected)="selected($event)"
-          >
+          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
+            [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"
+            [(ngModel)]="searchterm" />
+          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
             <div *ngIf="searchType === 'tags'">
-              <mat-option
-                *ngFor="let tag of filteredTags | async"
-                [value]="tag"
-              >
+              <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
                 {{ tag }}
               </mat-option>
             </div>
@@ -61,16 +37,8 @@
                 &dtrif;
                 <ul class="dropdown">
                   <li>
-                    <span
-                      (click)="switchSearchType('tags')"
-                      *ngIf="searchType === 'terms'"
-                      >Tags</span
-                    >
-                    <span
-                      (click)="switchSearchType('terms')"
-                      *ngIf="searchType === 'tags'"
-                      >Termen</span
-                    >
+                    <span (click)="switchSearchType('tags')" *ngIf="searchType === 'terms'">Tags</span>
+                    <span (click)="switchSearchType('terms')" *ngIf="searchType === 'tags'">Termen</span>
                   </li>
                 </ul>
               </li>
@@ -81,21 +49,11 @@
             <i class="bi bi-arrow-clockwise"></i>
           </button>
           <!-- Search tag -->
-          <button
-            *ngIf="searchType === 'tags'"
-            type="submit"
-            class="search-submit"
-            (click)="searchOnTag()"
-          >
+          <button *ngIf="searchType === 'tags'" type="submit" class="search-submit" (click)="searchOnTag()">
             <i class="bi bi-search"></i>
           </button>
           <!-- Search term -->
-          <button
-            *ngIf="searchType === 'terms'"
-            type="submit"
-            class="search-submit"
-            (click)="searchOnTerm()"
-          >
+          <button *ngIf="searchType === 'terms'" type="submit" class="search-submit" (click)="searchOnTerm()">
             <i class="bi bi-search"></i>
           </button>
           <!-- Open filter -->
@@ -104,13 +62,9 @@
           </button>
         </div>
       </div>
-      <!-- List of tag chips -->
-      <div class="input-group tag-group mt-5 mr-3">
-        <mat-chip-grid
-          #chipGrid
-          aria-label="Tag selection"
-          class="timeline-tag"
-        >
+
+      <div class="input-group tag-group mt-5 mr-3" *ngIf="searchType === 'tags'">
+        <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
             {{ tag }}
             <button matChipRemove [attr.aria-label]="'remove ' + tag">
@@ -119,31 +73,22 @@
           </mat-chip-row>
         </mat-chip-grid>
       </div>
+      <mat-chip-grid #chipGrid></mat-chip-grid>
+
     </div>
   </form>
 </div>
 <!-- Timeline -->
-<div
-  *ngIf="events.length > 0"
-  class="timeline"
-  infinite-scroll
-  [infiniteScrollDistance]="distance"
-  [infiniteScrollThrottle]="throttle"
-  (scrolled)="onScroll()"
->
-  <div
-    *ngFor="let event of events; let left = even; let right = odd"
-    [ngClass]="{ right: right, left: left }"
-    class="timeline-container"
-  >
+<div *ngIf="events.length > 0" class="timeline" infinite-scroll [infiniteScrollDistance]="distance"
+  [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
+  <div *ngFor="let event of events; let left = even; let right = odd" [ngClass]="{ right: right, left: left }"
+    class="timeline-container">
     <div class="timeline-year" id="timeline-year-{{ event._id }}">
       <span class="timeline-year-content">{{
         event.eventDate.getFullYear()
       }}</span>
     </div>
-    <div
-      [ngClass]="!event.isActive ? 'timeline-icon-archived' : 'timeline-icon'"
-    >
+    <div [ngClass]="!event.isActive ? 'timeline-icon-archived' : 'timeline-icon'">
       <div class="timeline-icon-content">
         <span class="timeline-icon-content-day">
           {{ event.eventDate.getDate() }}
@@ -153,23 +98,18 @@
         </span>
       </div>
     </div>
-    <div
-      [ngClass]="
+    <div [ngClass]="
         !event.isActive ? 'timeline-textbox-archived' : 'timeline-textbox'
-      "
-    >
+      ">
       <h2>{{ event.title }}</h2>
       <p>
         {{ event.description.slice(0, 150) }}
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button
-          class="btn"
-          routerLink="/organizations/{{ loggedInUser.organization }}/events/{{
+        <button class="btn" routerLink="/organizations/{{ loggedInUser.organization }}/events/{{
             event._id
-          }}"
-        >
+          }}">
           Lees meer
         </button>
       </div>
@@ -177,9 +117,7 @@
   </div>
 </div>
 <!-- Error messages -->
-<div
-  *ngIf="this.events.length === 0 && this.searchRequest" class="p-20"
->
+<div *ngIf="this.events.length === 0 && this.searchRequest" class="p-20">
   <div class="row">
     <div class="col-sm-12 col-md-6 offset-3">
       <div class="timeline-textbox">
@@ -192,9 +130,7 @@
     </div>
   </div>
 </div>
-<div
-  *ngIf="this.events.length === 0 && !this.searchRequest" class="p-20"
->
+<div *ngIf="this.events.length === 0 && !this.searchRequest" class="p-20">
   <div class="row">
     <div class="col-sm-12 col-md-6 offset-3">
       <div class="timeline-textbox">
