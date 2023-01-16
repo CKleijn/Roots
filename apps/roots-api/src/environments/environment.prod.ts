@@ -2,7 +2,7 @@ export const environment = {
   production: true,
   //online
 
-  API_URL: 'mongodb://localhost:27017/roots',
+  API_URL: 'mongodb+srv://admin:7FTchkFkFavo1j3g@cluster0.ygjk7ng.mongodb.net/?retryWrites=true&w=majority',
   APPLICATION_URL: 'http://localhost:4200',
 
   //mailing
