@@ -18,7 +18,7 @@ export class Log implements ILog {
     @Prop()
     object: string;
     
-    @Prop()
+    @Prop({default: new Date()})
     logStamp: Date;
   
 }
