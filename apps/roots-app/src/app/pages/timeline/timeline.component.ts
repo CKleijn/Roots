@@ -60,9 +60,10 @@ export class TimelineComponent
   fullSelectedTags: Tag[] = [];
   newEvents: Event[] = [];
   containsAllTags = true;
-  radioValue: string | undefined;
-  showArchivedEvents = false;
-  searchType: string | undefined;
+  radioValue: string | undefined | null;
+  showArchivedEvents: boolean =
+    JSON.parse(localStorage.getItem('showArchivedEvents')!) || false;
+  searchType: string | undefined | null;
   searchterm = '';
   searchRequest = false;
   filtered = false;
@@ -128,8 +129,21 @@ export class TimelineComponent
       )
     );
     // Add default filter values
-    this.radioValue = 'and';
-    this.searchType = 'terms';
+
+    console.log(this.searchType);
+    console.log(localStorage.getItem('searchType'))
+
+    this.searchType = localStorage.getItem('searchType') || 'terms';
+    localStorage.setItem('searchType', this.searchType);
+
+    this.radioValue = localStorage.getItem('radioValue') || 'and';
+    localStorage.setItem('radioValue', this.radioValue);
+
+    console.log(localStorage.getItem('showArchivedEvents'));
+    localStorage.setItem(
+      'showArchivedEvents',
+      JSON.stringify(this.showArchivedEvents)
+    );
   }
 
   // Observer to check if an entry has been seen by the user + some CSS classes
@@ -233,11 +247,20 @@ export class TimelineComponent
     });
     this.dialogSubscription = dialogref.afterClosed().subscribe((data) => {
       if (data) {
-        (data.showArchivedEvents === false ||
-          data.showArchivedEvents === true) &&
-          (this.showArchivedEvents = data.showArchivedEvents);
+        if (typeof data.showArchivedEvents === 'boolean') {
+          this.showArchivedEvents = data.showArchivedEvents;
+          localStorage.setItem(
+            'showArchivedEvents',
+            JSON.stringify(data.showArchivedEvents)
+          );
+        }
 
-        data.radioValue && (this.radioValue = data.radioValue);
+        if(data.radioValue){
+          localStorage.setItem('radioValue', data.radioValue)
+          this.radioValue = data.radioValue;
+        }
+
+        this.events = this.getAllEvents();
       }
     });
   }
@@ -296,6 +319,9 @@ export class TimelineComponent
     this.searchType = 'terms';
     this.searchterm = '';
     this.showArchivedEvents = false;
+    localStorage.setItem('radioValue', this.radioValue);
+    localStorage.setItem('searchType', this.searchType);
+    localStorage.setItem('showArchivedEvents', JSON.stringify(false));
     this.toastr.success(`Alle filters zijn gereset!`, 'Filters gereset!');
   }
 
@@ -328,6 +354,7 @@ export class TimelineComponent
 
   // Search events with tags
   async searchOnTag() {
+    localStorage.setItem('searchType', 'tags');
     // Clear array from previous search
     this.fullSelectedTags = [];
     this.newEvents = [];
@@ -415,6 +442,7 @@ export class TimelineComponent
 
   //searching on a term
   searchOnTerm() {
+    localStorage.setItem('searchType', 'terms');
     //if there is an organizationId -> get events by term
     if (this.organizationId) {
       this.eventSubscription = this.eventService
