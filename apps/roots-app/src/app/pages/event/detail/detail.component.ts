@@ -19,6 +19,9 @@ export class EventDetailComponent implements OnInit, OnDestroy {
   archiveSubscription!: Subscription;
   event!: Event;
   tags!: Tag[];
+  day!: string;
+  month!: string;
+  year!: string;
 
   constructor(
     private route: ActivatedRoute,
@@ -40,6 +43,10 @@ export class EventDetailComponent implements OnInit, OnDestroy {
       )
       .subscribe((foundEvent) => {
         this.event = foundEvent;
+        this.event.eventDate = new Date(this.event.eventDate);
+        this.day = this.event.eventDate.toLocaleString('nl-NL', { day: 'numeric' });
+        this.month = this.event.eventDate.toLocaleString('nl-NL', { month: 'short' });
+        this.year = this.event.eventDate.toLocaleString('nl-NL', { year: 'numeric' });
         this.tags = new Array<Tag>();
         foundEvent.tags.forEach((tag) => {
           this.tagService.getTagById(tag).subscribe((foundTag) => {

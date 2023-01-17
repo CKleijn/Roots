@@ -1,4 +1,4 @@
-$primary-color: #FBA92C;
+$primary-color: #1353d9;
 $secondary-color: #ffffff;
 $background-color: #E8ECFF;
 
@@ -43,6 +43,13 @@ $background-color: #E8ECFF;
 .search-title {
   text-align: center;
   color: #ffffff;
+
+  .org-name {
+    background-color: $secondary-color;
+    color: $primary-color;
+    padding: 5px 10px;
+    border-radius: 50px;
+  }
 }
 
 .searchbar-container {
@@ -53,6 +60,7 @@ $background-color: #E8ECFF;
 .search-searchbar {
   margin: 0;
   border: none;
+  padding: 10px;
   background-color: $secondary-color;
   width: 100%;
   height: 41px;
@@ -85,6 +93,10 @@ $background-color: #E8ECFF;
 .search-submit-icon {
   height: 20px;
   width: 20px;
+}
+
+.search-submit > .bi:hover {
+  color: $primary-color;
 }
 
 .search-submit-dropdown-ul {

@@ -15,13 +15,14 @@ import { MatAutocompleteSelectedEvent } from '@angular/material/autocomplete';
 import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
-import { User } from '@roots/data';
+import { Organization, User } from '@roots/data';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Event } from '../event/event.model';
 import { EventService } from '../event/event.service';
+import { OrganizationService } from '../organization/organization.service';
 import { Tag } from '../tag/tag.model';
 import { TagService } from '../tag/tag.service';
 import { FilterComponent } from './filter/filter.component';
@@ -41,6 +42,7 @@ export class TimelineComponent
   eventSubscription!: Subscription;
   dialogSubscription!: Subscription;
   termSubscription!: Subscription;
+  organizationSubscription!: Subscription;
   events: any[] = [];
   standardEvents: any = [];
   allEvents: Event[] = [];
@@ -52,6 +54,7 @@ export class TimelineComponent
   loggedInUser!: User;
   organizationId: string | undefined;
   organizationIdUrl: string | undefined;
+  organization: Organization | undefined;
   separatorKeysCodes: number[] = [ENTER, COMMA];
   tagCtrl = new FormControl('');
   filteredTags: Observable<string[]> | undefined;
@@ -81,6 +84,7 @@ export class TimelineComponent
     private dialog: MatDialog,
     private toastr: ToastrService,
     private router: Router,
+    private organizationService: OrganizationService
     private spinner: NgxSpinnerService
   ) {}
 
@@ -95,18 +99,26 @@ export class TimelineComponent
           this.eventService.getEventsPerPage(
             this.old_records,
             this.new_records,
-            this.organizationIdUrl = params.get('organizationId')!,
+            (this.organizationIdUrl = params.get('organizationId')!),
             this.showArchivedEvents
           )
         )
       )
       .subscribe((events) => {
+        events.forEach((event) => {
+          // Convert date
+          event.eventDate = new Date(event.eventDate);
+          // Convert tags
+          let convertTags: any[] = [];
+          event.tags.forEach((tag: any) => {
+            this.tagService.getTagById(tag).subscribe((t) => {
+              convertTags.push(t.name);
+            }).unsubscribe;
+            event.tags = convertTags;
+          });
+        });
         this.events = events;
         this.standardEvents = events;
-        events.forEach((event) => {
-          event.eventDate = new Date(event.eventDate);
-        });
-
         this.spinner.hide();
       });
     // Get all events
@@ -127,6 +139,10 @@ export class TimelineComponent
       .subscribe((user) => (this.loggedInUser = user));
     // Get current organization
     this.organizationId = this.loggedInUser.organization.toString();
+    // Get organization name
+    this.organizationSubscription = this.organizationService
+      .getById(this.loggedInUser.organization.toString())
+      .subscribe((organization) => (this.organization = organization));
     // Get all tags
     this.getAllTags();
     // Get filtered tags and sort them
@@ -143,16 +159,20 @@ export class TimelineComponent
     this.radioValue = localStorage.getItem('radioValue') || 'and';
     localStorage.setItem('radioValue', this.radioValue);
 
-    console.log(localStorage.getItem('showArchivedEvents'));
     localStorage.setItem(
       'showArchivedEvents',
       JSON.stringify(this.showArchivedEvents)
     );
-    
+
     // Checks if loggedInUser's organization is the same as the url organizationId
     // If not redirect to correct timeline
-    if (this.loggedInUser.organization.toString() !== this.organizationIdUrl?.toString()) {
-      this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}/timeline`]);
+    if (
+      this.loggedInUser.organization.toString() !==
+      this.organizationIdUrl?.toString()
+    ) {
+      this.router.navigate([
+        `/organizations/${this.loggedInUser.organization.toString()}/timeline`,
+      ]);
     }
   }
 
@@ -227,7 +247,16 @@ export class TimelineComponent
     this.allEventsSubscription = this.eventService
       .getAllEvents()
       .subscribe((events) => {
-        events.forEach((event) => {
+        events.forEach((event: any) => {
+          let convertTags: any[] = [];
+
+          event.tags.forEach((tag: any) => {
+            this.tagService.getTagById(tag).subscribe((t) => {
+              convertTags.push(t.name);
+            }).unsubscribe;
+          });
+          event.tags = convertTags;
+
           if (
             this.showArchivedEvents ||
             (!this.showArchivedEvents && event.isActive)
@@ -244,6 +273,7 @@ export class TimelineComponent
   // Switch filter (tags/terms)
   switchSearchType(type: string) {
     this.searchType = type;
+    this.searchterm = '';
   }
 
   // Open dialog with all filters
@@ -265,8 +295,8 @@ export class TimelineComponent
           );
         }
 
-        if(data.radioValue){
-          localStorage.setItem('radioValue', data.radioValue)
+        if (data.radioValue) {
+          localStorage.setItem('radioValue', data.radioValue);
           this.radioValue = data.radioValue;
         }
 
@@ -424,6 +454,17 @@ export class TimelineComponent
       // Tell onScroll that filter is used
       this.filtered = true;
     }
+    let convertTags: any[] = [];
+    //assign dates to the events
+    this.events.forEach((event: any) => {
+      event.eventDate = new Date(event.eventDate);
+      event.tags.forEach((tag: any) => {
+        this.tagService.getTagById(tag).subscribe((t) => {
+          convertTags.push(t.name);
+        }).unsubscribe;
+      });
+      event.tags = convertTags;
+    });
     // Tell HTML this is a searchrequest
     this.searchRequest = true;
     // Show alert with total count of the results found
@@ -445,7 +486,7 @@ export class TimelineComponent
     this.allEvents.forEach((event: { title: string; isActive: boolean }) => {
       ((!this.showArchivedEvents && event.isActive) ||
         this.showArchivedEvents) &&
-        event.title.includes(this.searchterm) &&
+        event.title.toLowerCase().includes(this.searchterm.toLowerCase()) &&
         this.eventTitleOptions.push(event.title);
     });
   }
@@ -464,12 +505,17 @@ export class TimelineComponent
         .subscribe((events) => {
           //retrieve the filter events
           let filterEvents = events;
+          let convertTags: any[] = [];
           //assign dates to the events
-          filterEvents.forEach(
-            (event: { eventDate: string | number | Date }) => {
-              event.eventDate = new Date(event.eventDate);
-            }
-          );
+          filterEvents.forEach((event: any) => {
+            event.eventDate = new Date(event.eventDate);
+            event.tags.forEach((tag: any) => {
+              this.tagService.getTagById(tag).subscribe((t) => {
+                convertTags.push(t.name);
+              }).unsubscribe;
+            });
+            event.tags = convertTags;
+          });
           //assign filterevents to the eventlist
           this.events = filterEvents;
           // Tell onScroll that filter is used
@@ -500,5 +546,6 @@ export class TimelineComponent
     this.eventSubscription?.unsubscribe;
     this.dialogSubscription?.unsubscribe;
     this.termSubscription?.unsubscribe;
+    this.organizationSubscription?.unsubscribe;
   }
 }
