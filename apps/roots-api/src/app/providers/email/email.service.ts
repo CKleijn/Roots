@@ -37,7 +37,7 @@ export class MailService {
       to: email,
       from: environment.EMAIL_SENDINGEMAIL,
       subject: 'Roots | Wachtwoord resetten',
-      html: `<div style="font-family: Helvetica, sans-serif"> <h1 style="font-weight: bold">Welkom bij Roots, ${receiverName}!</h1> <p style="padding-bottom:15px;">Druk op de onderstaande knop om je wachtwoord opnieuw in te stellen.</p> <a href="${link}" style="color: white; background: #1353d9; text-decoration: none; padding: 10px 28px;"> Wachtwoord instellen </a> <p style="font-size: 11px; font-style: italic; margin-top: 30px">De code is voor de volgende 24 uur geldig.</p> <p style="font-size: 14px; margin-top: 25px">Groetjes het Roots-team</p></div>`,
+      html: `<div style="font-family: Helvetica, sans-serif"> <h1 style="font-weight: bold">Hallo ${receiverName}!</h1> <p style="padding-bottom:15px;">Druk op de onderstaande knop om je wachtwoord opnieuw in te stellen.</p> <a href="${link}" style="color: white; background: #1353d9; text-decoration: none; padding: 10px 28px;"> Wachtwoord instellen </a> <p style="font-size: 11px; font-style: italic; margin-top: 30px">De code is voor de volgende 24 uur geldig.</p> <p style="font-size: 14px; margin-top: 25px">Groetjes het Roots-team</p></div>`,
     });
   }
 }
