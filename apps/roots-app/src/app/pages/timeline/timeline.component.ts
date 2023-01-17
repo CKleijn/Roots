@@ -84,7 +84,7 @@ export class TimelineComponent
     private dialog: MatDialog,
     private toastr: ToastrService,
     private router: Router,
-    private organizationService: OrganizationService
+    private organizationService: OrganizationService,
     private spinner: NgxSpinnerService
   ) {}
 
