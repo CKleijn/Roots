@@ -4,6 +4,7 @@ import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { Organization, User } from '@roots/data';
 import { Types } from 'mongoose';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -48,11 +49,13 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private tagService: TagService,
     private modalService: NgbModal,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private spinner: NgxSpinnerService
   ) {}
 
   // Load everything when start up component
   ngOnInit(): void {
+    this.spinner.show();
     // Get current user
     this.authSubscription = this.authService
       .getUserFromLocalStorage()
@@ -80,7 +83,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     // Get organization name
     this.organizationSubscription = this.organizationService
       .getById(this.loggedInUser.organization.toString())
-      .subscribe((organization) => (this.organization = organization));
+      .subscribe((organization) => (this.organization = organization, this.spinner.hide()));
   }
 
   // Open modal
@@ -91,6 +94,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
 
   // Change status of user
   changeStatus(id: string) {
+    this.spinner.show();
+
     this.modalService.dismissAll();
     this.statusSubscription = this.organizationService
       .status(id)
@@ -98,6 +103,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         if (user) {
           this.ngOnInit();
         }
+
+        this.spinner.hide();
       });
   }
 
@@ -110,6 +117,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
 
   // Edit tag
   async editTag(newTag: string) {
+    this.spinner.show();
+
     let duplicate: boolean = false;
 
     for await (const tag of this.tags) {
@@ -124,7 +133,9 @@ export class OrganizationComponent implements OnInit, OnDestroy {
       };
       this.editSubscription = this.tagService
         .putTag(updateTag, this.editTagId)
-        .subscribe();
+        .subscribe(() => {
+          this.spinner.hide();
+        });
         
       this.modalService.dismissAll();
 
@@ -134,6 +145,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         'De gegeven tag naam is al in gebruik!',
         'Tag niet gewijzigd!'
       );
+
+      this.spinner.hide();
     }
   }
 

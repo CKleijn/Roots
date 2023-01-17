@@ -16,6 +16,7 @@ import { MatChipInputEvent } from '@angular/material/chips';
 import { MatDialog } from '@angular/material/dialog';
 import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Organization, User } from '@roots/data';
+import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
@@ -84,10 +85,13 @@ export class TimelineComponent
     private toastr: ToastrService,
     private router: Router,
     private organizationService: OrganizationService
+    private spinner: NgxSpinnerService
   ) {}
 
   // Load everything when start up component
   ngOnInit(): void {
+    this.spinner.show();
+
     // Get first 5 events and store all events
     this.routeSubscription = this.route.paramMap
       .pipe(
@@ -115,6 +119,7 @@ export class TimelineComponent
         });
         this.events = events;
         this.standardEvents = events;
+        this.spinner.hide();
       });
     // Get all events
     this.getAllEvents();
