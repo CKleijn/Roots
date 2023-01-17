@@ -66,6 +66,15 @@ nav.stroke ul li a:hover:after {
   width: 100%;
 }
 
+// Active routes
+.active {
+  border-bottom: 1px solid $secondary-color;
+}
+
+.active:hover:after {
+  display: none !important;
+}
+
 .logout-button:hover {
   cursor: pointer;
 }

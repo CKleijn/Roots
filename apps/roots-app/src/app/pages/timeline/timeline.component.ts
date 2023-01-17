@@ -95,17 +95,26 @@ export class TimelineComponent
           this.eventService.getEventsPerPage(
             this.old_records,
             this.new_records,
-            this.organizationIdUrl = params.get('organizationId')!,
+            (this.organizationIdUrl = params.get('organizationId')!),
             this.showArchivedEvents
           )
         )
       )
       .subscribe((events) => {
+        events.forEach((event) => {
+          // Convert date
+          event.eventDate = new Date(event.eventDate);
+          // Convert tags
+          let convertTags: any[] = [];
+          event.tags.forEach((tag: any) => {
+            this.tagService.getTagById(tag).subscribe((t) => {
+              convertTags.push(t.name);
+            }).unsubscribe;
+            event.tags = convertTags;
+          });
+        });
         this.events = events;
         this.standardEvents = events;
-        events.forEach((event) => {
-          event.eventDate = new Date(event.eventDate);
-        });
       });
     // Get all events
     this.getAllEvents();
@@ -145,16 +154,20 @@ export class TimelineComponent
     this.radioValue = localStorage.getItem('radioValue') || 'and';
     localStorage.setItem('radioValue', this.radioValue);
 
-    console.log(localStorage.getItem('showArchivedEvents'));
     localStorage.setItem(
       'showArchivedEvents',
       JSON.stringify(this.showArchivedEvents)
     );
-    
+
     // Checks if loggedInUser's organization is the same as the url organizationId
     // If not redirect to correct timeline
-    if (this.loggedInUser.organization.toString() !== this.organizationIdUrl?.toString()) {
-      this.router.navigate([`/organizations/${this.loggedInUser.organization.toString()}/timeline`]);
+    if (
+      this.loggedInUser.organization.toString() !==
+      this.organizationIdUrl?.toString()
+    ) {
+      this.router.navigate([
+        `/organizations/${this.loggedInUser.organization.toString()}/timeline`,
+      ]);
     }
   }
 
@@ -229,7 +242,16 @@ export class TimelineComponent
     this.allEventsSubscription = this.eventService
       .getAllEvents()
       .subscribe((events) => {
-        events.forEach((event) => {
+        events.forEach((event: any) => {
+          let convertTags: any[] = [];
+
+          event.tags.forEach((tag: any) => {
+            this.tagService.getTagById(tag).subscribe((t) => {
+              convertTags.push(t.name);
+            }).unsubscribe;
+          });
+          event.tags = convertTags;
+
           if (
             this.showArchivedEvents ||
             (!this.showArchivedEvents && event.isActive)
@@ -246,6 +268,7 @@ export class TimelineComponent
   // Switch filter (tags/terms)
   switchSearchType(type: string) {
     this.searchType = type;
+    this.searchterm = '';
   }
 
   // Open dialog with all filters
@@ -267,8 +290,8 @@ export class TimelineComponent
           );
         }
 
-        if(data.radioValue){
-          localStorage.setItem('radioValue', data.radioValue)
+        if (data.radioValue) {
+          localStorage.setItem('radioValue', data.radioValue);
           this.radioValue = data.radioValue;
         }
 
@@ -426,6 +449,17 @@ export class TimelineComponent
       // Tell onScroll that filter is used
       this.filtered = true;
     }
+    let convertTags: any[] = [];
+    //assign dates to the events
+    this.events.forEach((event: any) => {
+      event.eventDate = new Date(event.eventDate);
+      event.tags.forEach((tag: any) => {
+        this.tagService.getTagById(tag).subscribe((t) => {
+          convertTags.push(t.name);
+        }).unsubscribe;
+      });
+      event.tags = convertTags;
+    });
     // Tell HTML this is a searchrequest
     this.searchRequest = true;
     // Show alert with total count of the results found
@@ -447,7 +481,7 @@ export class TimelineComponent
     this.allEvents.forEach((event: { title: string; isActive: boolean }) => {
       ((!this.showArchivedEvents && event.isActive) ||
         this.showArchivedEvents) &&
-        event.title.includes(this.searchterm) &&
+        event.title.toLowerCase().includes(this.searchterm.toLowerCase()) &&
         this.eventTitleOptions.push(event.title);
     });
   }
@@ -466,12 +500,17 @@ export class TimelineComponent
         .subscribe((events) => {
           //retrieve the filter events
           let filterEvents = events;
+          let convertTags: any[] = [];
           //assign dates to the events
-          filterEvents.forEach(
-            (event: { eventDate: string | number | Date }) => {
-              event.eventDate = new Date(event.eventDate);
-            }
-          );
+          filterEvents.forEach((event: any) => {
+            event.eventDate = new Date(event.eventDate);
+            event.tags.forEach((tag: any) => {
+              this.tagService.getTagById(tag).subscribe((t) => {
+                convertTags.push(t.name);
+              }).unsubscribe;
+            });
+            event.tags = convertTags;
+          });
           //assign filterevents to the eventlist
           this.events = filterEvents;
           // Tell onScroll that filter is used

@@ -95,6 +95,10 @@ $background-color: #E8ECFF;
   width: 20px;
 }
 
+.search-submit > .bi:hover {
+  color: $primary-color;
+}
+
 .search-submit-dropdown-ul {
   padding: 0 !important;
   margin: 0 !important;

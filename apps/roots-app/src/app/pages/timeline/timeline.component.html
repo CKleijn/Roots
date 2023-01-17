@@ -1,7 +1,9 @@
 <div class="search">
   <form class="search-form">
     <div class="search-form-container">
-      <h1 class="search-title mb-4">Vind alles over <span class="org-name">{{ organization?.name }}</span></h1>
+      <h1 class="search-title mb-4">
+        Vind alles over <span class="org-name">{{ organization?.name }}</span>
+      </h1>
       <div class="input-group">
         <!-- Terms searchbar -->
         <div class="searchbar-container" *ngIf="searchType === 'terms'">
@@ -163,7 +165,12 @@
       "
     >
       <h2>{{ event.title }}</h2>
-      <p>
+      <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
+        <mat-chip-row *ngFor="let tag of event.tags">
+          {{ tag }}
+        </mat-chip-row>
+      </mat-chip-grid>
+      <p class="mt-2">
         {{ event.description.slice(0, 150) }}
         <span *ngIf="event.description.length > 150">...</span>
       </p>

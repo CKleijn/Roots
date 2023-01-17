@@ -39,7 +39,8 @@ describe('OrganizationService', () => {
                 access_token: '',
                 organization: new Types.ObjectId('6391333037ceb01d296c5982'),
                 initials: 'KV',
-                isActive: true
+                isActive: true,
+                isVerified: true,
             },
             {
                 _id: new Types.ObjectId('63913b615640812705d69976'),
@@ -50,7 +51,8 @@ describe('OrganizationService', () => {
                 access_token: '',
                 organization: new Types.ObjectId('6391333037ceb01d296c5982'),
                 initials: 'PP',
-                isActive: true
+                isActive: true,
+                isVerified: true,
             },
         ];
     
@@ -71,7 +73,8 @@ describe('OrganizationService', () => {
             access_token: '',
             organization: new Types.ObjectId('6391333037ceb01d296c5982'),
             initials: 'JD',
-            isActive: true
+            isActive: true,
+            isVerified: true,
         }
     });
 

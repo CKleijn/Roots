@@ -51,7 +51,7 @@ body {
     text-decoration: none;
 
     &:hover {
-      color: #fcc776;
+      color: #437aef;
     }
   }
 
@@ -83,8 +83,8 @@ body {
     border: 1px solid $primary-color;
 
     &:hover {
-      background-color: #fcc776;
-      border-color: #fcc776;
+      background-color: #437aef;
+      border-color: #437aef;
     }
   }
 
@@ -135,6 +135,10 @@ body {
     font-size: 12px;
   }
 
+  .h2-span {
+    color: $primary-color;
+  }
+
   .mdc-floating-label--required {
     display: none !important;
   }
@@ -152,6 +156,21 @@ body {
     border-color: $primary-color !important;
     background-color: #ffffff !important;
     color: $primary-color !important;
+  }
+
+  .btn-white {
+    background-color: $secondary-color !important;
+    border-color: $primary-color !important;
+    border-width: 3px !important;
+    border-radius: 0px !important;
+    color: $primary-color !important;
+  }
+
+  .btn-white:hover {
+    transition: all 0.5s;
+    border-color: $primary-color !important;
+    background-color: $primary-color !important;
+    color: $secondary-color !important;
   }
 
   .btn-100 {
