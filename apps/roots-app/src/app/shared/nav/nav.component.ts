@@ -3,6 +3,7 @@ import { User } from '@roots/data';
 import { Subscription } from 'rxjs';
 import { AuthService } from '../../pages/auth/auth.service';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 @Component({
   selector: 'roots-nav',
@@ -17,7 +18,8 @@ export class NavComponent implements OnInit, OnDestroy {
 
   constructor(
     private authService: AuthService,
-    private modalService: NgbModal
+    private modalService: NgbModal,
+    private spinner: NgxSpinnerService
   ) {}
 
   // Get current user when loading the component
@@ -37,8 +39,12 @@ export class NavComponent implements OnInit, OnDestroy {
 
   // Close modal and log out
   logout() {
+    this.spinner.show();
+
     this.modalService.dismissAll();
     this.authService.logout();
+
+    this.spinner.hide();
   }
 
   // Destroy all subscriptions

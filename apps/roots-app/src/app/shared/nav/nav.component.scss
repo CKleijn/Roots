@@ -1,12 +1,12 @@
-$primary-color: #FBA92C;
+$primary-color: #1353d9;
 $secondary-color: #ffffff;
-$background-color: #E8ECFF;
+$background-color: #e8ecff;
 
 /* NAVIGATION */
 nav {
   margin: 0 auto;
   padding: 10px 0;
-  background: black;
+  background: $primary-color;
 }
 
 .navbar-toggler {
@@ -64,6 +64,15 @@ nav.stroke ul li a:after {
 
 nav.stroke ul li a:hover:after {
   width: 100%;
+}
+
+// Active routes
+.active {
+  border-bottom: 1px solid $secondary-color;
+}
+
+.active:hover:after {
+  display: none !important;
 }
 
 .logout-button:hover {

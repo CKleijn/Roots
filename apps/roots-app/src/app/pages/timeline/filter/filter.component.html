@@ -11,12 +11,12 @@
   <div class="filter-container">
     <div class="filter-content">
       <div class="filter-row">
-        <h2 class="filter-title">Filter de tijdlijn</h2>
+        <h2 class="filter-title">Filter <span class="h2-span">zoekopdracht</span></h2>
       </div>
       <!-- Filter tags AND/OR -->
       <div class="filter-row" *ngIf="this.searchType === 'tags'">
         <div class="filter-text-container">
-          <h5 class="filter-subtitle">Hoe worden de tags gebruikt?</h5>
+          <h5 class="filter-subtitle">Tags</h5>
           <p class="filter-subtext">Een gebeurtenis moet...</p>
         </div>
         <div class="filter-data">
@@ -25,9 +25,9 @@
             [(ngModel)]="radioValue"
             name="radioValue"
           >
-            <mat-radio-button value="and">alle tags bevatten</mat-radio-button>
+            <mat-radio-button value="and">Alle tags bevatten</mat-radio-button>
             <mat-radio-button value="or"
-              >één van de tags bevatten</mat-radio-button
+              >Eén van de tags bevatten</mat-radio-button
             >
           </mat-radio-group>
         </div>
@@ -36,7 +36,7 @@
       <div class="filter-row">
         <div class="filter-text-container">
           <h5 class="filter-subtitle">
-            Welke gebeurtenissen worden weergegeven?
+            Archief
           </h5>
         </div>
         <div class="filter-data">

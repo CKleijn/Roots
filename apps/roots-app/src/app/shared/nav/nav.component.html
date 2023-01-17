@@ -18,6 +18,8 @@
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}/timeline"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             *ngIf="currentUser !== undefined && currentUser !== null"
             >Tijdlijn</a
           >
@@ -25,6 +27,8 @@
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}/events/new"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             *ngIf="currentUser !== undefined && currentUser !== null"
             >Gebeurtenis toevoegen</a
           >
@@ -32,6 +36,8 @@
         <li>
           <a
             routerLink="organizations/{{ currentUser.organization }}"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             *ngIf="currentUser !== undefined && currentUser !== null"
             >Organisatie</a
           >
@@ -39,6 +45,8 @@
         <li>
           <a
             routerLink="/login"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             *ngIf="currentUser === undefined || currentUser === null"
             >Inloggen</a
           >
@@ -46,6 +54,8 @@
         <li>
           <a
             routerLink="/register"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             *ngIf="currentUser === undefined || currentUser === null"
             >Registreren</a
           >
@@ -53,6 +63,8 @@
         <li>
           <a
             class="logout-button"
+            [routerLinkActive]="['active']"
+            [routerLinkActiveOptions]="{ exact: true }"
             *ngIf="currentUser !== undefined && currentUser !== null"
             (click)="open(content)"
             >Uitloggen</a
@@ -77,7 +89,7 @@
     <span>Weet je zeker dat je uit wil loggen?</span>
   </div>
   <div class="modal-footer">
-    <button type="button" class="btn" (click)="modal.dismiss()">
+    <button type="button" class="btn btn-white" (click)="modal.dismiss()">
       Annuleren
     </button>
     <button type="button" class="btn" (click)="logout()">Uitloggen</button>
