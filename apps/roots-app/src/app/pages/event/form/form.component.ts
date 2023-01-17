@@ -23,6 +23,7 @@ import { User } from '@roots/data';
 import { TagService } from '../../tag/tag.service';
 import { VideoHandler, Options } from 'ngx-quill-upload';
 import { ToastrService } from 'ngx-toastr';
+import { NgxSpinnerService } from 'ngx-spinner';
 
 let Quill: any = QuillNamespace;
 const ImageResize = require('quill-image-resize-module');
@@ -130,7 +131,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private authService: AuthService,
     private dateAdapter: DateAdapter<Date>,
     private tagService: TagService,
-    private toastrService: ToastrService
+    private toastrService: ToastrService,
+    private spinner: NgxSpinnerService
   ) {
     this.dateAdapter.setLocale('nl-NL');
   }
@@ -167,6 +169,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     });
     // If it's editMode then change values
     if (this.editMode) {
+      this.spinner.show();
       // Get correct event
       this.eventSubscription = this.eventService
         .getEventById(this.eventId as string)
@@ -194,11 +197,15 @@ export class EventFormComponent implements OnInit, OnDestroy {
                 .toISOString()
                 .slice(0, 10),
             });
+
+            this.spinner.hide();
           },
           error: () =>
             this.router.navigate([
               `organizations/${this.organizationId}/timeline`,
-            ]),
+            ]).then(() => {
+              this.spinner.hide();
+            }),
         });
     }
   }
@@ -306,6 +313,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
 
   // Submit form
   async onSubmit() {
+    this.spinner.show();
+
     let allTags = [] as any[] | undefined;
     // eslint-disable-next-line prefer-const
     let allSelectedTags = [] as any[];
@@ -342,6 +351,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
           )
           .subscribe({
             error: (error) => (this.error = error.message),
+            complete: () => (this.spinner.hide())
           });
         // Edit
       } else {
@@ -353,6 +363,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
           )
           .subscribe({
             error: (error) => (this.error = error.message),
+            complete: () => (this.spinner.hide())
           });
       }
     } else {
@@ -361,6 +372,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
         `Deze gebeurtenis voldoet nog niet aan alle validatie!`,
         'Validatie mislukt!'
       );
+
+      this.spinner.hide();
     }
   }
 
