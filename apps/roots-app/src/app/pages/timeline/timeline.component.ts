@@ -18,7 +18,7 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Organization, User } from '@roots/data';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
+import { firstValueFrom, lastValueFrom, map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Event } from '../event/event.model';
 import { EventService } from '../event/event.service';
@@ -91,7 +91,10 @@ export class TimelineComponent
   // Load everything when start up component
   ngOnInit(): void {
     this.spinner.show();
-
+    // Get current user
+    this.authSubscription = this.authService
+      .getUserFromLocalStorage()
+      .subscribe((user) => (this.loggedInUser = user));
     // Get first 5 events and store all events
     this.routeSubscription = this.route.paramMap
       .pipe(
@@ -105,20 +108,22 @@ export class TimelineComponent
         )
       )
       .subscribe((events) => {
-        events.forEach((event) => {
-          // Convert date
-          event.eventDate = new Date(event.eventDate);
-          // Convert tags
-          let convertTags: any[] = [];
-          event.tags.forEach((tag: any) => {
-            this.tagService.getTagById(tag).subscribe((t) => {
-              convertTags.push(t.name);
-            }).unsubscribe;
-            event.tags = convertTags;
+        if (events) {
+          events.forEach((event) => {
+            // Convert date
+            event.eventDate = new Date(event.eventDate);
+            // Convert tags
+            let convertTags: any[] = [];
+            event.tags.forEach((tag: any) => {
+              this.tagService.getTagById(tag).subscribe((t) => {
+                convertTags.push(t.name);
+              }).unsubscribe;
+              event.tags = convertTags;
+            });
           });
-        });
-        this.events = events;
-        this.standardEvents = events;
+          this.events = events;
+          this.standardEvents = events;
+        }
         this.spinner.hide();
       });
     // Get all events
@@ -133,10 +138,6 @@ export class TimelineComponent
         this.eventTitleOptions = [];
       }
     });
-    // Get current user
-    this.authSubscription = this.authService
-      .getUserFromLocalStorage()
-      .subscribe((user) => (this.loggedInUser = user));
     // Get current organization
     this.organizationId = this.loggedInUser.organization.toString();
     // Get organization name
@@ -242,31 +243,32 @@ export class TimelineComponent
   }
 
   // Get all events and store them
-  getAllEvents(): Event[] {
+  async getAllEvents(): Promise<Event[]> {
     this.allEvents = [];
-    this.allEventsSubscription = this.eventService
-      .getAllEvents()
-      .subscribe((events) => {
-        events.forEach((event: any) => {
-          let convertTags: any[] = [];
+    let events: any = await firstValueFrom(this.eventService
+      .getAllEvents(this.loggedInUser.organization.toString()))
 
-          event.tags.forEach((tag: any) => {
-            this.tagService.getTagById(tag).subscribe((t) => {
-              convertTags.push(t.name);
-            }).unsubscribe;
-          });
-          event.tags = convertTags;
+    if (events) {
+      for await (const event of events) {
+        let convertTags: any[] = [];
 
-          if (
-            this.showArchivedEvents ||
-            (!this.showArchivedEvents && event.isActive)
-          ) {
-            event.eventDate = new Date(event.eventDate);
-            this.allEvents.push(event);
-          }
-        });
-        return events;
-      });
+        for await (const tag of event.tags) {
+          let fullTag: any = await firstValueFrom(this.tagService.getTagById(tag))
+          convertTags.push(fullTag.name)
+        }
+
+        event.tags = convertTags;
+
+        if (
+          this.showArchivedEvents ||
+          (!this.showArchivedEvents && event.isActive)
+        ) {
+          event.eventDate = new Date(event.eventDate);
+          this.allEvents.push(event);
+        }
+      }
+    }
+
     return this.allEvents;
   }
 
@@ -299,8 +301,6 @@ export class TimelineComponent
           localStorage.setItem('radioValue', data.radioValue);
           this.radioValue = data.radioValue;
         }
-
-        this.events = this.getAllEvents();
       }
     });
   }
@@ -394,20 +394,24 @@ export class TimelineComponent
 
   // Search events with tags
   async searchOnTag() {
-    localStorage.setItem('searchType', 'tags');
+    // Check if archive is true
+    if (localStorage.getItem('showArchivedEvents')) {
+      this.events = await this.getAllEvents();
+    }
     // Clear array from previous search
     this.fullSelectedTags = [];
     this.newEvents = [];
     // Push all tags which are selected in array
-    for await (const tag of this.tags)
+    for await (const tag of this.tags) {
       this.fullSelectedTags.push(
         this.fullTags?.filter((p) => p.name === tag).at(0)
       );
+    }
     // If one tag is selected filter events only on one tag
     if (this.tags.length === 1) {
       for await (const event of this.allEvents as Event[]) {
         for await (const tag of event.tags) {
-          if (this.fullSelectedTags.filter((p) => p._id === tag).length > 0)
+          if (this.fullSelectedTags.filter((p) => p.name === tag).length > 0)
             this.newEvents.push(event);
         }
       }
@@ -418,7 +422,7 @@ export class TimelineComponent
         for await (const event of this.allEvents as Event[]) {
           for await (const fullSelectedTag of this.fullSelectedTags) {
             if (
-              event.tags.filter((p) => p === fullSelectedTag._id).length === 0
+              event.tags.filter((p) => p === fullSelectedTag.name).length === 0
             )
               this.containsAllTags = false;
           }
@@ -431,7 +435,7 @@ export class TimelineComponent
         for await (const event of this.allEvents as Event[]) {
           for await (const fullSelectedTag of this.fullSelectedTags) {
             if (
-              event.tags.filter((p) => p === fullSelectedTag._id).length > 0
+              event.tags.filter((p) => p === fullSelectedTag.name).length > 0
             ) {
               if (this.newEvents.filter((e) => e === event).length === 0)
                 this.newEvents.push(event);
@@ -454,30 +458,32 @@ export class TimelineComponent
       // Tell onScroll that filter is used
       this.filtered = true;
     }
-    let convertTags: any[] = [];
-    //assign dates to the events
-    this.events.forEach((event: any) => {
-      event.eventDate = new Date(event.eventDate);
-      event.tags.forEach((tag: any) => {
-        this.tagService.getTagById(tag).subscribe((t) => {
-          convertTags.push(t.name);
-        }).unsubscribe;
-      });
-      event.tags = convertTags;
-    });
     // Tell HTML this is a searchrequest
     this.searchRequest = true;
-    // Show alert with total count of the results found
-    const totalResults = this.events.length;
-    totalResults === 1
-      ? this.toastr.success(
-          `Er is ${this.events.length} resultaat gevonden!`,
-          'Tijdlijn gefiltert!'
-        )
-      : this.toastr.success(
-          `Er zijn ${this.events.length} resultaten gevonden!`,
-          'Tijdlijn gefiltert!'
-        );
+    // Check if its a search request or just for archive items
+    if (this.showArchivedEvents && this.tags.length === 0) {
+      this.toastr.success(
+        `Gebeurtenissen uit het archief zijn te zien binnen de tijdlijn!`,
+        'Tijdlijn gefiltert!'
+      );
+    } else if (!this.showArchivedEvents && this.tags.length === 0) {
+      this.toastr.success(
+        `Gebeurtenissen uit het archief zijn verdwenen binnen de tijdlijn!`,
+        'Tijdlijn gefiltert!'
+      );
+    } else {
+      // Show alert with total count of the results found
+      const totalResults = this.events.length;
+      totalResults === 1
+        ? this.toastr.success(
+            `Er is ${this.events.length} resultaat gevonden!`,
+            'Tijdlijn gefiltert!'
+          )
+        : this.toastr.success(
+            `Er zijn ${this.events.length} resultaten gevonden!`,
+            'Tijdlijn gefiltert!'
+          );
+    }
   }
 
   // Search on term filter
@@ -492,10 +498,14 @@ export class TimelineComponent
   }
 
   //searching on a term
-  searchOnTerm() {
-    localStorage.setItem('searchType', 'terms');
+  async searchOnTerm() {
     //if there is an organizationId -> get events by term
     if (this.organizationId) {
+      // Check if archive is true
+      if (localStorage.getItem('showArchivedEvents')) {
+        this.events = await this.getAllEvents();
+      }
+
       this.eventSubscription = this.eventService
         .getEventsByTerm(
           this.searchterm,
@@ -503,36 +513,50 @@ export class TimelineComponent
           this.showArchivedEvents
         )
         .subscribe((events) => {
-          //retrieve the filter events
-          let filterEvents = events;
-          let convertTags: any[] = [];
-          //assign dates to the events
-          filterEvents.forEach((event: any) => {
-            event.eventDate = new Date(event.eventDate);
-            event.tags.forEach((tag: any) => {
-              this.tagService.getTagById(tag).subscribe((t) => {
-                convertTags.push(t.name);
-              }).unsubscribe;
+          if (events) {
+            //retrieve the filter events
+            let filterEvents = events;
+            //assign dates to the events
+            filterEvents.forEach((event: any) => {
+              let convertTags: any[] = [];
+              event.eventDate = new Date(event.eventDate);
+              event.tags.forEach((tag: any) => {
+                this.tagService.getTagById(tag).subscribe((t) => {
+                  convertTags.push(t.name);
+                }).unsubscribe;
+              });
+              event.tags = convertTags;
             });
-            event.tags = convertTags;
-          });
-          //assign filterevents to the eventlist
-          this.events = filterEvents;
-          // Tell onScroll that filter is used
-          this.filtered = true;
-          // Tell HTML this is a searchrequest
-          this.searchRequest = true;
-          // Show alert with total count of the results found
-          const totalResults = this.events.length;
-          totalResults === 1
-            ? this.toastr.success(
-                `Er is ${this.events.length} resultaat gevonden!`,
-                'Tijdlijn gefiltert!'
-              )
-            : this.toastr.success(
-                `Er zijn ${this.events.length} resultaten gevonden!`,
-                'Tijdlijn gefiltert!'
-              );
+            //assign filterevents to the eventlist
+            this.events = filterEvents;
+            // Tell onScroll that filter is used
+            this.filtered = true;
+            // Tell HTML this is a searchrequest
+            this.searchRequest = true;
+            // Show alert with total count of the results found
+            const totalResults = this.events.length;
+            totalResults === 1
+              ? this.toastr.success(
+                  `Er is ${this.events.length} resultaat gevonden!`,
+                  'Tijdlijn gefiltert!'
+                )
+              : this.toastr.success(
+                  `Er zijn ${this.events.length} resultaten gevonden!`,
+                  'Tijdlijn gefiltert!'
+                );
+          }
+          // Check if its a search request or just for archive items
+          if (this.showArchivedEvents && this.searchterm === '') {
+            this.toastr.success(
+              `Gebeurtenissen uit het archief zijn te zien binnen de tijdlijn!`,
+              'Tijdlijn gefiltert!'
+            );
+          } else if (!this.showArchivedEvents && this.searchterm === '') {
+            this.toastr.success(
+              `Gebeurtenissen uit het archief zijn verdwenen binnen de tijdlijn!`,
+              'Tijdlijn gefiltert!'
+            );
+          }
         });
     }
   }

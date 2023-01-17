@@ -17,6 +17,7 @@
             [matChipInputFor]="chipGrid"
             [matAutocomplete]="auto"
             [(ngModel)]="searchterm"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
           />
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let title of eventTitleOptions" [value]="title">
@@ -38,6 +39,7 @@
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
             (matChipInputTokenEnd)="add($event)"
             [(ngModel)]="searchterm"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
           />
           <mat-autocomplete
             #auto="matAutocomplete"
@@ -55,7 +57,10 @@
         </div>
         <!-- Terms/tags dropdown -->
         <div class="input-group-prepend">
-          <button class="search-submit-dropdown">
+          <button
+            class="search-submit-dropdown"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          >
             <ul class="search-submit-dropdown-ul">
               <li class="search-submit-dropdown-li">
                 <span *ngIf="searchType === 'terms'">Termen</span>
@@ -79,11 +84,20 @@
             </ul>
           </button>
           <!-- Reset -->
-          <button type="submit" class="search-submit" (click)="reset()">
+          <button
+            type="submit"
+            class="search-submit"
+            (click)="reset()"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          >
             <i class="bi bi-arrow-clockwise"></i>
           </button>
           <!-- Open filter -->
-          <button class="search-submit" (click)="openFilter()">
+          <button
+            class="search-submit"
+            (click)="openFilter()"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          >
             <i class="bi bi-funnel"></i>
           </button>
           <!-- Search tag -->
@@ -91,6 +105,7 @@
             *ngIf="searchType === 'tags'"
             type="submit"
             class="search-submit"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
             (click)="searchOnTag()"
           >
             <i class="bi bi-search"></i>
@@ -100,6 +115,7 @@
             *ngIf="searchType === 'terms'"
             type="submit"
             class="search-submit"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
             (click)="searchOnTerm()"
           >
             <i class="bi bi-search"></i>

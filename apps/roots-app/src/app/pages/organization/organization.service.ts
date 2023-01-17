@@ -70,17 +70,22 @@ export class OrganizationService {
       )
       .pipe(
         map((user: any) => {
-          const status = user.isActive ? 'geactiveerd' : 'gedeactiveerd';
+          if (user) {
+            const status = user.isActive ? 'geactiveerd' : 'gedeactiveerd';
 
-          this.authService.currentUser$.subscribe((loggedInUser) => {
-            this.logCreate(loggedInUser, user.isActive ? 'Geactiveerd' : 'Gedeactiveerd', '(A) ' + user.firstname + ' ' + user.lastname).subscribe()
-          });
+            this.authService.currentUser$.subscribe((loggedInUser) => {
+              this.logCreate(
+                loggedInUser,
+                user.isActive ? 'Geactiveerd' : 'Gedeactiveerd',
+                '(A) ' + user.firstname + ' ' + user.lastname
+              ).subscribe().unsubscribe;
+            }).unsubscribe;
 
-
-          this.toastr.success(
-            `Je hebt het account succesvol ${status}`,
-            'Account status veranderd'
-          );
+            this.toastr.success(
+              `Je hebt het account succesvol ${status}`,
+              'Account status veranderd'
+            );
+          }
           return user;
         }),
         catchError((err: any) => {
@@ -104,7 +109,6 @@ export class OrganizationService {
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          this.toastr.error(err.error.message, 'Log is niet gevonden');
           return of(undefined);
         })
       ) as Observable<Object>;
@@ -121,7 +125,6 @@ export class OrganizationService {
       object: object,
       logStamp: new Date(),
     };
-    console.log(log)
     const organizationId = loggedInUser.organization.toString();
     return this.httpClient
       .put(
@@ -131,13 +134,10 @@ export class OrganizationService {
       )
       .pipe(
         map((organization) => {
-          this.toastr.success('log aangemaakt');
-
           return organization;
         }),
         catchError((err: any) => {
           window.scroll(0, 0);
-          this.toastr.error(err.error.message, 'Log mislukt');
           return of(undefined);
         })
       ) as Observable<Object>;

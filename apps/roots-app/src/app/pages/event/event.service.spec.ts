@@ -306,7 +306,6 @@ fdescribe('EventService', () => {
         dummyOrgs[0]._id.toString()
       )
       .subscribe((event) => {
-        console.log(event);
         expect(event.isActive).toBe(false);
         expect(event.title).toEqual(dummyEvent.title);
         expect(event.description).toEqual(dummyEvent.description);

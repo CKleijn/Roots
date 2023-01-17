@@ -587,10 +587,10 @@ let EventController = class EventController {
         this.eventService = eventService;
     }
     // Get all events
-    getAllEvents() {
+    getAllEvents(organizationId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             common_1.Logger.log('Retrieving all events (READ)');
-            return yield this.eventService.getAll();
+            return yield this.eventService.getAll(organizationId);
         });
     }
     // Get an amount of events to show on page
@@ -661,9 +661,10 @@ let EventController = class EventController {
 };
 tslib_1.__decorate([
     (0, auth_module_1.Public)(),
-    (0, common_1.Get)(),
+    (0, common_1.Get)('/organization/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
+    tslib_1.__metadata("design:paramtypes", [String]),
     tslib_1.__metadata("design:returntype", typeof (_b = typeof Promise !== "undefined" && Promise) === "function" ? _b : Object)
 ], EventController.prototype, "getAllEvents", null);
 tslib_1.__decorate([
@@ -879,10 +880,15 @@ let EventService = class EventService {
         this.organizationModel = organizationModel;
     }
     // Get all events
-    getAll() {
+    getAll(organizationId) {
         var _a;
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const events = yield this.organizationModel.aggregate([
+                {
+                    $match: {
+                        _id: new mongoose_2.Types.ObjectId(organizationId),
+                    },
+                },
                 {
                     $unwind: {
                         path: '$events',
@@ -1306,18 +1312,18 @@ let LogService = class LogService {
     }
     getAll(organizationId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.organizationModel.findOne({ organizationId }, { logs: 1 });
+            return yield this.organizationModel.findOne({ _id: organizationId }, { logs: 1 });
         });
     }
     create(organizationId, logDto) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.organizationModel.findOneAndUpdate({ organizationId }, {
+            return yield this.organizationModel.findOneAndUpdate({ _id: organizationId }, {
                 $push: {
-                    logs: logDto
-                }
+                    logs: logDto,
+                },
             }, {
                 new: true,
-                runValidators: true
+                runValidators: true,
             });
         });
     }

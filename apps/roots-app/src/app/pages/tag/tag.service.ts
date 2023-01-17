@@ -5,9 +5,9 @@ import { Injectable } from '@angular/core';
 import { Observable, catchError, map, of } from 'rxjs';
 import { Tag } from './tag.model';
 import { ToastrService } from 'ngx-toastr';
-import { AuthService } from "../auth/auth.service";
-import { environment } from "apps/roots-app/src/environments/environment.prod";
-import { OrganizationService } from "../organization/organization.service";
+import { AuthService } from '../auth/auth.service';
+import { environment } from 'apps/roots-app/src/environments/environment.prod';
+import { OrganizationService } from '../organization/organization.service';
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +16,8 @@ export class TagService {
   constructor(
     private httpClient: HttpClient,
     private authService: AuthService,
-    private toastr: ToastrService
+    private toastr: ToastrService,
+    private organizationService: OrganizationService
   ) {}
 
   // Get all tags by organization
@@ -67,21 +68,32 @@ export class TagService {
   }
 
   // Create tag in put in organization
-  postTagInOrganization(tag: object, organizationId: string): Observable<any> {
+  postTagInOrganization(
+    newTag: any,
+    organizationId: string
+  ): Observable<any> {
     return this.httpClient
       .post(
         environment.SERVER_API_URL +
           '/tags/new/organizations/' +
           organizationId,
-        tag,
+        newTag,
         this.authService.getHttpOptions()
       )
       .pipe(
         map((tag) => {
-          this.toastr.success(
-            'Tag is succesvol aangemaakt!',
-            'Tag aangemaakt!'
-          );
+          if (tag) {
+            this.authService.currentUser$.subscribe((loggedInUser) => {
+              this.organizationService
+                .logCreate(loggedInUser, 'Aangemaakt', '(T) ' + newTag.name)
+                .subscribe().unsubscribe;
+            }).unsubscribe;
+
+            this.toastr.success(
+              'Tag is succesvol aangemaakt!',
+              'Tag aangemaakt!'
+            );
+          }
           return tag;
         }),
         catchError((err: any) => {
@@ -94,16 +106,28 @@ export class TagService {
   }
 
   // Edit tag
-  putTag(tag: Tag, tagId: string): Observable<any> {
+  putTag(newTag: Tag, tagId: string): Observable<any> {
     return this.httpClient
       .put(
         environment.SERVER_API_URL + '/tags/' + tagId,
-        tag,
+        newTag,
         this.authService.getHttpOptions()
       )
       .pipe(
         map((tag) => {
-          this.toastr.success('Tag is succesvol aangepast!', 'Tag aangepast!');
+          if (tag) {
+            this.authService.currentUser$.subscribe((loggedInUser) => {
+              this.organizationService
+                .logCreate(loggedInUser, 'Gewijzigd', '(T) ' + newTag.name)
+                .subscribe().unsubscribe;
+            }).unsubscribe;
+
+            this.toastr.success(
+              'Tag is succesvol aangepast!',
+              'Tag aangepast!'
+            );
+          }
+
           return tag;
         }),
         catchError((err: any) => {
