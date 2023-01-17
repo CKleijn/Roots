@@ -24,6 +24,7 @@ import { TagService } from '../../tag/tag.service';
 import { VideoHandler, Options } from 'ngx-quill-upload';
 import { ToastrService } from 'ngx-toastr';
 import { NgxSpinnerService } from 'ngx-spinner';
+import { OrganizationService } from '../../organization/organization.service';
 
 let Quill: any = QuillNamespace;
 const ImageResize = require('quill-image-resize-module');
@@ -132,7 +133,8 @@ export class EventFormComponent implements OnInit, OnDestroy {
     private dateAdapter: DateAdapter<Date>,
     private tagService: TagService,
     private toastrService: ToastrService,
-    private spinner: NgxSpinnerService
+    private spinner: NgxSpinnerService,
+    private organizationService: OrganizationService
   ) {
     this.dateAdapter.setLocale('nl-NL');
   }

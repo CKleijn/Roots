@@ -6,7 +6,8 @@ import { Observable, catchError, map, of } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Event } from '../event/event.model';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from '@angular/router';
+import { Router } from "@angular/router";
+import { OrganizationService } from "../organization/organization.service";
 
 @Injectable({
   providedIn: 'root',
@@ -16,7 +17,8 @@ export class EventService {
     private httpClient: HttpClient,
     private authService: AuthService,
     private toastr: ToastrService,
-    private router: Router
+    private router: Router,
+    private organizationService: OrganizationService
   ) {}
 
   // Get all events
@@ -164,11 +166,14 @@ export class EventService {
         this.authService.getHttpOptions()
       )
       .pipe(
-        map((event) => {
+        map((event:any) => {
+          this.authService.currentUser$.subscribe((loggdInUser) => {
+            this.organizationService.logCreate(loggdInUser, isActive ? 'Geactiveerd' : 'Gedeactiveerd', '(G) ' + event.title).subscribe()
+          });
+          
           this.toastr.success(
-            'Gebeurtenis is succesvol ' +
-              (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!')
-          );
+            'Gebeurtenis is succesvol ' + (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!')
+            );
           return event;
         }),
         catchError((err: any) => {

@@ -151,6 +151,7 @@ export class RegisterComponent implements OnInit, OnDestroy {
         emailDomain: this.emailDomainInput,
         events: [],
         tags: [],
+        logs:[]
       };
 
       //remove unneeded value, that's not needed for user object

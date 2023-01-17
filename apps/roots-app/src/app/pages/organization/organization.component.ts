@@ -1,12 +1,15 @@
 /* eslint-disable prefer-const */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Organization, User } from '@roots/data';
+import { ILog, Organization, User } from '@roots/data';
 import { Types } from 'mongoose';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
+import { elementAt, Subscription, tap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Tag } from '../tag/tag.model';
 import { TagService } from '../tag/tag.service';
@@ -25,6 +28,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   editSubscription!: Subscription;
   deleteSubscription!: Subscription;
   statusSubscription!: Subscription;
+  logSubscription!: Subscription;
   loggedInUser!: User;
   participants!: User[];
   selectedUser!: User;
@@ -39,10 +43,19 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   ];
   displayedColumnsTag: string[] = ['tag', 'change'];
   tags!: Tag[];
-  editTagId!: string;
-  editTagName!: string;
-  deleteTagId!: string;
-  deleteTagName!: string;
+  //edit
+  editTagId!: string
+  editTagName!: string
+  //delete
+  deleteTagId!: string
+  deleteTagName!: string
+  //log paginator and sort
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort! : MatSort; 
+  // create datasource
+  dataSource = new MatTableDataSource<ILog>;
+  logs:ILog[] = [];
+  displayedColumnsLog: string[] = ['editor', 'action', 'object', 'logStamp'];
 
   constructor(
     private organizationService: OrganizationService,
@@ -84,8 +97,20 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.organizationSubscription = this.organizationService
       .getById(this.loggedInUser.organization.toString())
       .subscribe((organization) => (this.organization = organization, this.spinner.hide()));
-  }
 
+      // get log items
+      this.logSubscription = this.organizationService.log(this.loggedInUser.organization.toString())
+      .subscribe((log) => { 
+        //set the retrieved logs as the table's data source
+        this.logs = log.logs;
+        this.dataSource.data = log.logs; 
+
+        // couple paginator and sort to datasource 
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort
+      })
+    }
+  
   // Open modal
   open(content: any, selectedUser: User) {
     this.selectedUser = selectedUser;
@@ -119,6 +144,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   async editTag(newTag: string) {
     this.spinner.show();
 
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let duplicate: boolean = false;
 
     for await (const tag of this.tags) {
@@ -138,6 +164,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         });
         
       this.modalService.dismissAll();
+      this.organizationService.logCreate(this.loggedInUser, 'Gewijzigd', '(T) ' + updateTag.name).subscribe();
 
       this.ngOnInit();
     } else {
@@ -169,6 +196,15 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   }
 
   // Destroy all subscriptions
+  applyFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSource.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSource.paginator) {
+      this.dataSource.paginator.firstPage();
+    }
+  }
+
   ngOnDestroy(): void {
     this.authSubscription?.unsubscribe;
     this.organizationSubscription?.unsubscribe;
@@ -177,5 +213,6 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.editSubscription?.unsubscribe;
     this.deleteSubscription?.unsubscribe;
     this.statusSubscription?.unsubscribe;
+    this.logSubscription?.unsubscribe;
   }
 }

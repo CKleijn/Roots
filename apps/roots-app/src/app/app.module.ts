@@ -18,8 +18,10 @@ import { MatIconModule } from '@angular/material/icon';
 import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
-import { MatTableModule } from '@angular/material/table';
 import { BrowserModule, Title } from '@angular/platform-browser';
+import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
   RouterModule,
@@ -94,6 +96,8 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     MatSelectModule,
     MatRadioModule,
     MatAutocompleteModule,
+    MatPaginatorModule,
+    MatSortModule,
     OrganizationModule,
     InfiniteScrollModule,
     NgxSpinnerModule,
