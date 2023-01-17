@@ -124,24 +124,20 @@
 </div>
 <!-- Error messages -->
 <div class="timeline-error-message-container" *ngIf="this.events.length === 0 && this.searchRequest">
-  <div class="">
-    <div class="">
-      <h2>Oeps!</h2>
-      <p>
-        Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de
-        filter(s)!
-      </p>
-    </div>
+  <div class="timeline-error-message-textbox">
+    <h2>Oeps!</h2>
+    <p>
+      Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de
+      filter(s)!
+    </p>
   </div>
 </div>
 <div class="timeline-error-message-container" *ngIf="this.events.length === 0 && !this.searchRequest">
-    <div class="timeline-error-message-textbox">
-      <div class="">
-        <h2>Oeps!</h2>
-        <p>
-          Er zijn op het moment geen gebeurtenissen aanwezig voor deze
-          organisatie!
-        </p>
-      </div>
+  <div class="timeline-error-message-textbox">
+    <h2>Oeps!</h2>
+    <p>
+      Er zijn op het moment geen gebeurtenissen aanwezig voor deze
+      organisatie!
+    </p>
   </div>
 </div>
