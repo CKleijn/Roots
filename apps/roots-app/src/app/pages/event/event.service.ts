@@ -6,8 +6,8 @@ import { Observable, catchError, map, of } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Event } from '../event/event.model';
 import { ToastrService } from 'ngx-toastr';
-import { Router } from "@angular/router";
-import { OrganizationService } from "../organization/organization.service";
+import { Router } from '@angular/router';
+import { OrganizationService } from '../organization/organization.service';
 
 @Injectable({
   providedIn: 'root',
@@ -22,9 +22,9 @@ export class EventService {
   ) {}
 
   // Get all events
-  getAllEvents(): Observable<Event[]> {
+  getAllEvents(organizationId: string): Observable<Event[]> {
     return this.httpClient.get(
-      environment.SERVER_API_URL + '/events'
+      environment.SERVER_API_URL + `/events/organization/${organizationId}`
     ) as Observable<Event[]>;
   }
 
@@ -61,10 +61,7 @@ export class EventService {
   }
 
   // Create an event
-  postEvent(
-    event: Event, 
-    companyId: string
-  ): Observable<any> {
+  postEvent(event: Event, companyId: string): Observable<any> {
     return this.httpClient
       .post(
         environment.SERVER_API_URL + '/events/new/' + companyId,
@@ -102,11 +99,7 @@ export class EventService {
   }
 
   // Update an event
-  putEvent(
-    event: Event, 
-    eventId: string, 
-    companyId: string
-  ): Observable<any> {
+  putEvent(event: Event, eventId: string, companyId: string): Observable<any> {
     return this.httpClient
       .put(
         environment.SERVER_API_URL +
@@ -166,14 +159,23 @@ export class EventService {
         this.authService.getHttpOptions()
       )
       .pipe(
-        map((event:any) => {
-          this.authService.currentUser$.subscribe((loggdInUser) => {
-            this.organizationService.logCreate(loggdInUser, isActive ? 'Geactiveerd' : 'Gedeactiveerd', '(G) ' + event.title).subscribe()
-          });
-          
-          this.toastr.success(
-            'Gebeurtenis is succesvol ' + (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!')
+        map((event: any) => {
+          if (event) {
+            this.authService.currentUser$.subscribe((loggedInUser) => {
+              this.organizationService
+                .logCreate(
+                  loggedInUser,
+                  isActive ? 'Geactiveerd' : 'Gedeactiveerd',
+                  '(G) ' + event.title
+                )
+                .subscribe();
+            });
+
+            this.toastr.success(
+              'Gebeurtenis is succesvol ' +
+                (!isActive ? 'gearchiveerd!' : 'gedearchiveerd!')
             );
+          }
           return event;
         }),
         catchError((err: any) => {

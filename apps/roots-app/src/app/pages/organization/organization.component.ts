@@ -107,7 +107,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
 
         // couple paginator and sort to datasource 
         this.dataSource.paginator = this.paginator;
-        this.dataSource.sort = this.sort
+        this.dataSource.sort = this.sort;
       })
     }
   
@@ -164,7 +164,6 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         });
         
       this.modalService.dismissAll();
-      this.organizationService.logCreate(this.loggedInUser, 'Gewijzigd', '(T) ' + updateTag.name).subscribe();
 
       this.ngOnInit();
     } else {

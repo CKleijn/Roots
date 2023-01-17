@@ -7,8 +7,18 @@
       <div class="input-group">
         <!-- Terms searchbar -->
         <div class="searchbar-container" *ngIf="searchType === 'terms'">
-          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
-            [formControl]="termCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto" [(ngModel)]="searchterm" />
+          <input
+            type="text"
+            name="search"
+            id="search"
+            class="form-control search-searchbar"
+            #tagInput
+            [formControl]="termCtrl"
+            [matChipInputFor]="chipGrid"
+            [matAutocomplete]="auto"
+            [(ngModel)]="searchterm"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          />
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let title of eventTitleOptions" [value]="title">
               {{ title }}
@@ -17,11 +27,24 @@
         </div>
         <!-- Tags searchbar -->
         <div class="searchbar-container" *ngIf="searchType === 'tags'">
-          <input type="text" name="search" id="search" class="form-control search-searchbar" #tagInput
-            [formControl]="tagCtrl" [matChipInputFor]="chipGrid" [matAutocomplete]="auto"
-            [matChipInputSeparatorKeyCodes]="separatorKeysCodes" (matChipInputTokenEnd)="add($event)"
-            [(ngModel)]="searchterm" />
-          <mat-autocomplete #auto="matAutocomplete" (optionSelected)="selected($event)">
+          <input
+            type="text"
+            name="search"
+            id="search"
+            class="form-control search-searchbar"
+            #tagInput
+            [formControl]="tagCtrl"
+            [matChipInputFor]="chipGrid"
+            [matAutocomplete]="auto"
+            [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
+            (matChipInputTokenEnd)="add($event)"
+            [(ngModel)]="searchterm"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          />
+          <mat-autocomplete
+            #auto="matAutocomplete"
+            (optionSelected)="selected($event)"
+          >
             <div *ngIf="searchType === 'tags'">
               <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
                 {{ tag }}
@@ -31,7 +54,10 @@
         </div>
         <!-- Terms/tags dropdown -->
         <div class="input-group-prepend">
-          <button class="search-submit-dropdown">
+          <button
+            class="search-submit-dropdown"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          >
             <ul class="search-submit-dropdown-ul">
               <li class="search-submit-dropdown-li">
                 <span *ngIf="searchType === 'terms'">Termen</span>
@@ -47,19 +73,40 @@
             </ul>
           </button>
           <!-- Reset -->
-          <button type="submit" class="search-submit" (click)="reset()">
+          <button
+            type="submit"
+            class="search-submit"
+            (click)="reset()"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          >
             <i class="bi bi-arrow-clockwise"></i>
           </button>
           <!-- Open filter -->
-          <button class="search-submit" (click)="openFilter()">
+          <button
+            class="search-submit"
+            (click)="openFilter()"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+          >
             <i class="bi bi-funnel"></i>
           </button>
           <!-- Search tag -->
-          <button *ngIf="searchType === 'tags'" type="submit" class="search-submit" (click)="searchOnTag()">
+          <button
+            *ngIf="searchType === 'tags'"
+            type="submit"
+            class="search-submit"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+            (click)="searchOnTag()"
+          >
             <i class="bi bi-search"></i>
           </button>
           <!-- Search term -->
-          <button *ngIf="searchType === 'terms'" type="submit" class="search-submit" (click)="searchOnTerm()">
+          <button
+            *ngIf="searchType === 'terms'"
+            type="submit"
+            class="search-submit"
+            [disabled]="this.events.length === 0 && !this.searchRequest"
+            (click)="searchOnTerm()"
+          >
             <i class="bi bi-search"></i>
           </button>
         </div>

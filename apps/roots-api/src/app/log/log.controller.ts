@@ -23,8 +23,4 @@ export class LogController {
   async createLog(@Param('organizationId') organizationId: string, @Body() logDto:LogDTO): Promise<Log> {
     return await this.logService.create(organizationId,logDto);
   }
-
-
-
-
 }    
