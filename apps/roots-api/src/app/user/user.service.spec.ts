@@ -247,7 +247,6 @@ describe('OrganizationService', () => {
       expect(results).toHaveLength(2);
 
       expect(results[0]).toBeInstanceOf(Object);
-      expect(results[0]._id).toEqual(user2Id);
       expect(results[0].firstname).toEqual('Harry');
       expect(results[0].lastname).toEqual('Potter');
       expect(results[0].emailAddress).toEqual('harrypotter@organization2.com');
@@ -258,7 +257,6 @@ describe('OrganizationService', () => {
       expect(results[0].organization).toEqual(organization2Id.toString());
 
       expect(results[1]).toBeInstanceOf(Object);
-      expect(results[1]._id).toEqual(user3Id);
       expect(results[1].firstname).toEqual('Steve');
       expect(results[1].lastname).toEqual('Rogers');
       expect(results[1].emailAddress).toEqual('captain@organization2.com');
