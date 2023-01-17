@@ -2,7 +2,7 @@ import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { IOrganization } from '@roots/data';
 import { IsDefined, IsString } from 'class-validator';
 import { Types } from 'mongoose';
-import { Event, EventSchema } from '../event/event.schema';
+import { LogSchema } from '../log/log.schema';
 
 export type OrganizationDocument = Organization & Document;
 
@@ -30,6 +30,12 @@ export class Organization implements IOrganization {
     type: [Types.ObjectId]
   })
   tags: [Types.ObjectId]
+
+  @Prop({
+    default:[],
+    type:[LogSchema]
+  })
+  logs: []
 }
 
 export const OrganizationSchema = SchemaFactory.createForClass(Organization);

@@ -53,6 +53,7 @@ const app_service_1 = __webpack_require__("./apps/roots-api/src/app/app.service.
 const auth_module_1 = __webpack_require__("./apps/roots-api/src/app/auth/auth.module.ts");
 const jwt_auth_guard_1 = __webpack_require__("./apps/roots-api/src/app/auth/jwt-auth.guard.ts");
 const event_module_1 = __webpack_require__("./apps/roots-api/src/app/event/event.module.ts");
+const log_module_1 = __webpack_require__("./apps/roots-api/src/app/log/log.module.ts");
 const organization_module_1 = __webpack_require__("./apps/roots-api/src/app/organization/organization.module.ts");
 const tag_module_1 = __webpack_require__("./apps/roots-api/src/app/tag/tag.module.ts");
 const user_module_1 = __webpack_require__("./apps/roots-api/src/app/user/user.module.ts");
@@ -67,6 +68,7 @@ AppModule = tslib_1.__decorate([
             event_module_1.EventModule,
             auth_module_1.AuthModule,
             tag_module_1.TagModule,
+            log_module_1.LogModule,
             mailer_1.MailerModule.forRoot({
                 transport: {
                     host: 'smtp.sendgrid.net',
@@ -1130,6 +1132,207 @@ exports.EventService = EventService;
 
 /***/ }),
 
+/***/ "./apps/roots-api/src/app/log/log.controller.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a, _b, _c, _d;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LogController = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const auth_module_1 = __webpack_require__("./apps/roots-api/src/app/auth/auth.module.ts");
+const log_dto_1 = __webpack_require__("./apps/roots-api/src/app/log/log.dto.ts");
+const log_service_1 = __webpack_require__("./apps/roots-api/src/app/log/log.service.ts");
+let LogController = class LogController {
+    constructor(logService) {
+        this.logService = logService;
+    }
+    getAll(organizationId) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            common_1.Logger.log(`Retrieve logs (READ)`);
+            return yield this.logService.getAll(organizationId);
+        });
+    }
+    createLog(organizationId, logDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.logService.create(organizationId, logDto);
+        });
+    }
+};
+tslib_1.__decorate([
+    (0, auth_module_1.Public)(),
+    (0, common_1.Get)(':organizationId'),
+    tslib_1.__param(0, (0, common_1.Param)('organizationId')),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String]),
+    tslib_1.__metadata("design:returntype", typeof (_b = typeof Promise !== "undefined" && Promise) === "function" ? _b : Object)
+], LogController.prototype, "getAll", null);
+tslib_1.__decorate([
+    (0, auth_module_1.Public)(),
+    (0, common_1.Put)(':organizationId'),
+    tslib_1.__param(0, (0, common_1.Param)('organizationId')),
+    tslib_1.__param(1, (0, common_1.Body)()),
+    tslib_1.__metadata("design:type", Function),
+    tslib_1.__metadata("design:paramtypes", [String, typeof (_c = typeof log_dto_1.LogDTO !== "undefined" && log_dto_1.LogDTO) === "function" ? _c : Object]),
+    tslib_1.__metadata("design:returntype", typeof (_d = typeof Promise !== "undefined" && Promise) === "function" ? _d : Object)
+], LogController.prototype, "createLog", null);
+LogController = tslib_1.__decorate([
+    (0, common_1.Controller)('log'),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof log_service_1.LogService !== "undefined" && log_service_1.LogService) === "function" ? _a : Object])
+], LogController);
+exports.LogController = LogController;
+
+
+/***/ }),
+
+/***/ "./apps/roots-api/src/app/log/log.dto.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LogDTO = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const class_validator_1 = __webpack_require__("class-validator");
+class LogDTO {
+}
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)({ message: 'Editor moet van het type string zijn!' }),
+    tslib_1.__metadata("design:type", String)
+], LogDTO.prototype, "editor", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)({ message: 'Action moet van het type string zijn!' }),
+    tslib_1.__metadata("design:type", String)
+], LogDTO.prototype, "action", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)({ message: 'Object moet van het type string zijn!' }),
+    tslib_1.__metadata("design:type", String)
+], LogDTO.prototype, "object", void 0);
+exports.LogDTO = LogDTO;
+
+
+/***/ }),
+
+/***/ "./apps/roots-api/src/app/log/log.module.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LogModule = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const mongoose_1 = __webpack_require__("@nestjs/mongoose");
+const data_1 = __webpack_require__("./libs/data/src/index.ts");
+const log_controller_1 = __webpack_require__("./apps/roots-api/src/app/log/log.controller.ts");
+const log_service_1 = __webpack_require__("./apps/roots-api/src/app/log/log.service.ts");
+const organization_schema_1 = __webpack_require__("./apps/roots-api/src/app/organization/organization.schema.ts");
+const log_schema_1 = __webpack_require__("./apps/roots-api/src/app/log/log.schema.ts");
+let LogModule = class LogModule {
+};
+LogModule = tslib_1.__decorate([
+    (0, common_1.Module)({
+        imports: [
+            mongoose_1.MongooseModule.forFeature([{ name: log_schema_1.Log.name, schema: log_schema_1.LogSchema }, {
+                    name: data_1.Organization.name, schema: organization_schema_1.OrganizationSchema
+                }]),
+        ],
+        providers: [log_service_1.LogService],
+        controllers: [log_controller_1.LogController],
+        exports: [mongoose_1.MongooseModule, log_service_1.LogService],
+    })
+], LogModule);
+exports.LogModule = LogModule;
+
+
+/***/ }),
+
+/***/ "./apps/roots-api/src/app/log/log.schema.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LogSchema = exports.Log = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const mongoose_1 = __webpack_require__("@nestjs/mongoose");
+const class_validator_1 = __webpack_require__("class-validator");
+let Log = class Log {
+};
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)({ message: 'Editor moet van het type string zijn!' }),
+    (0, mongoose_1.Prop)(),
+    tslib_1.__metadata("design:type", String)
+], Log.prototype, "editor", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)({ message: 'Action moet van het type string zijn!' }),
+    (0, mongoose_1.Prop)(),
+    tslib_1.__metadata("design:type", String)
+], Log.prototype, "action", void 0);
+tslib_1.__decorate([
+    (0, class_validator_1.IsString)({ message: 'Object moet van het type string zijn!' }),
+    (0, mongoose_1.Prop)(),
+    tslib_1.__metadata("design:type", String)
+], Log.prototype, "object", void 0);
+tslib_1.__decorate([
+    (0, mongoose_1.Prop)({ default: new Date() }),
+    tslib_1.__metadata("design:type", typeof (_a = typeof Date !== "undefined" && Date) === "function" ? _a : Object)
+], Log.prototype, "logStamp", void 0);
+Log = tslib_1.__decorate([
+    (0, mongoose_1.Schema)()
+], Log);
+exports.Log = Log;
+exports.LogSchema = mongoose_1.SchemaFactory.createForClass(Log);
+
+
+/***/ }),
+
+/***/ "./apps/roots-api/src/app/log/log.service.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+var _a, _b;
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.LogService = void 0;
+const tslib_1 = __webpack_require__("tslib");
+const common_1 = __webpack_require__("@nestjs/common");
+const mongoose_1 = __webpack_require__("@nestjs/mongoose");
+const data_1 = __webpack_require__("./libs/data/src/index.ts");
+const mongoose_2 = __webpack_require__("mongoose");
+const log_schema_1 = __webpack_require__("./apps/roots-api/src/app/log/log.schema.ts");
+let LogService = class LogService {
+    constructor(LogModel, organizationModel) {
+        this.LogModel = LogModel;
+        this.organizationModel = organizationModel;
+    }
+    getAll(organizationId) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.organizationModel.findOne({ organizationId }, { logs: 1 });
+        });
+    }
+    create(organizationId, logDto) {
+        return tslib_1.__awaiter(this, void 0, void 0, function* () {
+            return yield this.organizationModel.findOneAndUpdate({ organizationId }, {
+                $push: {
+                    logs: logDto
+                }
+            }, {
+                new: true,
+                runValidators: true
+            });
+        });
+    }
+};
+LogService = tslib_1.__decorate([
+    (0, common_1.Injectable)(),
+    tslib_1.__param(0, (0, mongoose_1.InjectModel)(log_schema_1.Log.name)),
+    tslib_1.__param(1, (0, mongoose_1.InjectModel)(data_1.Organization.name)),
+    tslib_1.__metadata("design:paramtypes", [typeof (_a = typeof mongoose_2.Model !== "undefined" && mongoose_2.Model) === "function" ? _a : Object, typeof (_b = typeof mongoose_2.Model !== "undefined" && mongoose_2.Model) === "function" ? _b : Object])
+], LogService);
+exports.LogService = LogService;
+
+
+/***/ }),
+
 /***/ "./apps/roots-api/src/app/organization/organization.controller.ts":
 /***/ ((__unused_webpack_module, exports, __webpack_require__) => {
 
@@ -1281,6 +1484,7 @@ const tslib_1 = __webpack_require__("tslib");
 const mongoose_1 = __webpack_require__("@nestjs/mongoose");
 const class_validator_1 = __webpack_require__("class-validator");
 const mongoose_2 = __webpack_require__("mongoose");
+const log_schema_1 = __webpack_require__("./apps/roots-api/src/app/log/log.schema.ts");
 let Organization = class Organization {
 };
 tslib_1.__decorate([
@@ -1309,6 +1513,13 @@ tslib_1.__decorate([
     }),
     tslib_1.__metadata("design:type", Array)
 ], Organization.prototype, "tags", void 0);
+tslib_1.__decorate([
+    (0, mongoose_1.Prop)({
+        default: [],
+        type: [log_schema_1.LogSchema]
+    }),
+    tslib_1.__metadata("design:type", Array)
+], Organization.prototype, "logs", void 0);
 Organization = tslib_1.__decorate([
     (0, mongoose_1.Schema)()
 ], Organization);
@@ -2456,6 +2667,84 @@ exports.environment = {
     EMAIL_API_KEY: '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',
     EMAIL_SENDINGEMAIL: 'roots.team.noreply@gmail.com',
 };
+
+
+/***/ }),
+
+/***/ "./libs/data/src/index.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+const tslib_1 = __webpack_require__("tslib");
+tslib_1.__exportStar(__webpack_require__("./libs/data/src/lib/data.ts"), exports);
+
+
+/***/ }),
+
+/***/ "./libs/data/src/lib/data.ts":
+/***/ ((__unused_webpack_module, exports, __webpack_require__) => {
+
+
+Object.defineProperty(exports, "__esModule", ({ value: true }));
+exports.Log = exports.Tag = exports.Event = exports.Organization = exports.User = void 0;
+const mongoose_1 = __webpack_require__("mongoose");
+// CLASSES
+class User {
+    constructor() {
+        this._id = new mongoose_1.Types.ObjectId();
+        this.firstname = '';
+        this.lastname = '';
+        this.emailAddress = '';
+        this.password = '';
+        this.access_token = '';
+        this.organization = new mongoose_1.Types.ObjectId();
+        this.initials = '';
+        this.isActive = true;
+        this.isVerified = true;
+    }
+}
+exports.User = User;
+class Organization {
+    constructor() {
+        this._id = new mongoose_1.Types.ObjectId();
+        this.name = '';
+        this.emailDomain = '';
+        this.events = [];
+        this.tags = [];
+        this.logs = [];
+    }
+}
+exports.Organization = Organization;
+class Event {
+    constructor() {
+        this.title = '';
+        this.description = '';
+        this.content = '';
+        this.eventDate = new Date();
+        this._id = new mongoose_1.Types.ObjectId();
+        this.tags = [];
+        this.isActive = true;
+    }
+}
+exports.Event = Event;
+class Tag {
+    constructor() {
+        this._id = new mongoose_1.Types.ObjectId();
+        this.name = '';
+        this.organization = new mongoose_1.Types.ObjectId();
+    }
+}
+exports.Tag = Tag;
+class Log {
+    constructor() {
+        this.editor = '';
+        this.action = '';
+        this.object = '';
+        this.logStamp = new Date();
+    }
+}
+exports.Log = Log;
 
 
 /***/ }),
