@@ -18,7 +18,16 @@ import { ActivatedRoute, ParamMap, Router } from '@angular/router';
 import { Organization, User } from '@roots/data';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { firstValueFrom, lastValueFrom, map, Observable, of, startWith, Subscription, switchMap } from 'rxjs';
+import {
+  firstValueFrom,
+  lastValueFrom,
+  map,
+  Observable,
+  of,
+  startWith,
+  Subscription,
+  switchMap,
+} from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Event } from '../event/event.model';
 import { EventService } from '../event/event.service';
@@ -223,21 +232,41 @@ export class TimelineComponent
           )
         )
       )
-      .subscribe((newEvents) => {
+      .subscribe(async (newEvents) => {
         // If filter isn't used show every event
         if (!this.filtered) {
-          newEvents.forEach((event) => {
+          for await (const event of newEvents) {
+            let convertTags: any[] = [];
+
+            for await (const tag of event.tags) {
+              let fullTag: any = await firstValueFrom(
+                this.tagService.getTagById(tag)
+              );
+              convertTags.push(fullTag.name);
+            }
+
+            event.tags = convertTags;
             event.eventDate = new Date(event.eventDate);
             this.events.push(event);
-          });
+          }
           // If filter is used show only the events with the conditions
         } else {
-          newEvents.forEach((event) => {
+          for await (const event of newEvents) {
             if (this.events.includes(event)) {
+              let convertTags: any[] = [];
+
+              for await (const tag of event.tags) {
+                let fullTag: any = await firstValueFrom(
+                  this.tagService.getTagById(tag)
+                );
+                convertTags.push(fullTag.name);
+              }
+
+              event.tags = convertTags;
               event.eventDate = new Date(event.eventDate);
               this.events.push(event);
             }
-          });
+          }
         }
       });
   }
@@ -245,16 +274,19 @@ export class TimelineComponent
   // Get all events and store them
   async getAllEvents(): Promise<Event[]> {
     this.allEvents = [];
-    let events: any = await firstValueFrom(this.eventService
-      .getAllEvents(this.loggedInUser.organization.toString()))
+    let events: any = await firstValueFrom(
+      this.eventService.getAllEvents(this.loggedInUser.organization.toString())
+    );
 
     if (events) {
       for await (const event of events) {
         let convertTags: any[] = [];
 
         for await (const tag of event.tags) {
-          let fullTag: any = await firstValueFrom(this.tagService.getTagById(tag))
-          convertTags.push(fullTag.name)
+          let fullTag: any = await firstValueFrom(
+            this.tagService.getTagById(tag)
+          );
+          convertTags.push(fullTag.name);
         }
 
         event.tags = convertTags;
