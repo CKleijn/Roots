@@ -1,17 +1,25 @@
 /* eslint-disable prefer-const */
-import { Component, OnDestroy, OnInit } from '@angular/core';
+import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
 import { MatSort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
 import { ILog, Organization, User } from '@roots/data';
 import { Types } from 'mongoose';
 import { ToastrService } from 'ngx-toastr';
-import { Subscription } from 'rxjs';
+import { elementAt, Subscription, tap } from 'rxjs';
 import { AuthService } from '../auth/auth.service';
 import { Tag } from '../tag/tag.model';
 import { TagService } from '../tag/tag.service';
 import { OrganizationService } from './organization.service';
+
+export interface PeriodicElement {
+  name: string;
+  position: number;
+  weight: number;
+  symbol: string;
+}
 
 @Component({
   selector: 'roots-organization',
@@ -43,11 +51,12 @@ export class OrganizationComponent implements OnInit, OnDestroy {
 
 
   // LOG
-
-  displayedColumnsLog: string[] = ['Gebruiker', 'Actie', 'Object', 'Wanneer'];
-  dataSource: MatTableDataSource<ILog>;
   logSubscription!: Subscription;
-
+  @ViewChild(MatPaginator) paginator!: MatPaginator;
+  @ViewChild(MatSort) sort!: MatSort;
+  dataSource = new MatTableDataSource<ILog>;
+  logs:ILog[] = [];
+  displayedColumnsLog: string[] = ['Gebruiker', 'Actie', 'Object', 'Wanneer'];
 
   constructor(
     private organizationService: OrganizationService,
@@ -56,14 +65,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     private modalService: NgbModal,
     private router: Router,
     private toastrService: ToastrService
-  ) {
-      // get all logs
-      const logs = this.organization?.logs;
-    // Assign the data to the data source for the table to render
-    this.dataSource = new MatTableDataSource(logs);
-
-
-   }
+  ) {}
 
   ngOnInit(): void {
     this.authSubscription = this.authService.getUserFromLocalStorage()
@@ -84,16 +86,17 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.organizationSubscription = this.organizationService.getById(this.loggedInUser.organization.toString())
       .subscribe((organization) => this.organization = organization);
 
-    // get log
-    this.logSubscription = this.organizationService.log(this.loggedInUser.organization.toString())
-      .subscribe((log) => {
-       
+      // get log items
+      this.logSubscription = this.organizationService.log(this.loggedInUser.organization.toString())
+      .subscribe((log) => { 
+        this.logs = log.logs;
+        this.dataSource.data = log.logs; 
 
-        this.dataSource = new MatTableDataSource(log.logs);
-      console.log('ORG COMP ',log.logs)}
-      )
-    
-  }
+        // couple paginator and sort to datasource 
+        this.dataSource.paginator = this.paginator;
+        this.dataSource.sort = this.sort
+      })
+    }
 
   changeStatus(id: string) {
     this.modalService.dismissAll();

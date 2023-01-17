@@ -19,6 +19,8 @@ import { MatInputModule } from '@angular/material/input';
 import { MatRadioModule } from '@angular/material/radio';
 import { MatSelectModule } from '@angular/material/select';
 import { MatTableModule } from '@angular/material/table';
+import { MatPaginatorModule } from '@angular/material/paginator';
+import { MatSortModule } from '@angular/material/sort';
 import { BrowserModule, Title } from '@angular/platform-browser';
 import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import {
@@ -94,6 +96,8 @@ export class TemplatePageTitleStrategy extends TitleStrategy {
     MatSelectModule,
     MatRadioModule,
     MatAutocompleteModule,
+    MatPaginatorModule,
+    MatSortModule,
     OrganizationModule,
     InfiniteScrollModule,
     NgxSpinnerModule,
