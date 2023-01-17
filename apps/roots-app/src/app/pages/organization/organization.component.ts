@@ -1,6 +1,6 @@
 /* eslint-disable prefer-const */
 import { AfterViewInit, Component, OnDestroy, OnInit, ViewChild } from '@angular/core';
-import { MatSort } from '@angular/material/sort';
+import { MatSort, Sort } from '@angular/material/sort';
 import { MatTableDataSource } from '@angular/material/table';
 import { MatPaginator } from '@angular/material/paginator';
 import { Router } from '@angular/router';
@@ -13,13 +13,6 @@ import { AuthService } from '../auth/auth.service';
 import { Tag } from '../tag/tag.model';
 import { TagService } from '../tag/tag.service';
 import { OrganizationService } from './organization.service';
-
-export interface PeriodicElement {
-  name: string;
-  position: number;
-  weight: number;
-  symbol: string;
-}
 
 @Component({
   selector: 'roots-organization',
@@ -34,6 +27,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   tagsSubscription!: Subscription;
   editSubscription!: Subscription;
   deleteSubscription!: Subscription;
+  logSubscription!: Subscription;
   loggedInUser!: User;
   participants!: User[];
   selectedUser!: User;
@@ -48,15 +42,13 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   //delete
   deleteTagId!: string
   deleteTagName!: string
-
-
-  // LOG
-  logSubscription!: Subscription;
+  //log paginator and sort
   @ViewChild(MatPaginator) paginator!: MatPaginator;
-  @ViewChild(MatSort) sort!: MatSort;
+  @ViewChild(MatSort) sort! : MatSort; 
+  // create datasource
   dataSource = new MatTableDataSource<ILog>;
   logs:ILog[] = [];
-  displayedColumnsLog: string[] = ['Gebruiker', 'Actie', 'Object', 'Wanneer'];
+  displayedColumnsLog: string[] = ['editor', 'action', 'object', 'logStamp'];
 
   constructor(
     private organizationService: OrganizationService,
@@ -89,6 +81,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
       // get log items
       this.logSubscription = this.organizationService.log(this.loggedInUser.organization.toString())
       .subscribe((log) => { 
+        //set the retrieved logs as the table's data source
         this.logs = log.logs;
         this.dataSource.data = log.logs; 
 
@@ -97,6 +90,8 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         this.dataSource.sort = this.sort
       })
     }
+
+    
 
   changeStatus(id: string) {
     this.modalService.dismissAll();

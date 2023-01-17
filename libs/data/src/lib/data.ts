@@ -41,6 +41,18 @@ export interface ILog{
   object: string;
   logStamp: Date;
 }
+
+export interface UserData {
+  initials:string;
+  firstname:string;
+  lastname:string;
+  emailAddress:string;
+  createdAt:Date;
+  lastLoginTimestamp: Date;
+  isActive: boolean;
+}
+
+
 // CLASSES
 export class User implements IUser {
   _id = new Types.ObjectId();
