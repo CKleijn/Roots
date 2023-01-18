@@ -157,42 +157,30 @@ export class EventService {
       query.show_archived_events === 'false'
     ) {
       const activeEvents: any[] = [];
-      if (events) {
-        if (events[0].events) {
-          events[0]?.events.forEach((event) => {
-            if (event.isActive) {
-              activeEvents.push(event);
-            }
-          });
+      events[0]?.events.forEach((event) => {
+        if (event.isActive) {
+          activeEvents.push(event);
         }
-      }
+      });
       return activeEvents.slice(
         Number(query.old_records),
         Number(query.new_records) + Number(query.old_records)
       );
     } else if (query.term && query.show_archived_events === 'true') {
       const matchingEvents: any[] = [];
-      if (events) {
-        if (events[0].events) {
-          events[0].events.forEach((event) => {
-            if (event.title.includes(query.term)) {
-              matchingEvents.push(event);
-            }
-          });
+      events[0].events.forEach((event) => {
+        if (event.title.includes(query.term)) {
+          matchingEvents.push(event);
         }
-      }
+      });
       return matchingEvents;
     } else if (query.term && query.show_archived_events === 'false') {
       const matchingEvents: any[] = [];
-      if (events) {
-        if (events[0].events) {
-          events[0].events.forEach((event) => {
-            if (event.title.includes(query.term) && event.isActive) {
-              matchingEvents.push(event);
-            }
-          });
+      events[0].events.forEach((event) => {
+        if (event.title.includes(query.term) && event.isActive) {
+          matchingEvents.push(event);
         }
-      }
+      });
       return matchingEvents;
     }
   }
