@@ -347,6 +347,21 @@ ul li ul li {
   }
 }
 
+.timeline-error-message-container {
+  position: relative;
+}
+
+.timeline-error-message-textbox {
+  position: absolute;
+  width: 50%;
+  left: 50%;
+  top: 50px;
+  padding: 1.7rem;
+  transform: translateX(-50%);
+  background-color: $secondary-color;
+  text-align: center;
+}
+
 .timeline-container-seen {
   @extend .timeline-container;
   display: block;
@@ -410,5 +425,9 @@ ul li ul li {
   .timeline-year {
     left: -35px;
     transform: translateX(35px);
+  }
+
+  .timeline-error-message-textbox {
+    width: 80%;
   }
 }

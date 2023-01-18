@@ -1,54 +1,79 @@
+$primary-color: #1353d9;
+$secondary-color: #ffffff;
+$background-color: #e8ecff;
+
 .userPic {
-    height: 40px;
-    width: 40px;
-    background-color: lightgray;
-    border-radius: 50%;
-    display: table-cell;
-    vertical-align: middle;
-    text-align: center;
+  height: 40px;
+  width: 40px;
+  background-color: lightgray;
+  border-radius: 50%;
+  display: table-cell;
+  vertical-align: middle;
+  text-align: center;
+}
+
+.legenda {
+  font-size: 12px;
+  font-weight: 500;
+  float: right;
+}
+
+.org-name {
+  color: $primary-color;
+  font-weight: bolder !important;
+}
+
+.responsiveTable {
+  width: 100% !important;
+  overflow-x: auto !important;
+}
+
+.search {
+  width: 100% !important;
 }
 
 .mat-column-picture {
-    width: 10%;
+  width: 10%;
 }
 
 .mat-column-name {
-    width: 20%;
+  width: 20%;
 }
 
 .mat-column-emailAddress {
-    width: 20%;
+  width: 20%;
 }
 
 .mat-column-createdAt {
-    width: 20%;
+  width: 20%;
 }
 
 .mat-column-lastLogin {
-    width: 20%;
+  width: 20%;
 }
 
 .mat-column-status {
-    width: 10%;
+  width: 10%;
 }
 
 .btn {
-    font-size: 14px;
+  font-size: 14px;
 }
 
 #table-tags {
-    width:50%;
+  width: 50%;
 }
 
-.mat-column-tag{
-    width: 60%;
+.mat-column-tag {
+  width: 60%;
 }
 
 .mat-column-change {
-    width: 40%;
+  width: 40%;
 }
 
-.tag-container {
-    width: 350px;
- 
+@media screen and (max-width: 992px) {
+  .mat-column-picture {
+    display: none;
   }
+}

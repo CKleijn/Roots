@@ -587,10 +587,10 @@ let EventController = class EventController {
         this.eventService = eventService;
     }
     // Get all events
-    getAllEvents() {
+    getAllEvents(organizationId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             common_1.Logger.log('Retrieving all events (READ)');
-            return yield this.eventService.getAll();
+            return yield this.eventService.getAll(organizationId);
         });
     }
     // Get an amount of events to show on page
@@ -661,9 +661,10 @@ let EventController = class EventController {
 };
 tslib_1.__decorate([
     (0, auth_module_1.Public)(),
-    (0, common_1.Get)(),
+    (0, common_1.Get)('/organization/:id'),
+    tslib_1.__param(0, (0, common_1.Param)('id')),
     tslib_1.__metadata("design:type", Function),
-    tslib_1.__metadata("design:paramtypes", []),
+    tslib_1.__metadata("design:paramtypes", [String]),
     tslib_1.__metadata("design:returntype", typeof (_b = typeof Promise !== "undefined" && Promise) === "function" ? _b : Object)
 ], EventController.prototype, "getAllEvents", null);
 tslib_1.__decorate([
@@ -879,10 +880,15 @@ let EventService = class EventService {
         this.organizationModel = organizationModel;
     }
     // Get all events
-    getAll() {
+    getAll(organizationId) {
         var _a;
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const events = yield this.organizationModel.aggregate([
+                {
+                    $match: {
+                        _id: new mongoose_2.Types.ObjectId(organizationId),
+                    },
+                },
                 {
                     $unwind: {
                         path: '$events',
@@ -996,7 +1002,7 @@ let EventService = class EventService {
                 {
                     $project: {
                         _id: 0,
-                        events: 1
+                        events: 1,
                     },
                 },
             ]);
@@ -1009,29 +1015,41 @@ let EventService = class EventService {
                 query.new_records &&
                 query.show_archived_events === 'false') {
                 const activeEvents = [];
-                (_b = events[0]) === null || _b === void 0 ? void 0 : _b.events.forEach((event) => {
-                    if (event.isActive) {
-                        activeEvents.push(event);
+                if (events) {
+                    if (events[0].events) {
+                        (_b = events[0]) === null || _b === void 0 ? void 0 : _b.events.forEach((event) => {
+                            if (event.isActive) {
+                                activeEvents.push(event);
+                            }
+                        });
                     }
-                });
+                }
                 return activeEvents.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
             }
             else if (query.term && query.show_archived_events === 'true') {
                 const matchingEvents = [];
-                events[0].events.forEach((event) => {
-                    if (event.title.includes(query.term)) {
-                        matchingEvents.push(event);
+                if (events) {
+                    if (events[0].events) {
+                        events[0].events.forEach((event) => {
+                            if (event.title.includes(query.term)) {
+                                matchingEvents.push(event);
+                            }
+                        });
                     }
-                });
+                }
                 return matchingEvents;
             }
             else if (query.term && query.show_archived_events === 'false') {
                 const matchingEvents = [];
-                events[0].events.forEach((event) => {
-                    if (event.title.includes(query.term) && event.isActive) {
-                        matchingEvents.push(event);
+                if (events) {
+                    if (events[0].events) {
+                        events[0].events.forEach((event) => {
+                            if (event.title.includes(query.term) && event.isActive) {
+                                matchingEvents.push(event);
+                            }
+                        });
                     }
-                });
+                }
                 return matchingEvents;
             }
         });
@@ -1313,11 +1331,11 @@ let LogService = class LogService {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             return yield this.organizationModel.findOneAndUpdate({ _id: organizationId }, {
                 $push: {
-                    logs: logDto
-                }
+                    logs: logDto,
+                },
             }, {
                 new: true,
-                runValidators: true
+                runValidators: true,
             });
         });
     }
@@ -1659,7 +1677,7 @@ let MailService = class MailService {
                 to: email,
                 from: environment_1.environment.EMAIL_SENDINGEMAIL,
                 subject: 'Roots | Wachtwoord resetten',
-                html: `<div style="font-family: Helvetica, sans-serif"> <h1 style="font-weight: bold">Welkom bij Roots, ${receiverName}!</h1> <p style="padding-bottom:15px;">Druk op de onderstaande knop om je wachtwoord opnieuw in te stellen.</p> <a href="${link}" style="color: white; background: #1353d9; text-decoration: none; padding: 10px 28px;"> Wachtwoord instellen </a> <p style="font-size: 11px; font-style: italic; margin-top: 30px">De code is voor de volgende 24 uur geldig.</p> <p style="font-size: 14px; margin-top: 25px">Groetjes het Roots-team</p></div>`,
+                html: `<div style="font-family: Helvetica, sans-serif"> <h1 style="font-weight: bold">Hallo ${receiverName}!</h1> <p style="padding-bottom:15px;">Druk op de onderstaande knop om je wachtwoord opnieuw in te stellen.</p> <a href="${link}" style="color: white; background: #1353d9; text-decoration: none; padding: 10px 28px;"> Wachtwoord instellen </a> <p style="font-size: 11px; font-style: italic; margin-top: 30px">De code is voor de volgende 24 uur geldig.</p> <p style="font-size: 14px; margin-top: 25px">Groetjes het Roots-team</p></div>`,
             });
         });
     }
@@ -1986,7 +2004,7 @@ let Tag = class Tag {
 };
 tslib_1.__decorate([
     (0, mongoose_1.Prop)({
-        unique: true, required: true
+        required: true
     }),
     tslib_1.__metadata("design:type", String)
 ], Tag.prototype, "name", void 0);
