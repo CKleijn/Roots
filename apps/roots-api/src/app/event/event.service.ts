@@ -137,7 +137,7 @@ export class EventService {
       {
         $project: {
           _id: 0,
-          events: 1
+          events: 1,
         },
       },
     ]);
@@ -157,30 +157,42 @@ export class EventService {
       query.show_archived_events === 'false'
     ) {
       const activeEvents: any[] = [];
-      events[0]?.events.forEach((event) => {
-        if (event.isActive) {
-          activeEvents.push(event);
+      if (events) {
+        if (events[0].events) {
+          events[0]?.events.forEach((event) => {
+            if (event.isActive) {
+              activeEvents.push(event);
+            }
+          });
         }
-      });
+      }
       return activeEvents.slice(
         Number(query.old_records),
         Number(query.new_records) + Number(query.old_records)
       );
     } else if (query.term && query.show_archived_events === 'true') {
       const matchingEvents: any[] = [];
-      events[0].events.forEach((event) => {
-        if (event.title.includes(query.term)) {
-          matchingEvents.push(event);
+      if (events) {
+        if (events[0].events) {
+          events[0].events.forEach((event) => {
+            if (event.title.includes(query.term)) {
+              matchingEvents.push(event);
+            }
+          });
         }
-      });
+      }
       return matchingEvents;
     } else if (query.term && query.show_archived_events === 'false') {
       const matchingEvents: any[] = [];
-      events[0].events.forEach((event) => {
-        if (event.title.includes(query.term) && event.isActive) {
-          matchingEvents.push(event);
+      if (events) {
+        if (events[0].events) {
+          events[0].events.forEach((event) => {
+            if (event.title.includes(query.term) && event.isActive) {
+              matchingEvents.push(event);
+            }
+          });
         }
-      });
+      }
       return matchingEvents;
     }
   }

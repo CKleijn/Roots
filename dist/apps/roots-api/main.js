@@ -1002,7 +1002,7 @@ let EventService = class EventService {
                 {
                     $project: {
                         _id: 0,
-                        events: 1
+                        events: 1,
                     },
                 },
             ]);
@@ -1015,29 +1015,41 @@ let EventService = class EventService {
                 query.new_records &&
                 query.show_archived_events === 'false') {
                 const activeEvents = [];
-                (_b = events[0]) === null || _b === void 0 ? void 0 : _b.events.forEach((event) => {
-                    if (event.isActive) {
-                        activeEvents.push(event);
+                if (events) {
+                    if (events[0].events) {
+                        (_b = events[0]) === null || _b === void 0 ? void 0 : _b.events.forEach((event) => {
+                            if (event.isActive) {
+                                activeEvents.push(event);
+                            }
+                        });
                     }
-                });
+                }
                 return activeEvents.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
             }
             else if (query.term && query.show_archived_events === 'true') {
                 const matchingEvents = [];
-                events[0].events.forEach((event) => {
-                    if (event.title.includes(query.term)) {
-                        matchingEvents.push(event);
+                if (events) {
+                    if (events[0].events) {
+                        events[0].events.forEach((event) => {
+                            if (event.title.includes(query.term)) {
+                                matchingEvents.push(event);
+                            }
+                        });
                     }
-                });
+                }
                 return matchingEvents;
             }
             else if (query.term && query.show_archived_events === 'false') {
                 const matchingEvents = [];
-                events[0].events.forEach((event) => {
-                    if (event.title.includes(query.term) && event.isActive) {
-                        matchingEvents.push(event);
+                if (events) {
+                    if (events[0].events) {
+                        events[0].events.forEach((event) => {
+                            if (event.title.includes(query.term) && event.isActive) {
+                                matchingEvents.push(event);
+                            }
+                        });
                     }
-                });
+                }
                 return matchingEvents;
             }
         });
