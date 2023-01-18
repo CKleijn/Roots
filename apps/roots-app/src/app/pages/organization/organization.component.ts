@@ -122,10 +122,10 @@ export class OrganizationComponent implements OnInit, OnDestroy {
         this.dataSourceLog.paginator = this.logPaginator;
         this.dataSourceLog.sort = this.logSort;
         this.logPaginator._intl.itemsPerPageLabel = 'Logs per pagina';
-      });
 
-    // Hide spinner
-    this.spinner.hide();
+        // Hide spinner
+        this.spinner.hide();
+      });
   }
 
   // Open modal
