@@ -58,7 +58,8 @@ fdescribe('TagService', () => {
                 name:'Mock Name Organization',
                 emailDomain:'organization.mock',
                 events: [dummyEvents[0]._id],
-                tags: [dummyTags[0]._id,dummyTags[1]._id]
+                tags: [dummyTags[0]._id,dummyTags[1]._id],
+                logs: [],
             }
         ]
 

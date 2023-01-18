@@ -92,7 +92,7 @@ describe('OrganizationService', () => {
             emailDomain: 'gmail.com',
             events: [],
             tags: [],
-            logs:dummyLogs
+            logs: [],
         }
     
         dummyUser = {

@@ -946,7 +946,7 @@ let EventService = class EventService {
     }
     // Get amount of events per page + filter
     getPerPage(query, organizationId) {
-        var _a, _b;
+        var _a, _b, _c, _d, _e, _f, _g;
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
             const events = yield this.organizationModel.aggregate([
                 {
@@ -1015,41 +1015,29 @@ let EventService = class EventService {
                 query.new_records &&
                 query.show_archived_events === 'false') {
                 const activeEvents = [];
-                if (events) {
-                    if (events[0].events) {
-                        (_b = events[0]) === null || _b === void 0 ? void 0 : _b.events.forEach((event) => {
-                            if (event.isActive) {
-                                activeEvents.push(event);
-                            }
-                        });
+                (_c = (_b = events[0]) === null || _b === void 0 ? void 0 : _b.events) === null || _c === void 0 ? void 0 : _c.forEach((event) => {
+                    if (event.isActive) {
+                        activeEvents.push(event);
                     }
-                }
+                });
                 return activeEvents.slice(Number(query.old_records), Number(query.new_records) + Number(query.old_records));
             }
             else if (query.term && query.show_archived_events === 'true') {
                 const matchingEvents = [];
-                if (events) {
-                    if (events[0].events) {
-                        events[0].events.forEach((event) => {
-                            if (event.title.includes(query.term)) {
-                                matchingEvents.push(event);
-                            }
-                        });
+                (_e = (_d = events[0]) === null || _d === void 0 ? void 0 : _d.events) === null || _e === void 0 ? void 0 : _e.forEach((event) => {
+                    if (event.title.includes(query.term)) {
+                        matchingEvents.push(event);
                     }
-                }
+                });
                 return matchingEvents;
             }
             else if (query.term && query.show_archived_events === 'false') {
                 const matchingEvents = [];
-                if (events) {
-                    if (events[0].events) {
-                        events[0].events.forEach((event) => {
-                            if (event.title.includes(query.term) && event.isActive) {
-                                matchingEvents.push(event);
-                            }
-                        });
+                (_g = (_f = events[0]) === null || _f === void 0 ? void 0 : _f.events) === null || _g === void 0 ? void 0 : _g.forEach((event) => {
+                    if (event.title.includes(query.term) && event.isActive) {
+                        matchingEvents.push(event);
                     }
-                }
+                });
                 return matchingEvents;
             }
         });

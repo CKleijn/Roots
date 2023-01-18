@@ -41,6 +41,7 @@ describe('Auth controller', () => {
       emailDomain: 'test.com',
       events: [],
       tags: [],
+      logs: [],
     };
 
     const exampleUser: User = {
@@ -92,6 +93,7 @@ describe('Auth controller', () => {
       emailDomain: 'test.com',
       events: [],
       tags: [],
+      logs: [],
     };
 
     const userInput: any = {

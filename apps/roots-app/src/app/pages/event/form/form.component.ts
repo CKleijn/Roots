@@ -338,7 +338,7 @@ export class EventFormComponent implements OnInit, OnDestroy {
     date.setHours(date.getHours() + 2);
     this.eventForm.value.eventDate = date;
     // Get current user
-    this.authSubscription = this.authService.currentUser$.subscribe({
+    this.authSubscription = this.authService.getUserFromLocalStorage().subscribe({
       next: (user: any) => (this.organizationId = user.organization),
       error: (error) => (this.error = error.message),
     });

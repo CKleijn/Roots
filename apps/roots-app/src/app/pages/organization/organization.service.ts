@@ -73,7 +73,7 @@ export class OrganizationService {
           if (user) {
             const status = user.isActive ? 'geactiveerd' : 'gedeactiveerd';
 
-            this.authService.currentUser$.subscribe((loggedInUser) => {
+            this.authService.getUserFromLocalStorage().subscribe((loggedInUser) => {
               this.logCreate(
                 loggedInUser,
                 user.isActive ? 'Geactiveerd' : 'Gedeactiveerd',
