@@ -70,6 +70,12 @@ export class EventService {
       )
       .pipe(
         map(() => {
+          this.authService.currentUser$.subscribe((loggedInUser) => {
+            this.organizationService
+              .logCreate(loggedInUser, 'Aangemaakt', '(G) ' + event.title)
+              .subscribe().unsubscribe;
+          }).unsubscribe;
+
           this.toastr.success(
             'Gebeurtenis is succesvol aangemaakt!',
             'Gebeurtenis aangemaakt!'
@@ -113,6 +119,12 @@ export class EventService {
       )
       .pipe(
         map(() => {
+          this.authService.currentUser$.subscribe((loggedInUser) => {
+            this.organizationService
+              .logCreate(loggedInUser, 'Gewijzigd', '(G) ' + event.title)
+              .subscribe().unsubscribe;
+          }).unsubscribe;
+
           this.toastr.success(
             'Gebeurtenis is succesvol aangepast!',
             'Gebeurtenis aangepast!'
@@ -165,7 +177,7 @@ export class EventService {
               this.organizationService
                 .logCreate(
                   loggedInUser,
-                  isActive ? 'Geactiveerd' : 'Gedeactiveerd',
+                  isActive ? 'Gearchiveerd' : 'Gedearchiveerd',
                   '(G) ' + event.title
                 )
                 .subscribe();

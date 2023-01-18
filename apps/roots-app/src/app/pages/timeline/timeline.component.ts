@@ -585,7 +585,7 @@ export class TimelineComponent
             );
           } else if (!this.showArchivedEvents && this.searchterm === '') {
             this.toastr.success(
-              `Gebeurtenissen uit het archief zijn verdwenen binnen de tijdlijn!`,
+              `Gebeurtenissen uit het archief zijn niet te zien binnen de tijdlijn!`,
               'Tijdlijn gefiltert!'
             );
           }

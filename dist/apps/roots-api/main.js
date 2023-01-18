@@ -1992,7 +1992,7 @@ let Tag = class Tag {
 };
 tslib_1.__decorate([
     (0, mongoose_1.Prop)({
-        unique: true, required: true
+        required: true
     }),
     tslib_1.__metadata("design:type", String)
 ], Tag.prototype, "name", void 0);

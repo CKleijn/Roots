@@ -17,7 +17,6 @@
             [matChipInputFor]="chipGrid"
             [matAutocomplete]="auto"
             [(ngModel)]="searchterm"
-            [disabled]="this.events.length === 0 && !this.searchRequest"
           />
           <mat-autocomplete #auto="matAutocomplete">
             <mat-option *ngFor="let title of eventTitleOptions" [value]="title">
@@ -39,7 +38,6 @@
             [matChipInputSeparatorKeyCodes]="separatorKeysCodes"
             (matChipInputTokenEnd)="add($event)"
             [(ngModel)]="searchterm"
-            [disabled]="this.events.length === 0 && !this.searchRequest"
           />
           <mat-autocomplete
             #auto="matAutocomplete"
@@ -56,7 +54,6 @@
         <div class="input-group-prepend">
           <button
             class="search-submit-dropdown"
-            [disabled]="this.events.length === 0 && !this.searchRequest"
           >
             <ul class="search-submit-dropdown-ul">
               <li class="search-submit-dropdown-li">
@@ -77,7 +74,6 @@
             type="submit"
             class="search-submit"
             (click)="reset()"
-            [disabled]="this.events.length === 0 && !this.searchRequest"
           >
             <i class="bi bi-arrow-clockwise"></i>
           </button>
@@ -85,7 +81,6 @@
           <button
             class="search-submit"
             (click)="openFilter()"
-            [disabled]="this.events.length === 0 && !this.searchRequest"
           >
             <i class="bi bi-funnel"></i>
           </button>
@@ -94,7 +89,6 @@
             *ngIf="searchType === 'tags'"
             type="submit"
             class="search-submit"
-            [disabled]="this.events.length === 0 && !this.searchRequest"
             (click)="searchOnTag()"
           >
             <i class="bi bi-search"></i>
@@ -104,7 +98,6 @@
             *ngIf="searchType === 'terms'"
             type="submit"
             class="search-submit"
-            [disabled]="this.events.length === 0 && !this.searchRequest"
             (click)="searchOnTerm()"
           >
             <i class="bi bi-search"></i>
