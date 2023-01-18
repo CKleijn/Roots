@@ -100,7 +100,7 @@ describe('OrganizationService', () => {
   describe('getAll', () => {
 
     it('should retrieve all events from organization', async () => {
-      const results = await service.getAll();
+      const results = await service.getAll(organizationId);
         expect(results.length).toBe(2);
         expect(results[1].title).toEqual('Event1');
         expect(results[1].description).toEqual('Event1');
@@ -117,7 +117,7 @@ describe('OrganizationService', () => {
     it('should retrieve no events from organization', async () => {
         await eventModel.deleteMany({})
         await organizationModel.findByIdAndUpdate({_id:organizationId},{$set :{events: []}})
-        const results = await service.getAll();
+        const results = await service.getAll(organizationId);
         expect(results).toBeUndefined();
     })
 
@@ -158,7 +158,7 @@ describe('OrganizationService', () => {
         expect(result).toBeDefined();
         expect(result.events.length).toEqual(3);
         
-        const results = await service.getAll();
+        const results = await service.getAll(organizationId);
         expect(results[0].title).toEqual(newEvent.title);
         expect(results[0].description).toEqual(newEvent.description);
         expect(results[0].tags.length).toEqual(1);

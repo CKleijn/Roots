@@ -104,6 +104,7 @@ fdescribe('EventService', () => {
         emailDomain: 'organization.mock',
         events: [],
         tags: [dummyTags[0]._id, dummyTags[1]._id],
+        logs: []
       },
     ];
 
@@ -121,7 +122,7 @@ fdescribe('EventService', () => {
   });
 
   it('should return events when calling getAllEvents', (done) => {
-    service.getAllEvents().subscribe((events) => {
+    service.getAllEvents('6391333037ceb01d296c5981').subscribe((events) => {
       expect(events.length).toBe(3);
       expect(events.at(0)?.title).toEqual(dummyEvents.at(0)?.title);
       expect(events.at(0)?.description).toEqual(dummyEvents.at(0)?.description);
@@ -141,7 +142,7 @@ fdescribe('EventService', () => {
   it('should return no events when calling getAllEvents', (done) => {
     dummyEvents = [];
 
-    service.getAllEvents().subscribe((events) => {
+    service.getAllEvents('6391333037ceb01d296c5981').subscribe((events) => {
       expect(events.length).toBe(0);
       done();
     });
