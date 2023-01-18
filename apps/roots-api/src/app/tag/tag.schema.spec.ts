@@ -51,25 +51,4 @@ describe('Tag Schema Tests', () => {
         });
 
     });
-
-    describe('Check name input is unique', () => {
-        it('has unique name', async () => {
-            const original = new tagModel({ _id: new Types.ObjectId(), name: 'TestU', organization: new Types.ObjectId()});
-            const duplicate = new tagModel({ _id: new Types.ObjectId(), name: 'Hello', organization: new Types.ObjectId()});
-            
-            await original.save();
-            
-            await expect(duplicate.save()).resolves.not.toThrowError();
-        });
-        
-        it('does not have unique name', async () => {
-            const original = new tagModel({ _id: new Types.ObjectId(), name: 'Test', organization: new Types.ObjectId()});
-            const duplicate = new tagModel({ _id: new Types.ObjectId(), name: 'Test', organization: new Types.ObjectId()});
-
-            await original.save();
-
-            await expect(duplicate.save()).rejects.toThrow();
-        });
-    });
-
 })

@@ -61,7 +61,7 @@ describe('Event controller - Integration tests', () => {
         const getEvents = jest.spyOn(eventService, 'getAll')
             .mockImplementation(async () => exampleEvents);
 
-        const results = await eventController.getAllEvents();
+        const results = await eventController.getAllEvents(new Types.ObjectId('639a6d184362b5279e5094a0').toString());
 
         expect(getEvents).toBeCalledTimes(1);
         expect(results).toHaveLength(2);
