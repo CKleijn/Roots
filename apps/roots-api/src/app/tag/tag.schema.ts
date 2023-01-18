@@ -7,7 +7,7 @@ export type TagDocument = Tag & Document;
 @Schema()
 export class Tag implements ITag {
   @Prop({
-    unique: true, required:true
+    required:true
   })
   name: string;
 

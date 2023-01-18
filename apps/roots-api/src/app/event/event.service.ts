@@ -18,8 +18,13 @@ export class EventService {
   ) {}
 
   // Get all events
-  async getAll(): Promise<Event[]> {
+  async getAll(organizationId: string): Promise<Event[]> {
     const events = await this.organizationModel.aggregate([
+      {
+        $match: {
+          _id: new Types.ObjectId(organizationId),
+        },
+      },
       {
         $unwind: {
           path: '$events',

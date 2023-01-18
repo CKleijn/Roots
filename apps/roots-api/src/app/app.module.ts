@@ -8,6 +8,7 @@ import { AppService } from './app.service';
 import { AuthModule } from './auth/auth.module';
 import { JwtAuthGuard } from './auth/jwt-auth.guard';
 import { EventModule } from './event/event.module';
+import { LogModule } from './log/log.module';
 import { OrganizationModule } from './organization/organization.module';
 import { TagModule } from './tag/tag.module';
 import { UserModule } from './user/user.module';
@@ -20,6 +21,7 @@ import { UserModule } from './user/user.module';
     EventModule,
     AuthModule,
     TagModule,
+    LogModule,
     MailerModule.forRoot({
       transport: {
         host: 'smtp.sendgrid.net',

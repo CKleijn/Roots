@@ -44,10 +44,7 @@
             (optionSelected)="selected($event)"
           >
             <div *ngIf="searchType === 'tags'">
-              <mat-option
-                *ngFor="let tag of filteredTags | async"
-                [value]="tag"
-              >
+              <mat-option *ngFor="let tag of filteredTags | async" [value]="tag">
                 {{ tag }}
               </mat-option>
             </div>
@@ -55,7 +52,9 @@
         </div>
         <!-- Terms/tags dropdown -->
         <div class="input-group-prepend">
-          <button class="search-submit-dropdown">
+          <button
+            class="search-submit-dropdown"
+          >
             <ul class="search-submit-dropdown-ul">
               <li class="search-submit-dropdown-li">
                 <span *ngIf="searchType === 'terms'">Termen</span>
@@ -63,27 +62,26 @@
                 &dtrif;
                 <ul class="dropdown">
                   <li>
-                    <span
-                      (click)="switchSearchType('tags')"
-                      *ngIf="searchType === 'terms'"
-                      >Tags</span
-                    >
-                    <span
-                      (click)="switchSearchType('terms')"
-                      *ngIf="searchType === 'tags'"
-                      >Termen</span
-                    >
+                    <span (click)="switchSearchType('tags')" *ngIf="searchType === 'terms'">Tags</span>
+                    <span (click)="switchSearchType('terms')" *ngIf="searchType === 'tags'">Termen</span>
                   </li>
                 </ul>
               </li>
             </ul>
           </button>
           <!-- Reset -->
-          <button type="submit" class="search-submit" (click)="reset()">
+          <button
+            type="submit"
+            class="search-submit"
+            (click)="reset()"
+          >
             <i class="bi bi-arrow-clockwise"></i>
           </button>
           <!-- Open filter -->
-          <button class="search-submit" (click)="openFilter()">
+          <button
+            class="search-submit"
+            (click)="openFilter()"
+          >
             <i class="bi bi-funnel"></i>
           </button>
           <!-- Search tag -->
@@ -107,15 +105,8 @@
         </div>
       </div>
 
-      <div
-        class="input-group tag-group mt-5 mr-3"
-        *ngIf="searchType === 'tags'"
-      >
-        <mat-chip-grid
-          #chipGrid
-          aria-label="Tag selection"
-          class="timeline-tag"
-        >
+      <div class="input-group tag-group mt-5 mr-3" *ngIf="searchType === 'tags'">
+        <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
           <mat-chip-row *ngFor="let tag of tags" (removed)="remove(tag)">
             {{ tag }}
             <button matChipRemove [attr.aria-label]="'remove ' + tag">
@@ -129,27 +120,16 @@
   </form>
 </div>
 <!-- Timeline -->
-<div
-  *ngIf="events.length > 0"
-  class="timeline"
-  infinite-scroll
-  [infiniteScrollDistance]="distance"
-  [infiniteScrollThrottle]="throttle"
-  (scrolled)="onScroll()"
->
-  <div
-    *ngFor="let event of events; let left = even; let right = odd"
-    [ngClass]="{ right: right, left: left }"
-    class="timeline-container"
-  >
+<div *ngIf="events.length > 0" class="timeline" infinite-scroll [infiniteScrollDistance]="distance"
+  [infiniteScrollThrottle]="throttle" (scrolled)="onScroll()">
+  <div *ngFor="let event of events; let left = even; let right = odd" [ngClass]="{ right: right, left: left }"
+    class="timeline-container">
     <div class="timeline-year" id="timeline-year-{{ event._id }}">
       <span class="timeline-year-content">{{
         event.eventDate.getFullYear()
       }}</span>
     </div>
-    <div
-      [ngClass]="!event.isActive ? 'timeline-icon-archived' : 'timeline-icon'"
-    >
+    <div [ngClass]="!event.isActive ? 'timeline-icon-archived' : 'timeline-icon'">
       <div class="timeline-icon-content">
         <span class="timeline-icon-content-day">
           {{ event.eventDate.getDate() }}
@@ -159,11 +139,9 @@
         </span>
       </div>
     </div>
-    <div
-      [ngClass]="
+    <div [ngClass]="
         !event.isActive ? 'timeline-textbox-archived' : 'timeline-textbox'
-      "
-    >
+      ">
       <h2>{{ event.title }}</h2>
       <mat-chip-grid #chipGrid aria-label="Tag selection" class="timeline-tag">
         <mat-chip-row *ngFor="let tag of event.tags">
@@ -175,12 +153,9 @@
         <span *ngIf="event.description.length > 150">...</span>
       </p>
       <div class="detail-button-container">
-        <button
-          class="btn"
-          routerLink="/organizations/{{ loggedInUser.organization }}/events/{{
+        <button class="btn" routerLink="/organizations/{{ loggedInUser.organization }}/events/{{
             event._id
-          }}"
-        >
+          }}">
           Lees meer
         </button>
       </div>
@@ -188,29 +163,21 @@
   </div>
 </div>
 <!-- Error messages -->
-<div *ngIf="this.events.length === 0 && this.searchRequest" class="p-20">
-  <div class="row">
-    <div class="col-sm-12 col-md-6 offset-3">
-      <div class="timeline-textbox">
-        <h2>Oeps!</h2>
-        <p>
-          Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de
-          filter(s)!
-        </p>
-      </div>
-    </div>
+<div class="timeline-error-message-container" *ngIf="this.events.length === 0 && this.searchRequest">
+  <div class="timeline-error-message-textbox">
+    <h2>Oeps!</h2>
+    <p>
+      Er zijn op het moment geen gebeurtenissen gevonden die voldoen aan de
+      filter(s)!
+    </p>
   </div>
 </div>
-<div *ngIf="this.events.length === 0 && !this.searchRequest" class="p-20">
-  <div class="row">
-    <div class="col-sm-12 col-md-6 offset-3">
-      <div class="timeline-textbox">
-        <h2>Oeps!</h2>
-        <p>
-          Er zijn op het moment geen gebeurtenissen aanwezig voor deze
-          organisatie!
-        </p>
-      </div>
-    </div>
+<div class="timeline-error-message-container" *ngIf="this.events.length === 0 && !this.searchRequest">
+  <div class="timeline-error-message-textbox">
+    <h2>Oeps!</h2>
+    <p>
+      Er zijn op het moment geen gebeurtenissen aanwezig voor deze
+      organisatie!
+    </p>
   </div>
 </div>

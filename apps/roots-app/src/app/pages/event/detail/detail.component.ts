@@ -42,17 +42,25 @@ export class EventDetailComponent implements OnInit, OnDestroy {
         )
       )
       .subscribe((foundEvent) => {
-        this.event = foundEvent;
-        this.event.eventDate = new Date(this.event.eventDate);
-        this.day = this.event.eventDate.toLocaleString('nl-NL', { day: 'numeric' });
-        this.month = this.event.eventDate.toLocaleString('nl-NL', { month: 'short' });
-        this.year = this.event.eventDate.toLocaleString('nl-NL', { year: 'numeric' });
-        this.tags = new Array<Tag>();
-        foundEvent.tags.forEach((tag) => {
-          this.tagService.getTagById(tag).subscribe((foundTag) => {
-            this.tags.push(foundTag);
+        if (foundEvent) {
+          this.event = foundEvent;
+          this.event.eventDate = new Date(this.event.eventDate);
+          this.day = this.event.eventDate.toLocaleString('nl-NL', {
+            day: 'numeric',
           });
-        });
+          this.month = this.event.eventDate.toLocaleString('nl-NL', {
+            month: 'short',
+          });
+          this.year = this.event.eventDate.toLocaleString('nl-NL', {
+            year: 'numeric',
+          });
+          this.tags = new Array<Tag>();
+          foundEvent.tags.forEach((tag) => {
+            this.tagService.getTagById(tag).subscribe((foundTag) => {
+              this.tags.push(foundTag);
+            });
+          });
+        }
 
         this.spinner.hide();
       });

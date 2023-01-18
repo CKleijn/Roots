@@ -22,11 +22,11 @@ export class EventController {
 
   // Get all events
   @Public()
-  @Get()
-  async getAllEvents(): Promise<Event[]> {
+  @Get('/organization/:id')
+  async getAllEvents(@Param('id') organizationId: string): Promise<Event[]> {
     Logger.log('Retrieving all events (READ)');
 
-    return await this.eventService.getAll();
+    return await this.eventService.getAll(organizationId);
   }
 
   // Get an amount of events to show on page

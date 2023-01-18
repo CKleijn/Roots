@@ -1,8 +1,16 @@
 /* eslint-disable prefer-const */
-import { Component, OnDestroy, OnInit } from '@angular/core';
-import { Router } from '@angular/router';
+import {
+  AfterViewInit,
+  Component,
+  OnDestroy,
+  OnInit,
+  ViewChild,
+} from '@angular/core';
+import { MatSort, Sort } from '@angular/material/sort';
+import { MatTableDataSource } from '@angular/material/table';
+import { MatPaginator } from '@angular/material/paginator';
 import { NgbModal } from '@ng-bootstrap/ng-bootstrap';
-import { Organization, User } from '@roots/data';
+import { ILog, Organization, User } from '@roots/data';
 import { Types } from 'mongoose';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
@@ -25,24 +33,36 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   editSubscription!: Subscription;
   deleteSubscription!: Subscription;
   statusSubscription!: Subscription;
+  logSubscription!: Subscription;
   loggedInUser!: User;
-  participants!: User[];
+  participants: User[] = [];
   selectedUser!: User;
   organization: Organization | undefined;
   displayedColumns: string[] = [
     'picture',
-    'name',
+    'firstname',
     'emailAddress',
     'createdAt',
-    'lastLogin',
+    'lastLoginTimestamp',
     'status',
   ];
-  displayedColumnsTag: string[] = ['tag', 'change'];
   tags!: Tag[];
+  //edit
   editTagId!: string;
   editTagName!: string;
+  //delete
   deleteTagId!: string;
   deleteTagName!: string;
+  //log paginator and sort
+  @ViewChild('parPaginator', { static: true }) parPaginator!: MatPaginator;
+  @ViewChild('logPaginator', { static: true }) logPaginator!: MatPaginator;
+  @ViewChild('parSort', { static: true }) parSort!: MatSort;
+  @ViewChild('logSort', { static: true }) logSort!: MatSort;
+  // create datasource
+  dataSourceLog = new MatTableDataSource<ILog>();
+  dataSourcePar = new MatTableDataSource<User>();
+  logs: ILog[] = [];
+  displayedColumnsLog: string[] = ['editor', 'action', 'object', 'logStamp'];
 
   constructor(
     private organizationService: OrganizationService,
@@ -63,15 +83,20 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     // Get participants
     this.participantsSubscription = this.organizationService
       .getParticipants(this.loggedInUser.organization.toString())
-      .subscribe((participants) => {
-        this.participants = participants;
+      .subscribe(async (participants) => {
         // Get foreach participant their initials
-        participants.forEach((participant) => {
+        for await (const participant of participants) {
           let last = participant.lastname.split(' ');
           participant.initials =
             participant.firstname[0].toUpperCase() +
             last[last.length - 1][0].toUpperCase();
-        });
+        }
+
+        this.participants = participants;
+        this.dataSourcePar.data = participants;
+        this.dataSourcePar.paginator = this.parPaginator;
+        this.dataSourcePar.sort = this.parSort;
+        this.parPaginator._intl.itemsPerPageLabel = 'Leden per pagina';
       });
     // Get tags
     this.tagsSubscription = this.tagService
@@ -83,7 +108,24 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     // Get organization name
     this.organizationSubscription = this.organizationService
       .getById(this.loggedInUser.organization.toString())
-      .subscribe((organization) => (this.organization = organization, this.spinner.hide()));
+      .subscribe((organization) => (this.organization = organization));
+
+    // get log items
+    this.logSubscription = this.organizationService
+      .log(this.loggedInUser.organization.toString())
+      .subscribe((log) => {
+        //set the retrieved logs as the table's data source
+        this.logs = log.logs;
+        this.dataSourceLog.data = log.logs;
+
+        // couple paginator and sort to datasource
+        this.dataSourceLog.paginator = this.logPaginator;
+        this.dataSourceLog.sort = this.logSort;
+        this.logPaginator._intl.itemsPerPageLabel = 'Logs per pagina';
+      });
+
+    // Hide spinner
+    this.spinner.hide();
   }
 
   // Open modal
@@ -119,6 +161,7 @@ export class OrganizationComponent implements OnInit, OnDestroy {
   async editTag(newTag: string) {
     this.spinner.show();
 
+    // eslint-disable-next-line @typescript-eslint/no-inferrable-types
     let duplicate: boolean = false;
 
     for await (const tag of this.tags) {
@@ -134,12 +177,11 @@ export class OrganizationComponent implements OnInit, OnDestroy {
       this.editSubscription = this.tagService
         .putTag(updateTag, this.editTagId)
         .subscribe(() => {
+          this.ngOnInit();
           this.spinner.hide();
         });
-        
-      this.modalService.dismissAll();
 
-      this.ngOnInit();
+      this.modalService.dismissAll();
     } else {
       this.toastrService.error(
         'De gegeven tag naam is al in gebruik!',
@@ -168,6 +210,24 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.ngOnInit();
   }
 
+  applyParFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourcePar.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSourcePar.paginator) {
+      this.dataSourcePar.paginator.firstPage();
+    }
+  }
+
+  applyLogFilter(event: Event) {
+    const filterValue = (event.target as HTMLInputElement).value;
+    this.dataSourceLog.filter = filterValue.trim().toLowerCase();
+
+    if (this.dataSourceLog.paginator) {
+      this.dataSourceLog.paginator.firstPage();
+    }
+  }
+
   // Destroy all subscriptions
   ngOnDestroy(): void {
     this.authSubscription?.unsubscribe;
@@ -177,5 +237,6 @@ export class OrganizationComponent implements OnInit, OnDestroy {
     this.editSubscription?.unsubscribe;
     this.deleteSubscription?.unsubscribe;
     this.statusSubscription?.unsubscribe;
+    this.logSubscription?.unsubscribe;
   }
 }

@@ -206,8 +206,6 @@ describe('TokenService', () => {
         'password_reset'
       );
 
-      console.log(results);
-
       expect(results).toBeInstanceOf(Object);
 
       expect(results).toHaveProperty('_id');

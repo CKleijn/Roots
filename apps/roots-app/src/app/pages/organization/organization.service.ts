@@ -1,6 +1,7 @@
+/* eslint-disable @typescript-eslint/ban-types */
 import { HttpClient } from '@angular/common/http';
 import { Injectable } from '@angular/core';
-import { Organization, User } from '@roots/data';
+import { ILog, Log, Organization, User } from '@roots/data';
 import { ToastrService } from 'ngx-toastr';
 import { catchError, map, Observable, of } from 'rxjs';
 import { environment } from '../../../environments/environment';
@@ -69,12 +70,22 @@ export class OrganizationService {
       )
       .pipe(
         map((user: any) => {
-          const status = user.isActive ? 'geactiveerd' : 'gedeactiveerd';
+          if (user) {
+            const status = user.isActive ? 'geactiveerd' : 'gedeactiveerd';
 
-          this.toastr.success(
-            `Je hebt het account succesvol ${status}`,
-            'Account status veranderd'
-          );
+            this.authService.currentUser$.subscribe((loggedInUser) => {
+              this.logCreate(
+                loggedInUser,
+                user.isActive ? 'Geactiveerd' : 'Gedeactiveerd',
+                '(A) ' + user.firstname + ' ' + user.lastname
+              ).subscribe().unsubscribe;
+            }).unsubscribe;
+
+            this.toastr.success(
+              `Je hebt het account succesvol ${status}`,
+              'Account status veranderd'
+            );
+          }
           return user;
         }),
         catchError((err: any) => {
@@ -83,6 +94,52 @@ export class OrganizationService {
           return of(undefined);
         })
         // eslint-disable-next-line @typescript-eslint/ban-types
+      ) as Observable<Object>;
+  }
+
+  log(organizationId: string): Observable<any> {
+    return this.httpClient
+      .get(
+        environment.SERVER_API_URL + '/log/' + organizationId,
+        this.authService.getHttpOptions()
+      )
+      .pipe(
+        map((log: any) => {
+          return log;
+        }),
+        catchError((err: any) => {
+          window.scroll(0, 0);
+          return of(undefined);
+        })
+      ) as Observable<Object>;
+  }
+
+  logCreate(
+    loggedInUser: any,
+    action: string,
+    object: string
+  ): Observable<any> {
+    const log: Log = {
+      editor: loggedInUser.firstname + ' ' + loggedInUser.lastname,
+      action: action,
+      object: object,
+      logStamp: new Date(),
+    };
+    const organizationId = loggedInUser.organization.toString();
+    return this.httpClient
+      .put(
+        environment.SERVER_API_URL + '/log/' + organizationId,
+        log,
+        this.authService.getHttpOptions()
+      )
+      .pipe(
+        map((organization) => {
+          return organization;
+        }),
+        catchError((err: any) => {
+          window.scroll(0, 0);
+          return of(undefined);
+        })
       ) as Observable<Object>;
   }
 }
