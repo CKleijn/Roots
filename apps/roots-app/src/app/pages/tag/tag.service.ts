@@ -83,7 +83,7 @@ export class TagService {
       .pipe(
         map((tag) => {
           if (tag) {
-            this.authService.currentUser$.subscribe((loggedInUser) => {
+            this.authService.getUserFromLocalStorage().subscribe((loggedInUser) => {
               this.organizationService
                 .logCreate(loggedInUser, 'Aangemaakt', '(T) ' + newTag.name)
                 .subscribe().unsubscribe;
@@ -116,7 +116,7 @@ export class TagService {
       .pipe(
         map((tag) => {
           if (tag) {
-            this.authService.currentUser$.subscribe((loggedInUser) => {
+            this.authService.getUserFromLocalStorage().subscribe((loggedInUser) => {
               this.organizationService
                 .logCreate(loggedInUser, 'Gewijzigd', '(T) ' + newTag.name)
                 .subscribe().unsubscribe;

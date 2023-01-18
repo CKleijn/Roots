@@ -70,7 +70,7 @@ export class EventService {
       )
       .pipe(
         map(() => {
-          this.authService.currentUser$.subscribe((loggedInUser) => {
+          this.authService.getUserFromLocalStorage().subscribe((loggedInUser) => {
             this.organizationService
               .logCreate(loggedInUser, 'Aangemaakt', '(G) ' + event.title)
               .subscribe().unsubscribe;
@@ -119,7 +119,7 @@ export class EventService {
       )
       .pipe(
         map(() => {
-          this.authService.currentUser$.subscribe((loggedInUser) => {
+          this.authService.getUserFromLocalStorage().subscribe((loggedInUser) => {
             this.organizationService
               .logCreate(loggedInUser, 'Gewijzigd', '(G) ' + event.title)
               .subscribe().unsubscribe;
@@ -173,7 +173,7 @@ export class EventService {
       .pipe(
         map((event: any) => {
           if (event) {
-            this.authService.currentUser$.subscribe((loggedInUser) => {
+            this.authService.getUserFromLocalStorage().subscribe((loggedInUser) => {
               this.organizationService
                 .logCreate(
                   loggedInUser,

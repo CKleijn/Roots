@@ -37,13 +37,15 @@ describe('Event controller', () => {
                 name: 'Organization1',
                 emailDomain: 'organization1.com',
                 events: [null],
-                tags: [null]
+                tags: [null],
+                logs: [],
             },
             {
                 name: 'Organization2',
                 emailDomain: 'organization2.com',
                 events: [null],
-                tags: [null]
+                tags: [null],
+                logs: [],
             }
         ]
 
@@ -69,7 +71,8 @@ describe('Event controller', () => {
             name: 'Organization1',
             emailDomain: 'organization1.com',
             events: [null],
-            tags: [null]
+            tags: [null],
+            logs: [],
         }
 
         const getOrganization = jest.spyOn(organizationService, 'getById')
@@ -96,7 +99,8 @@ describe('Event controller', () => {
             name: 'Organization2',
             emailDomain: 'organization2.com',
             events: [null],
-            tags: [null]
+            tags: [null],
+            logs: [],
         }
 
         const createOrganization = jest.spyOn(organizationService, 'create')
