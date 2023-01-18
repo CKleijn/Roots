@@ -2,7 +2,7 @@ global.TextEncoder = require("util").TextEncoder;
 global.TextDecoder = require("util").TextDecoder;
 import { HttpClientTestingModule, HttpTestingController } from "@angular/common/http/testing";
 import { TestBed } from "@angular/core/testing";
-import { Organization, User } from "@roots/data";
+import { Log, Organization, User } from "@roots/data";
 import { environment } from "apps/roots-app/src/environments/environment";
 import { Types } from "mongoose";
 import { ToastrModule } from "ngx-toastr";
@@ -14,6 +14,7 @@ describe('OrganizationService', () => {
     let dummyParticipants: User[] = [];
     let dummyOrganization: Organization | undefined;
     let dummyUser: User | undefined;
+    let dummyLogs: Log[] = [];
 
     beforeEach(() => {
         TestBed.configureTestingModule({
@@ -22,7 +23,15 @@ describe('OrganizationService', () => {
                 ToastrModule.forRoot()
             ],
             providers: [
-                OrganizationService
+                OrganizationService,
+                {
+                    useValue: {
+                        loggedInUser: {
+                        firstName: jest.fn().mockResolvedValue('Kasper') ,
+                        lastName: jest.fn().mockResolvedValue('van den Enden')
+                    } 
+                }
+                }
             ]
         });
 
@@ -55,13 +64,34 @@ describe('OrganizationService', () => {
                 isVerified: true,
             },
         ];
-    
+
+        const loggedInUser = {
+            firstName: 'Kasper',
+            lastName: 'van den Enden'
+        }
+
+        dummyLogs = [
+            {
+                editor: loggedInUser.firstName + ' ' + loggedInUser.lastName,
+                action:'AANGEMAAKT',
+                object:'EVENT',
+                logStamp:new Date()
+            },
+            {
+                editor:loggedInUser.firstName + ' ' + loggedInUser.lastName,
+                action:'GEWIJZIGD',
+                object:'TAG',
+                logStamp:new Date()
+            }
+        ]
+        
         dummyOrganization = {
             _id: new Types.ObjectId('6391333037ceb01d296c5982'),
             name: 'Google',
             emailDomain: 'gmail.com',
             events: [],
             tags: [],
+            logs:dummyLogs
         }
     
         dummyUser = {
@@ -211,4 +241,53 @@ describe('OrganizationService', () => {
         expect(req.request.body).toEqual({});
         req.flush(dummyUser!);
     });
+
+    
+    // it('Should return logs when calling log', (done) => {
+    //     const organizationId = '6391333037ceb01d296c6961';
+
+    //     organizationService.log(organizationId).subscribe((logs) => {
+    //         expect(logs.length).toBe(2);
+    //         expect(logs[0].editor).toContain(dummyLogs[0].editor);
+    //         expect(logs[0].action).toContain(dummyLogs[0].action);
+    //         expect(logs[0].object).toContain(dummyLogs[0].object);
+    //         expect(logs[0].logStamp).toContain(dummyLogs[0].logStamp);
+    //         expect(logs[1].action).toContain(dummyLogs[1].action);
+    //         expect(logs[1].object).toContain(dummyLogs[1].object);
+    //         expect(logs[1].object).toContain(dummyLogs[1].object);
+    //         expect(logs[1].logStamp).toContain(dummyLogs[1].logStamp);
+          
+    //         done();
+    //     })
+
+    //     // const req = httpMock.expectOne(environment.SERVER_API_URL + `/log/${organizationId}`);
+    //     // expect(req.request.url).toBe(environment.SERVER_API_URL + `/log/${organizationId}`);
+    //     // expect(req.request.method).toBe('GET');
+    //     // expect(req.request.body).toEqual(null);
+    //     // req.flush(dummyLogs!);
+    // });
+   
+    // it('Should return a log when calling log', (done) => {
+    //     const organizationId = '6391333037ceb01d296c6961';
+
+    //     organizationService.log(organizationId).subscribe((logs) => {
+    //         expect(logs.length).toBe(2);
+    //         expect(logs[0].editor).toContain(dummyLogs[0].editor);
+    //         expect(logs[0].action).toContain(dummyLogs[0].action);
+    //         expect(logs[0].object).toContain(dummyLogs[0].object);
+    //         expect(logs[0].logStamp).toContain(dummyLogs[0].logStamp);
+    //         expect(logs[1].action).toContain(dummyLogs[1].action);
+    //         expect(logs[1].object).toContain(dummyLogs[1].object);
+    //         expect(logs[1].object).toContain(dummyLogs[1].object);
+    //         expect(logs[1].logStamp).toContain(dummyLogs[1].logStamp);
+          
+    //         done();
+    //     })
+
+    //     // const req = httpMock.expectOne(environment.SERVER_API_URL + `/log/${organizationId}`);
+    //     // expect(req.request.url).toBe(environment.SERVER_API_URL + `/log/${organizationId}`);
+    //     // expect(req.request.method).toBe('GET');
+    //     // expect(req.request.body).toEqual(null);
+    //     // req.flush(dummyLogs!);
+    // });
 })

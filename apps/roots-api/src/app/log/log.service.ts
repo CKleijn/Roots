@@ -17,14 +17,14 @@ export class LogService {
 
   async getAll(organizationId: string): Promise<Log[]> {
     return await this.organizationModel.findOne( 
-        {organizationId},
+        {_id:organizationId},
         {logs:1}
     );
   }
 
   async create(organizationId:string, logDto:LogDTO ): Promise<Log> {
     return await this.organizationModel.findOneAndUpdate(
-        {organizationId},
+        {_id:organizationId},
         {
             $push: {
                 logs: logDto

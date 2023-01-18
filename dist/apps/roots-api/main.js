@@ -1306,12 +1306,12 @@ let LogService = class LogService {
     }
     getAll(organizationId) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.organizationModel.findOne({ organizationId }, { logs: 1 });
+            return yield this.organizationModel.findOne({ _id: organizationId }, { logs: 1 });
         });
     }
     create(organizationId, logDto) {
         return tslib_1.__awaiter(this, void 0, void 0, function* () {
-            return yield this.organizationModel.findOneAndUpdate({ organizationId }, {
+            return yield this.organizationModel.findOneAndUpdate({ _id: organizationId }, {
                 $push: {
                     logs: logDto
                 }
