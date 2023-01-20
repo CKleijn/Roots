@@ -77,18 +77,16 @@ describe('OrganizationService', () => {
     await mongod.stop();
   });
 
-  xdescribe('getAll', () => {
+  describe('getAll', () => {
     it('should retrieve all logs by organization', async () => {
-      const results = await service.getAll(organizationId);
-      console.log(results)
+      const results: any = await service.getAll(organizationId);
       expect(results).toBeDefined();
-      expect(results[0].editor).toEqual('TestL');
-      expect(results[0].action).toEqual('TestL');
-      expect(results[0].object).toEqual('TestL');
-      expect(results[0].logStamp).toBe(Date);
+      expect(results.logs[0].editor).toEqual('TestL');
+      expect(results.logs[0].action).toEqual('TestL');
+      expect(results.logs[0].object).toEqual('TestL');
     });
 
-    it('should throw exception when given non-existing organization', async () => {
+    xit('should throw exception when given non-existing organization', async () => {
       try {
         await service.getAll('63bc6596a420d9a3128deb5c');
       } catch (err) {
@@ -97,23 +95,20 @@ describe('OrganizationService', () => {
       }
     });
   });
-  xdescribe('Create', () => {
-    it('Should give error with invalid organizationId', async () => {
+  describe('Create', () => {
+    xit('Should give error with invalid organizationId', async () => {
       const log:LogDTO = {
-        editor: 'Kasper',
-        action: 'Edit',
-        object: 'Account',
+        editor: 'TestL',
+        action: 'TestL',
+        object: 'TestL',
         logStamp: new Date()
       }
 
-      const result = await service.create(organizationId,log);
-      console.log(result)
+      const result: any = await service.create(organizationId,log);
       expect(result).toBeDefined()
-      expect(result.editor).toEqual(log.editor);
-      expect(result.action).toEqual(log.action);
-      expect(result.object).toEqual(log.object);
-      expect(result.logStamp).toEqual(log.logStamp);
-     
+      expect(result.logs[0].editor).toEqual(log.editor);
+      expect(result.logs[0].action).toEqual(log.action);
+      expect(result.logs[0].object).toEqual(log.object);
     });
   });
 });

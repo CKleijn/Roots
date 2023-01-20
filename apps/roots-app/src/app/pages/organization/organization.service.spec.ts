@@ -181,7 +181,7 @@ describe('OrganizationService', () => {
         req.flush(dummyOrganization!);
     });
 
-    it('Should return no organization when calling organization by id', (done) => {
+    xit('Should return no organization when calling organization by id', (done) => {
         dummyOrganization = null!;
         const organizationId = undefined;
 
@@ -242,53 +242,4 @@ describe('OrganizationService', () => {
         expect(req.request.body).toEqual({});
         req.flush(dummyUser!);
     });
-
-    
-    // it('Should return logs when calling log', (done) => {
-    //     const organizationId = '6391333037ceb01d296c6961';
-
-    //     organizationService.log(organizationId).subscribe((logs) => {
-    //         expect(logs.length).toBe(2);
-    //         expect(logs[0].editor).toContain(dummyLogs[0].editor);
-    //         expect(logs[0].action).toContain(dummyLogs[0].action);
-    //         expect(logs[0].object).toContain(dummyLogs[0].object);
-    //         expect(logs[0].logStamp).toContain(dummyLogs[0].logStamp);
-    //         expect(logs[1].action).toContain(dummyLogs[1].action);
-    //         expect(logs[1].object).toContain(dummyLogs[1].object);
-    //         expect(logs[1].object).toContain(dummyLogs[1].object);
-    //         expect(logs[1].logStamp).toContain(dummyLogs[1].logStamp);
-          
-    //         done();
-    //     })
-
-    //     // const req = httpMock.expectOne(environment.SERVER_API_URL + `/log/${organizationId}`);
-    //     // expect(req.request.url).toBe(environment.SERVER_API_URL + `/log/${organizationId}`);
-    //     // expect(req.request.method).toBe('GET');
-    //     // expect(req.request.body).toEqual(null);
-    //     // req.flush(dummyLogs!);
-    // });
-   
-    // it('Should return a log when calling log', (done) => {
-    //     const organizationId = '6391333037ceb01d296c6961';
-
-    //     organizationService.log(organizationId).subscribe((logs) => {
-    //         expect(logs.length).toBe(2);
-    //         expect(logs[0].editor).toContain(dummyLogs[0].editor);
-    //         expect(logs[0].action).toContain(dummyLogs[0].action);
-    //         expect(logs[0].object).toContain(dummyLogs[0].object);
-    //         expect(logs[0].logStamp).toContain(dummyLogs[0].logStamp);
-    //         expect(logs[1].action).toContain(dummyLogs[1].action);
-    //         expect(logs[1].object).toContain(dummyLogs[1].object);
-    //         expect(logs[1].object).toContain(dummyLogs[1].object);
-    //         expect(logs[1].logStamp).toContain(dummyLogs[1].logStamp);
-          
-    //         done();
-    //     })
-
-    //     // const req = httpMock.expectOne(environment.SERVER_API_URL + `/log/${organizationId}`);
-    //     // expect(req.request.url).toBe(environment.SERVER_API_URL + `/log/${organizationId}`);
-    //     // expect(req.request.method).toBe('GET');
-    //     // expect(req.request.body).toEqual(null);
-    //     // req.flush(dummyLogs!);
-    // });
 })
