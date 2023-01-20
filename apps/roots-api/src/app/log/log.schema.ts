@@ -1,6 +1,6 @@
 import { Prop, Schema, SchemaFactory } from '@nestjs/mongoose';
 import { ILog, IOrganization } from '@roots/data';
-import { IsDefined, IsString } from 'class-validator';
+import { isDefined, IsDefined, IsString } from 'class-validator';
 
 export type LogDocument = Log & Document;
 
