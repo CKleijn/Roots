@@ -19,8 +19,8 @@ jobs:
       - name: Installeer alle benodigde packages 
         run: npm i
 
-      #- name: Voer testen api uit
-      #  run: npm run testApi
+      - name: Run tests
+        run: npm run test:app
 
       - name: Installeer Railway
         run: npm i -g @railway/cli

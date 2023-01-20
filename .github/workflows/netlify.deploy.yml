@@ -18,8 +18,8 @@ jobs:
         cache-dependency-path: package-lock.json
     - name: Installeer alle packages
       run: npm i
-#     - name: Run tests
-#       run: npm run test
+    - name: Run tests
+      run: npm run test:app
     - name: Build file
       run: npm run build
       
