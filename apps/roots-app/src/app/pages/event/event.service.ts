@@ -177,7 +177,7 @@ export class EventService {
               this.organizationService
                 .logCreate(
                   loggedInUser,
-                  isActive ? 'Gearchiveerd' : 'Gedearchiveerd',
+                  !isActive ? 'Gearchiveerd' : 'Gedearchiveerd',
                   '(G) ' + event.title
                 )
                 .subscribe();
